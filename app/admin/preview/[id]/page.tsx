@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { createClient } from '@/lib/supabase/server'
+import { createPublicClient } from '@/lib/supabase/server'
 import { getDocs } from '@/lib/docs'
 import { Sidebar } from '@/components/layout/Sidebar'
 import { OnThisPage } from '@/components/layout/OnThisPage'
@@ -14,7 +14,7 @@ interface Props {
 }
 
 async function getDocById(id: string): Promise<Doc | null> {
-  const supabase = await createClient()
+  const supabase = createPublicClient()
   const { data } = await supabase.from('docs').select('*').eq('id', id).single()
   return data ?? null
 }

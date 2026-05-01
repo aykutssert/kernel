@@ -1,8 +1,8 @@
-import { createClient } from '@/lib/supabase/server'
+import { createPublicClient } from '@/lib/supabase/server'
 import type { Doc, DocMeta } from '@/types'
 
 export async function getDocs(): Promise<DocMeta[]> {
-  const supabase = await createClient()
+  const supabase = createPublicClient()
   const { data } = await supabase
     .from('docs')
     .select('id, title, slug, category, order_index, published, tags')
@@ -13,7 +13,7 @@ export async function getDocs(): Promise<DocMeta[]> {
 }
 
 export async function getDoc(category: string, slug: string): Promise<Doc | null> {
-  const supabase = await createClient()
+  const supabase = createPublicClient()
   const { data } = await supabase
     .from('docs')
     .select('*')
@@ -25,7 +25,7 @@ export async function getDoc(category: string, slug: string): Promise<Doc | null
 }
 
 export async function getCategories(): Promise<string[]> {
-  const supabase = await createClient()
+  const supabase = createPublicClient()
   const { data } = await supabase
     .from('docs')
     .select('category')
@@ -36,7 +36,7 @@ export async function getCategories(): Promise<string[]> {
 }
 
 export async function getAllCategories(): Promise<string[]> {
-  const supabase = await createClient()
+  const supabase = createPublicClient()
   const { data } = await supabase
     .from('docs')
     .select('category')
@@ -46,7 +46,7 @@ export async function getAllCategories(): Promise<string[]> {
 }
 
 export async function getAllDocsMeta(): Promise<Pick<Doc, 'id' | 'title' | 'slug' | 'category' | 'order_index'>[]> {
-  const supabase = await createClient()
+  const supabase = createPublicClient()
   const { data } = await supabase
     .from('docs')
     .select('id, title, slug, category, order_index')
@@ -56,7 +56,7 @@ export async function getAllDocsMeta(): Promise<Pick<Doc, 'id' | 'title' | 'slug
 }
 
 export async function getDocsByTag(tag: string): Promise<DocMeta[]> {
-  const supabase = await createClient()
+  const supabase = createPublicClient()
   const { data } = await supabase
     .from('docs')
     .select('id, title, slug, category, order_index, published, tags')
@@ -68,7 +68,7 @@ export async function getDocsByTag(tag: string): Promise<DocMeta[]> {
 }
 
 export async function getAllTags(): Promise<string[]> {
-  const supabase = await createClient()
+  const supabase = createPublicClient()
   const { data } = await supabase
     .from('docs')
     .select('tags')
@@ -79,7 +79,7 @@ export async function getAllTags(): Promise<string[]> {
 }
 
 export async function getAllDocParams(): Promise<{ category: string; slug: string }[]> {
-  const supabase = await createClient()
+  const supabase = createPublicClient()
   const { data } = await supabase
     .from('docs')
     .select('category, slug')
