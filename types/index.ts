@@ -5,6 +5,8 @@ export interface Doc {
   category: string
   content: string
   source_url: string | null
+  image_url: string | null
+  tags: string[]
   order_index: number
   published: boolean
   created_at: string
@@ -18,4 +20,5 @@ export interface DocMeta {
   category: string
   order_index: number
   published: boolean
+  tags: string[]
 }

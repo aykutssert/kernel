@@ -1,7 +1,8 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { LogOut, Plus } from 'lucide-react'
+import { Plus } from 'lucide-react'
 import { LogoutButton } from '@/components/admin/LogoutButton'
+import { ThemeToggle } from '@/components/layout/ThemeToggle'
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -17,6 +18,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             Admin
           </Link>
           <div className="ml-auto flex items-center gap-2">
+            <ThemeToggle />
             <Link
               href="/admin/new"
               className="inline-flex items-center gap-1.5 text-sm bg-foreground text-background px-3 py-1.5 rounded-lg hover:opacity-90 transition-opacity"

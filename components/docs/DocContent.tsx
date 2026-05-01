@@ -1,42 +1,39 @@
-import { MDXRemote } from 'next-mdx-remote/rsc'
+import { normalizeContent } from '@/lib/utils'
+import { unified } from 'unified'
+import remarkParse from 'remark-parse'
 import remarkGfm from 'remark-gfm'
-import rehypePrettyCode from 'rehype-pretty-code'
+import remarkRehype from 'remark-rehype'
 import rehypeSlug from 'rehype-slug'
 import rehypeAutolinkHeadings from 'rehype-autolink-headings'
+import rehypePrettyCode from 'rehype-pretty-code'
+import rehypeStringify from 'rehype-stringify'
 
 interface DocContentProps {
   content: string
 }
 
-export function DocContent({ content }: DocContentProps) {
+export async function DocContent({ content }: DocContentProps) {
+  const result = await unified()
+    .use(remarkParse)
+    .use(remarkGfm)
+    .use(remarkRehype, { allowDangerousHtml: true })
+    .use(rehypeSlug)
+    .use(rehypeAutolinkHeadings, {
+      behavior: 'append',
+      properties: { className: ['anchor'], ariaHidden: true, tabIndex: -1 },
+      content: { type: 'text', value: '#' },
+    })
+    .use(rehypePrettyCode, {
+      theme: { dark: 'one-dark-pro', light: 'github-light' },
+      keepBackground: true,
+    })
+    .use(rehypeStringify, { allowDangerousHtml: true })
+    .process(normalizeContent(content))
+
   return (
-    <div className="prose prose-lg prose-gray dark:prose-invert max-w-none">
-      <MDXRemote
-        source={content}
-        options={{
-          mdxOptions: {
-            remarkPlugins: [remarkGfm],
-            rehypePlugins: [
-              rehypeSlug,
-              [
-                rehypeAutolinkHeadings,
-                {
-                  behavior: 'append',
-                  properties: { className: ['anchor'], ariaHidden: true, tabIndex: -1 },
-                  content: { type: 'text', value: '#' },
-                },
-              ],
-              [
-                rehypePrettyCode,
-                {
-                  theme: 'github-dark',
-                  keepBackground: true,
-                },
-              ],
-            ],
-          },
-        }}
-      />
-    </div>
+    <div
+      className="prose prose-lg max-w-none prose-p:leading-7 prose-p:text-base"
+      dangerouslySetInnerHTML={{ __html: String(result) }}
+    />
   )
 }

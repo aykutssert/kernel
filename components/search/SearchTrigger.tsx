@@ -36,7 +36,9 @@ export function SearchTrigger() {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="flex items-center gap-2 w-full max-w-xs px-3 py-1.5 text-sm text-muted-foreground border border-border rounded-md hover:bg-accent transition-colors"
+        className="flex items-center gap-2 w-full max-w-xs px-3 py-1.5 text-sm text-muted-foreground border border-border rounded-md
+        hover:bg-[#EEEEE8] dark:hover:bg-[#171513]
+        transition-colors"
       >
         <Search className="w-3.5 h-3.5 shrink-0" />
         <span>Search...</span>

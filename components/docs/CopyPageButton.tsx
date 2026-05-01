@@ -15,7 +15,8 @@ export function CopyPageButton({ content }: { content: string }) {
   return (
     <button
       onClick={handleCopy}
-      className="flex shrink-0 items-center gap-1.5 text-sm whitespace-nowrap text-muted-foreground hover:text-foreground border border-border rounded-md px-3 py-1.5 transition-colors hover:bg-accent"
+      className="flex shrink-0 items-center gap-1.5 text-sm whitespace-nowrap text-foreground border border-foreground/25 rounded-md px-3 py-1.5 transition-colors 
+      hover:bg-[#EEEEE8] dark:hover:bg-[#171513]"
     >
       {copied ? (
         <>

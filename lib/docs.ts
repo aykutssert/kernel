@@ -5,7 +5,7 @@ export async function getDocs(): Promise<DocMeta[]> {
   const supabase = await createClient()
   const { data } = await supabase
     .from('docs')
-    .select('id, title, slug, category, order_index, published')
+    .select('id, title, slug, category, order_index, published, tags')
     .eq('published', true)
     .order('category')
     .order('order_index')
@@ -43,6 +43,39 @@ export async function getAllCategories(): Promise<string[]> {
     .order('category')
   if (!data) return []
   return [...new Set(data.map((d) => d.category))]
+}
+
+export async function getAllDocsMeta(): Promise<Pick<Doc, 'id' | 'title' | 'slug' | 'category' | 'order_index'>[]> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('docs')
+    .select('id, title, slug, category, order_index')
+    .order('category')
+    .order('order_index')
+  return data ?? []
+}
+
+export async function getDocsByTag(tag: string): Promise<DocMeta[]> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('docs')
+    .select('id, title, slug, category, order_index, published, tags')
+    .eq('published', true)
+    .contains('tags', [tag])
+    .order('category')
+    .order('order_index')
+  return data ?? []
+}
+
+export async function getAllTags(): Promise<string[]> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('docs')
+    .select('tags')
+    .eq('published', true)
+  if (!data) return []
+  const all = data.flatMap((d) => d.tags ?? [])
+  return [...new Set(all)].sort()
 }
 
 export async function getAllDocParams(): Promise<{ category: string; slug: string }[]> {
