@@ -128,20 +128,41 @@ export default async function PetsPage({ searchParams }: Props) {
                   <ChevronLeft className="w-4 h-4" />
                 </Link>
 
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-                  <Link
-                    key={p}
-                    href={pageHref(p)}
-                    className={cn(
-                      'w-8 h-8 flex items-center justify-center rounded-lg text-sm transition-colors',
-                      p === page
-                        ? 'bg-foreground text-background font-medium'
-                        : 'hover:bg-muted text-muted-foreground hover:text-foreground'
-                    )}
-                  >
-                    {p}
-                  </Link>
-                ))}
+                {(() => {
+                  const items: (number | 'ellipsis')[] = []
+                  const delta = 2
+                  const range = new Set([
+                    1,
+                    totalPages,
+                    ...Array.from({ length: delta * 2 + 1 }, (_, i) => page - delta + i).filter(
+                      (p) => p >= 1 && p <= totalPages
+                    ),
+                  ])
+                  let prev: number | null = null
+                  for (const p of [...range].sort((a, b) => a - b)) {
+                    if (prev !== null && p - prev > 1) items.push('ellipsis')
+                    items.push(p)
+                    prev = p
+                  }
+                  return items.map((item, i) =>
+                    item === 'ellipsis' ? (
+                      <span key={`ellipsis-${i}`} className="w-8 h-8 flex items-center justify-center text-muted-foreground text-sm">…</span>
+                    ) : (
+                      <Link
+                        key={item}
+                        href={pageHref(item)}
+                        className={cn(
+                          'w-8 h-8 flex items-center justify-center rounded-lg text-sm transition-colors',
+                          item === page
+                            ? 'bg-foreground text-background font-medium'
+                            : 'hover:bg-muted text-muted-foreground hover:text-foreground'
+                        )}
+                      >
+                        {item}
+                      </Link>
+                    )
+                  )
+                })()}
 
                 <Link
                   href={pageHref(page + 1)}
