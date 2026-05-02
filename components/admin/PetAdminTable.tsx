@@ -2,27 +2,12 @@
 
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { Eye, Trash2 } from 'lucide-react'
+import { Eye, Pencil, Trash2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { Pet } from '@/lib/pets'
 
 export function PetAdminTable({ pets }: { pets: Pet[] }) {
   const router = useRouter()
-
-  async function handleTogglePublish(pet: Pet) {
-    await fetch('/api/pets/save', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        id: pet.id,
-        display_name: pet.display_name,
-        description: pet.description,
-        spritesheet_url: pet.spritesheet_url,
-        published: !pet.published,
-      }),
-    })
-    router.refresh()
-  }
 
   async function handleDelete(id: string, name: string) {
     if (!confirm(`Delete "${name}"? This cannot be undone.`)) return
@@ -51,17 +36,14 @@ export function PetAdminTable({ pets }: { pets: Pet[] }) {
               <td className="px-4 py-3 font-medium">{pet.display_name}</td>
               <td className="px-4 py-3 font-mono text-xs text-muted-foreground">{pet.id}</td>
               <td className="px-4 py-3">
-                <button
-                  onClick={() => handleTogglePublish(pet)}
-                  className={cn(
-                    'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium transition-opacity hover:opacity-70',
-                    pet.published
-                      ? 'bg-foreground text-background dark:bg-green-900/30 dark:text-green-400'
-                      : 'bg-muted text-muted-foreground'
-                  )}
-                >
+                <span className={cn(
+                  'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium',
+                  pet.published
+                    ? 'bg-foreground text-background dark:bg-green-900/30 dark:text-green-400'
+                    : 'bg-muted text-muted-foreground'
+                )}>
                   {pet.published ? 'Published' : 'Draft'}
-                </button>
+                </span>
               </td>
               <td className="px-4 py-3">
                 <div className="flex items-center gap-1 justify-end">
@@ -70,6 +52,12 @@ export function PetAdminTable({ pets }: { pets: Pet[] }) {
                     className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
                   >
                     <Eye className="w-3.5 h-3.5" />
+                  </Link>
+                  <Link
+                    href={`/admin/pets/edit/${pet.id}`}
+                    className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                  >
+                    <Pencil className="w-3.5 h-3.5" />
                   </Link>
                   <button
                     onClick={() => handleDelete(pet.id, pet.display_name)}
