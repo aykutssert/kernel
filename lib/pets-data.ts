@@ -24,6 +24,7 @@ export async function getPets(
     .from('pets')
     .select('*', { count: 'exact' })
     .eq('published', true)
+    .eq('is_nsfw', false)
     .order(orderCol, { ascending: false })
     .range(from, to)
 

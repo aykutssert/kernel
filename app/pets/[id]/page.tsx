@@ -16,7 +16,7 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params
   const supabase = createPublicClient()
-  const { data: pet } = await supabase.from('pets').select('display_name, description').eq('id', id).eq('published', true).single()
+  const { data: pet } = await supabase.from('pets').select('display_name, description').eq('id', id).eq('published', true).eq('is_nsfw', false).single()
   if (!pet) return {}
   return { title: pet.display_name, description: pet.description ?? undefined }
 }
@@ -25,7 +25,7 @@ export default async function PetPage({ params }: Props) {
   const { id } = await params
   const supabase = createPublicClient()
   const [petResult, docs] = await Promise.all([
-    supabase.from('pets').select('*').eq('id', id).eq('published', true).single(),
+    supabase.from('pets').select('*').eq('id', id).eq('published', true).eq('is_nsfw', false).single(),
     getDocs(),
   ])
   const pet = petResult.data as Pet | null

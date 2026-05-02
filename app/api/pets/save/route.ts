@@ -10,6 +10,7 @@ export async function POST(req: Request) {
     spritesheet_url: string
     source_url?: string
     published: boolean
+    is_nsfw: boolean
   }
 
   const supabase = createClient(
@@ -24,6 +25,7 @@ export async function POST(req: Request) {
     spritesheet_url: body.spritesheet_url,
     source_url: body.source_url || null,
     published: body.published,
+    is_nsfw: body.is_nsfw,
   })
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })

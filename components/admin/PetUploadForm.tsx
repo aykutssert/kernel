@@ -23,6 +23,7 @@ export function PetUploadForm() {
   const [description, setDescription] = useState('')
   const [sourceUrl, setSourceUrl] = useState('')
   const [published, setPublished] = useState(false)
+  const [isNsfw, setIsNsfw] = useState(false)
   const [jsonError, setJsonError] = useState('')
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
@@ -78,6 +79,7 @@ export function PetUploadForm() {
         spritesheet_url: uploadData.url,
         source_url: sourceUrl,
         published,
+        is_nsfw: isNsfw,
       }),
     })
     const saveData = await saveRes.json()
@@ -167,7 +169,7 @@ export function PetUploadForm() {
         </>
       )}
 
-      <div className="flex items-center justify-between pt-2">
+      <div className="flex items-center gap-6 pt-2">
         <label className="flex items-center gap-2 cursor-pointer select-none">
           <div
             onClick={() => setPublished((p) => !p)}
@@ -177,6 +179,19 @@ export function PetUploadForm() {
           </div>
           <span className="text-sm">Published</span>
         </label>
+        <label className="flex items-center gap-2 cursor-pointer select-none">
+          <div
+            onClick={() => setIsNsfw((p) => !p)}
+            className={`relative w-10 h-5 rounded-full transition-colors ${isNsfw ? 'bg-red-500' : 'bg-muted border border-border'}`}
+          >
+            <span className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-background shadow transition-transform ${isNsfw ? 'translate-x-5' : ''}`} />
+          </div>
+          <span className="text-sm">NSFW</span>
+        </label>
+      </div>
+      <div className="flex items-center justify-between pt-2">
+        <div />
+
 
         <div className="flex items-center gap-3">
           {error && <p className="text-sm text-red-500">{error}</p>}

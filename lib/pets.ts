@@ -23,6 +23,7 @@ export interface Pet {
   spritesheet_url: string
   source_url: string | null
   published: boolean
+  is_nsfw: boolean
   likes_count: number
   created_at: string
 }
