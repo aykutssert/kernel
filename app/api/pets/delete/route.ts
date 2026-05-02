@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { revalidateTag } from 'next/cache'
 import { createClient } from '@supabase/supabase-js'
 
 export async function DELETE(req: Request) {
@@ -12,5 +13,6 @@ export async function DELETE(req: Request) {
   await supabase.storage.from('kernel').remove([`pets/${id}/spritesheet.webp`])
   await supabase.from('pets').delete().eq('id', id)
 
+  revalidateTag('pets', 'max')
   return NextResponse.json({ ok: true })
 }

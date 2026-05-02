@@ -1,46 +1,17 @@
 import Link from 'next/link'
 import { Suspense } from 'react'
-import { createPublicClient } from '@/lib/supabase/server'
 import { Navbar } from '@/components/layout/Navbar'
 import { CategoryTabs } from '@/components/layout/CategoryTabs'
 import { PetCardCanvas } from '@/components/pets/PetCardCanvas'
 import { PetsSearchBar } from '@/components/pets/PetsSearchBar'
 import { PetsSortTabs } from '@/components/pets/PetsSortTabs'
 import { getDocs } from '@/lib/docs'
+import { getPets, PER_PAGE } from '@/lib/pets-data'
 import { ChevronLeft, ChevronRight, Download, ExternalLink, Heart } from 'lucide-react'
 import { LikeButton } from '@/components/pets/LikeButton'
 import { cn } from '@/lib/utils'
 import type { Pet } from '@/lib/pets'
 
-const PER_PAGE = 12
-
-async function getPets(page: number, q: string, sort: string): Promise<{ pets: Pet[]; total: number; totalLikes: number }> {
-  const supabase = createPublicClient()
-  const from = (page - 1) * PER_PAGE
-  const to = from + PER_PAGE - 1
-
-  const orderCol = sort === 'liked' ? 'likes_count' : 'created_at'
-
-  let query = supabase
-    .from('pets')
-    .select('*', { count: 'exact' })
-    .eq('published', true)
-    .order(orderCol, { ascending: false })
-    .range(from, to)
-
-  if (q) {
-    const safe = q.replace(/[%_\\]/g, '\\$&')
-    query = query.or(`display_name.ilike.%${safe}%,description.ilike.%${safe}%`)
-  }
-
-  const [{ data, count }, { data: likesData }] = await Promise.all([
-    query,
-    supabase.from('pets').select('likes_count').eq('published', true),
-  ])
-
-  const totalLikes = (likesData ?? []).reduce((sum, p) => sum + (p.likes_count ?? 0), 0)
-  return { pets: data ?? [], total: count ?? 0, totalLikes }
-}
 
 interface Props {
   searchParams: Promise<{ page?: string; q?: string; sort?: string }>
