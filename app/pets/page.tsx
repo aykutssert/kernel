@@ -6,7 +6,7 @@ import { CategoryTabs } from '@/components/layout/CategoryTabs'
 import { PetCardCanvas } from '@/components/pets/PetCardCanvas'
 import { PetsSearchBar } from '@/components/pets/PetsSearchBar'
 import { getDocs } from '@/lib/docs'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Download, ExternalLink } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { Pet } from '@/lib/pets'
 
@@ -85,19 +85,34 @@ export default async function PetsPage({ searchParams }: Props) {
           <>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
               {pets.map((pet) => (
-                <Link
-                  key={pet.id}
-                  href={`/pets/${pet.id}`}
-                  className="group border border-border rounded-xl overflow-hidden hover:border-foreground/30 transition-colors bg-background"
-                >
-                  <PetCardCanvas spritesheetUrl={pet.spritesheet_url} size={140} />
-                  <div className="p-3">
-                    <p className="text-sm font-medium truncate">{pet.display_name}</p>
+                <div key={pet.id} className="border border-border rounded-xl overflow-hidden bg-background flex flex-col">
+                  <Link href={`/pets/${pet.id}`} className="block hover:opacity-90 transition-opacity">
+                    <PetCardCanvas spritesheetUrl={pet.spritesheet_url} size={140} />
+                  </Link>
+                  <div className="px-3 pt-3 pb-2 flex-1 flex flex-col">
+                    <p className="text-sm font-semibold truncate">{pet.display_name}</p>
                     {pet.description && (
-                      <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">{pet.description}</p>
+                      <p className="text-xs text-muted-foreground mt-1 line-clamp-2 leading-relaxed flex-1">{pet.description}</p>
                     )}
                   </div>
-                </Link>
+                  <div className="border-t border-border flex">
+                    <Link
+                      href={`/pets/${pet.id}`}
+                      className="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+                    >
+                      <ExternalLink className="w-3.5 h-3.5" />
+                      View
+                    </Link>
+                    <div className="w-px bg-border" />
+                    <a
+                      href={`/api/pets/download?id=${pet.id}`}
+                      className="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+                    >
+                      <Download className="w-3.5 h-3.5" />
+                      Download
+                    </a>
+                  </div>
+                </div>
               ))}
             </div>
 
