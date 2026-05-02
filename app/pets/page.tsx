@@ -5,23 +5,27 @@ import { Navbar } from '@/components/layout/Navbar'
 import { CategoryTabs } from '@/components/layout/CategoryTabs'
 import { PetCardCanvas } from '@/components/pets/PetCardCanvas'
 import { PetsSearchBar } from '@/components/pets/PetsSearchBar'
+import { PetsSortTabs } from '@/components/pets/PetsSortTabs'
 import { getDocs } from '@/lib/docs'
-import { ChevronLeft, ChevronRight, Download, ExternalLink } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Download, ExternalLink, Heart } from 'lucide-react'
+import { LikeButton } from '@/components/pets/LikeButton'
 import { cn } from '@/lib/utils'
 import type { Pet } from '@/lib/pets'
 
 const PER_PAGE = 12
 
-async function getPets(page: number, q: string): Promise<{ pets: Pet[]; total: number }> {
+async function getPets(page: number, q: string, sort: string): Promise<{ pets: Pet[]; total: number; totalLikes: number }> {
   const supabase = createPublicClient()
   const from = (page - 1) * PER_PAGE
   const to = from + PER_PAGE - 1
+
+  const orderCol = sort === 'liked' ? 'likes_count' : 'created_at'
 
   let query = supabase
     .from('pets')
     .select('*', { count: 'exact' })
     .eq('published', true)
-    .order('created_at', { ascending: false })
+    .order(orderCol, { ascending: false })
     .range(from, to)
 
   if (q) {
@@ -29,19 +33,25 @@ async function getPets(page: number, q: string): Promise<{ pets: Pet[]; total: n
     query = query.or(`display_name.ilike.%${safe}%,description.ilike.%${safe}%`)
   }
 
-  const { data, count } = await query
-  return { pets: data ?? [], total: count ?? 0 }
+  const [{ data, count }, { data: likesData }] = await Promise.all([
+    query,
+    supabase.from('pets').select('likes_count').eq('published', true),
+  ])
+
+  const totalLikes = (likesData ?? []).reduce((sum, p) => sum + (p.likes_count ?? 0), 0)
+  return { pets: data ?? [], total: count ?? 0, totalLikes }
 }
 
 interface Props {
-  searchParams: Promise<{ page?: string; q?: string }>
+  searchParams: Promise<{ page?: string; q?: string; sort?: string }>
 }
 
 export default async function PetsPage({ searchParams }: Props) {
-  const { page: pageParam, q = '' } = await searchParams
+  const { page: pageParam, q = '', sort = 'newest' } = await searchParams
   const page = Math.max(1, parseInt(pageParam ?? '1') || 1)
+  const sortVal = sort === 'liked' ? 'liked' : 'newest'
 
-  const [{ pets, total }, docs] = await Promise.all([getPets(page, q), getDocs()])
+  const [{ pets, total, totalLikes }, docs] = await Promise.all([getPets(page, q, sortVal), getDocs()])
 
   const totalPages = Math.ceil(total / PER_PAGE)
   const hasPrev = page > 1
@@ -50,6 +60,7 @@ export default async function PetsPage({ searchParams }: Props) {
   function pageHref(p: number) {
     const params = new URLSearchParams()
     if (q) params.set('q', q)
+    if (sortVal !== 'newest') params.set('sort', sortVal)
     params.set('page', String(p))
     return `/pets?${params.toString()}`
   }
@@ -65,15 +76,26 @@ export default async function PetsPage({ searchParams }: Props) {
             <p className="text-sm text-muted-foreground">Pixel-art companion sprites generated with OpenAI Codex.</p>
           </div>
           {total > 0 && (
-            <p className="text-xs text-muted-foreground shrink-0">
-              {total} pet{total !== 1 ? 's' : ''}{totalPages > 1 ? ` · Page ${page} / ${totalPages}` : ''}
-            </p>
+            <div className="flex items-center gap-3 shrink-0">
+              {totalLikes > 0 && (
+                <span className="inline-flex items-center gap-1 text-xs text-rose-500">
+                  <Heart className="w-3.5 h-3.5 fill-rose-500" />
+                  {totalLikes.toLocaleString()}
+                </span>
+              )}
+              <p className="text-xs text-muted-foreground">
+                {total} pet{total !== 1 ? 's' : ''}{totalPages > 1 ? ` · Page ${page} / ${totalPages}` : ''}
+              </p>
+            </div>
           )}
         </div>
 
-        <div className="mb-8">
+        <div className="flex flex-col gap-3 mb-8">
           <Suspense>
             <PetsSearchBar defaultValue={q} />
+          </Suspense>
+          <Suspense>
+            <PetsSortTabs defaultSort={sortVal} />
           </Suspense>
         </div>
 
@@ -90,12 +112,18 @@ export default async function PetsPage({ searchParams }: Props) {
                     <PetCardCanvas spritesheetUrl={pet.spritesheet_url} size={140} />
                   </Link>
                   <div className="px-3 pt-3 pb-3 flex-1 flex flex-col">
-                    <p className="text-sm font-semibold truncate">{pet.display_name}</p>
+                    <div className="flex items-center justify-between gap-1 mb-0.5">
+                      <p className="text-sm font-semibold truncate">{pet.display_name}</p>
+                      <span className="inline-flex items-center gap-1 text-xs text-muted-foreground shrink-0">
+                        <Heart className={cn('w-3 h-3', pet.likes_count > 0 ? 'fill-rose-500 text-rose-500' : 'text-muted-foreground')} />
+                        {pet.likes_count}
+                      </span>
+                    </div>
                     {pet.description && (
                       <p className="text-xs text-muted-foreground mt-1 line-clamp-2 leading-relaxed flex-1">{pet.description}</p>
                     )}
                   </div>
-                  <div className="px-3 pb-3 flex gap-2">
+                  <div className="px-3 pb-3 flex flex-wrap gap-2">
                     <Link
                       href={`/pets/${pet.id}`}
                       className="flex-1 flex items-center justify-center gap-1.5 py-1.5 text-xs font-medium border border-foreground/15 rounded-lg text-muted-foreground hover:text-foreground hover:border-foreground/40 transition-colors"
@@ -103,9 +131,10 @@ export default async function PetsPage({ searchParams }: Props) {
                       <ExternalLink className="w-3.5 h-3.5" />
                       View
                     </Link>
+                    <LikeButton petId={pet.id} initialCount={pet.likes_count} compact />
                     <a
                       href={`/api/pets/download?id=${pet.id}`}
-                      className="flex-1 flex items-center justify-center gap-1.5 py-1.5 text-xs font-medium border border-foreground/15 rounded-lg text-muted-foreground hover:text-foreground hover:border-foreground/40 transition-colors"
+                      className="w-full sm:flex-1 flex items-center justify-center gap-1.5 py-1.5 text-xs font-medium border border-foreground/15 rounded-lg text-muted-foreground hover:text-foreground hover:border-foreground/40 transition-colors"
                     >
                       <Download className="w-3.5 h-3.5" />
                       Download

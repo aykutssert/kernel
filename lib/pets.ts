@@ -21,7 +21,9 @@ export interface Pet {
   display_name: string
   description: string | null
   spritesheet_url: string
+  source_url: string | null
   published: boolean
+  likes_count: number
   created_at: string
 }
 

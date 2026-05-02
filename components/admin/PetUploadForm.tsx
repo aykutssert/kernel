@@ -21,6 +21,7 @@ export function PetUploadForm() {
   const [spritePreview, setSpritePreview] = useState('')
   const [displayName, setDisplayName] = useState('')
   const [description, setDescription] = useState('')
+  const [sourceUrl, setSourceUrl] = useState('')
   const [published, setPublished] = useState(false)
   const [jsonError, setJsonError] = useState('')
   const [saving, setSaving] = useState(false)
@@ -75,6 +76,7 @@ export function PetUploadForm() {
         display_name: displayName,
         description,
         spritesheet_url: uploadData.url,
+        source_url: sourceUrl,
         published,
       }),
     })
@@ -148,6 +150,18 @@ export function PetUploadForm() {
               onChange={(e) => setDescription(e.target.value)}
               rows={3}
               className="w-full px-3 py-2 text-sm border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-ring resize-none"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1.5">
+              Source URL <span className="text-muted-foreground font-normal">(optional)</span>
+            </label>
+            <input
+              type="url"
+              value={sourceUrl}
+              onChange={(e) => setSourceUrl(e.target.value)}
+              placeholder="https://"
+              className="w-full px-3 py-2 text-sm border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-ring"
             />
           </div>
         </>

@@ -7,6 +7,7 @@ export async function POST(req: Request) {
     display_name: string
     description: string
     spritesheet_url: string
+    source_url?: string
     published: boolean
   }
 
@@ -20,6 +21,7 @@ export async function POST(req: Request) {
     display_name: body.display_name,
     description: body.description,
     spritesheet_url: body.spritesheet_url,
+    source_url: body.source_url || null,
     published: body.published,
   })
 

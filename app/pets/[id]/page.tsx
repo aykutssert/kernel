@@ -5,7 +5,8 @@ import { Navbar } from '@/components/layout/Navbar'
 import { CategoryTabs } from '@/components/layout/CategoryTabs'
 import { PetViewer } from '@/components/pets/PetViewer'
 import { getDocs } from '@/lib/docs'
-import { Download } from 'lucide-react'
+import { Download, ExternalLink } from 'lucide-react'
+import { LikeButton } from '@/components/pets/LikeButton'
 import type { Pet } from '@/lib/pets'
 
 interface Props {
@@ -43,20 +44,34 @@ export default async function PetPage({ params }: Props) {
             {pet.description && (
               <p className="text-muted-foreground mb-8 leading-relaxed">{pet.description}</p>
             )}
-            <a
-              href={`/api/pets/download?id=${pet.id}`}
-              className="inline-flex items-center gap-2 px-4 py-2.5 bg-foreground text-background rounded-lg text-sm font-medium hover:opacity-90 transition-opacity"
-            >
-              <Download className="w-4 h-4" />
-              Download .codex-pet
-            </a>
+            <div className="flex items-center gap-3">
+              <a
+                href={`/api/pets/download?id=${pet.id}`}
+                className="inline-flex items-center gap-2 px-4 py-2.5 bg-foreground text-background rounded-lg text-sm font-medium hover:opacity-90 transition-opacity"
+              >
+                <Download className="w-4 h-4" />
+                Download .codex-pet
+              </a>
+              <LikeButton petId={pet.id} initialCount={pet.likes_count ?? 0} showCount />
+            </div>
             <p className="text-xs text-muted-foreground mt-2">
               Includes <code>pet.json</code> + <code>spritesheet.webp</code>
             </p>
+            {pet.source_url && (
+              <a
+                href={pet.source_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 mt-4 text-xs text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <ExternalLink className="w-3.5 h-3.5" />
+                Source
+              </a>
+            )}
           </div>
 
           {/* Right: animated viewer */}
-          <div className="shrink-0">
+          <div className="w-full flex justify-center md:w-auto md:block md:shrink-0">
             <PetViewer spritesheetUrl={pet.spritesheet_url} size={256} />
           </div>
         </div>

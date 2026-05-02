@@ -101,6 +101,13 @@ export function DocForm({ doc, categories, allDocs }: DocFormProps) {
     setSaving(true)
     setError('')
 
+    const duplicate = allDocs.find((d) => d.slug === slug && d.id !== doc?.id)
+    if (duplicate) {
+      setError(`"${slug}" slug'ı zaten kullanımda.`)
+      setSaving(false)
+      return
+    }
+
     const payload = {
       title,
       category: effectiveCategory,

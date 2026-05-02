@@ -9,6 +9,7 @@ export function PetEditForm({ pet }: { pet: Pet }) {
   const router = useRouter()
   const [displayName, setDisplayName] = useState(pet.display_name)
   const [description, setDescription] = useState(pet.description ?? '')
+  const [sourceUrl, setSourceUrl] = useState(pet.source_url ?? '')
   const [published, setPublished] = useState(pet.published)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
@@ -24,6 +25,7 @@ export function PetEditForm({ pet }: { pet: Pet }) {
         display_name: displayName,
         description,
         spritesheet_url: pet.spritesheet_url,
+        source_url: sourceUrl,
         published,
       }),
     })
@@ -52,6 +54,18 @@ export function PetEditForm({ pet }: { pet: Pet }) {
             onChange={(e) => setDescription(e.target.value)}
             rows={3}
             className="w-full px-3 py-2 text-sm border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-ring resize-none"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium mb-1.5">
+            Source URL <span className="text-muted-foreground font-normal">(optional)</span>
+          </label>
+          <input
+            type="url"
+            value={sourceUrl}
+            onChange={(e) => setSourceUrl(e.target.value)}
+            placeholder="https://"
+            className="w-full px-3 py-2 text-sm border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-ring"
           />
         </div>
         <div>
