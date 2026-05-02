@@ -60,25 +60,27 @@ export function PetCardCanvas({ spritesheetUrl, size = 140 }: PetCardCanvasProps
   const h = Math.round(CELL_HEIGHT * (size / CELL_WIDTH))
 
   return (
-    <div
-      className="flex items-center justify-center w-full"
-      style={{
-        height: h,
-        backgroundImage:
-          'repeating-conic-gradient(var(--checker-a) 0% 25%, var(--checker-b) 0% 50%)',
-        backgroundSize: '16px 16px',
-      }}
-    >
-      <canvas
-        ref={canvasRef}
-        width={CELL_WIDTH}
-        height={CELL_HEIGHT}
+    <div className="flex items-center justify-center w-full py-4 bg-muted/20">
+      <div
         style={{
-          imageRendering: 'pixelated',
           width: size,
           height: h,
+          backgroundImage:
+            'repeating-conic-gradient(var(--checker-a) 0% 25%, var(--checker-b) 0% 50%)',
+          backgroundSize: '12px 12px',
         }}
-      />
+      >
+        <canvas
+          ref={canvasRef}
+          width={CELL_WIDTH}
+          height={CELL_HEIGHT}
+          style={{
+            imageRendering: 'pixelated',
+            width: size,
+            height: h,
+          }}
+        />
+      </div>
     </div>
   )
 }
