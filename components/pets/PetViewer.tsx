@@ -67,8 +67,13 @@ export function PetViewer({ spritesheetUrl, size = 192 }: PetViewerProps) {
   return (
     <div className="flex flex-col items-center gap-6">
       <div
-        className="rounded-xl border border-border bg-muted/30 flex items-center justify-center overflow-hidden"
-        style={{ width: size, height: Math.round(CELL_HEIGHT * scale) }}
+        className="rounded-xl border border-border flex items-center justify-center overflow-hidden"
+        style={{
+          width: size,
+          height: Math.round(CELL_HEIGHT * scale),
+          backgroundImage: 'repeating-conic-gradient(var(--checker-a) 0% 25%, var(--checker-b) 0% 50%)',
+          backgroundSize: '16px 16px',
+        }}
       >
         <canvas
           ref={canvasRef}
