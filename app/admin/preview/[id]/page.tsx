@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation'
+import { Suspense } from 'react'
 import Link from 'next/link'
 import { createPublicClient } from '@/lib/supabase/server'
 import { getDocs } from '@/lib/docs'
@@ -19,7 +20,7 @@ async function getDocById(id: string): Promise<Doc | null> {
   return data ?? null
 }
 
-export default async function AdminPreviewPage({ params }: Props) {
+async function PreviewContent({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const [doc, docs] = await Promise.all([getDocById(id), getDocs()])
 
@@ -87,5 +88,13 @@ export default async function AdminPreviewPage({ params }: Props) {
         </aside>
       </div>
     </div>
+  )
+}
+
+export default function AdminPreviewPage({ params }: Props) {
+  return (
+    <Suspense fallback={<div className="h-8 w-48 bg-muted animate-pulse rounded-lg m-8" />}>
+      <PreviewContent params={params} />
+    </Suspense>
   )
 }

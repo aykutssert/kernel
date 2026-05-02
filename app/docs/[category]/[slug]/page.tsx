@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation'
+import { Suspense } from 'react'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Sidebar } from '@/components/layout/Sidebar'
@@ -9,19 +10,11 @@ import { DocContent } from '@/components/docs/DocContent'
 import { CopyPageButton } from '@/components/docs/CopyPageButton'
 import { CopyCodeButton } from '@/components/docs/CopyCodeButton'
 import { Navbar } from '@/components/layout/Navbar'
-import { getDocs, getDoc, getAllDocParams } from '@/lib/docs'
+import { getDocs, getDoc } from '@/lib/docs'
 import { ExternalLink, ChevronLeft, ChevronRight } from 'lucide-react'
 
 interface Props {
   params: Promise<{ category: string; slug: string }>
-}
-
-export async function generateStaticParams() {
-  try {
-    return await getAllDocParams()
-  } catch {
-    return []
-  }
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -46,7 +39,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-export default async function DocPage({ params }: Props) {
+async function DocPageContent({ params }: { params: Promise<{ category: string; slug: string }> }) {
   const { category, slug } = await params
   const [doc, docs] = await Promise.all([getDoc(category, slug), getDocs()])
 
@@ -196,5 +189,13 @@ export default async function DocPage({ params }: Props) {
         </aside>
       </div>
     </div>
+  )
+}
+
+export default function DocPage({ params }: Props) {
+  return (
+    <Suspense fallback={<div className="min-h-screen" />}>
+      <DocPageContent params={params} />
+    </Suspense>
   )
 }

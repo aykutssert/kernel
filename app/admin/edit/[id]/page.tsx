@@ -15,7 +15,8 @@ async function getDocById(id: string): Promise<Doc | null> {
   return data ?? null
 }
 
-async function EditDocContent({ id }: { id: string }) {
+async function EditDocContent({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   const [doc, categories, allDocs] = await Promise.all([
     getDocById(id),
     getAllCategories(),
@@ -32,11 +33,10 @@ async function EditDocContent({ id }: { id: string }) {
   )
 }
 
-export default async function EditDocPage({ params }: Props) {
-  const { id } = await params
+export default function EditDocPage({ params }: Props) {
   return (
     <Suspense fallback={<div className="h-8 w-48 bg-muted animate-pulse rounded-lg" />}>
-      <EditDocContent id={id} />
+      <EditDocContent params={params} />
     </Suspense>
   )
 }

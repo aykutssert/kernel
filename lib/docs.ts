@@ -5,7 +5,7 @@ import type { Doc, DocMeta } from '@/types'
 export async function getDocs(): Promise<DocMeta[]> {
   'use cache'
   cacheTag('docs')
-  cacheLife('hours')
+  cacheLife('max')
   const supabase = createPublicClient()
   const { data } = await supabase
     .from('docs')
@@ -19,7 +19,7 @@ export async function getDocs(): Promise<DocMeta[]> {
 export async function getDoc(category: string, slug: string): Promise<Doc | null> {
   'use cache'
   cacheTag('docs', `doc-${category}-${slug}`)
-  cacheLife('hours')
+  cacheLife('max')
   const supabase = createPublicClient()
   const { data } = await supabase
     .from('docs')
@@ -34,7 +34,7 @@ export async function getDoc(category: string, slug: string): Promise<Doc | null
 export async function getCategories(): Promise<string[]> {
   'use cache'
   cacheTag('docs')
-  cacheLife('hours')
+  cacheLife('max')
   const supabase = createPublicClient()
   const { data } = await supabase
     .from('docs')
@@ -48,7 +48,7 @@ export async function getCategories(): Promise<string[]> {
 export async function getAllCategories(): Promise<string[]> {
   'use cache'
   cacheTag('docs')
-  cacheLife('hours')
+  cacheLife('max')
   const supabase = createPublicClient()
   const { data } = await supabase
     .from('docs')
@@ -61,7 +61,7 @@ export async function getAllCategories(): Promise<string[]> {
 export async function getAllDocsMeta(): Promise<Pick<Doc, 'id' | 'title' | 'slug' | 'category' | 'order_index'>[]> {
   'use cache'
   cacheTag('docs')
-  cacheLife('hours')
+  cacheLife('max')
   const supabase = createPublicClient()
   const { data } = await supabase
     .from('docs')
@@ -74,7 +74,7 @@ export async function getAllDocsMeta(): Promise<Pick<Doc, 'id' | 'title' | 'slug
 export async function getDocsByTag(tag: string): Promise<DocMeta[]> {
   'use cache'
   cacheTag('docs', `tag-${tag}`)
-  cacheLife('hours')
+  cacheLife('max')
   const supabase = createPublicClient()
   const { data } = await supabase
     .from('docs')
@@ -89,7 +89,7 @@ export async function getDocsByTag(tag: string): Promise<DocMeta[]> {
 export async function getAllTags(): Promise<string[]> {
   'use cache'
   cacheTag('docs')
-  cacheLife('hours')
+  cacheLife('max')
   const supabase = createPublicClient()
   const { data } = await supabase
     .from('docs')
@@ -103,7 +103,7 @@ export async function getAllTags(): Promise<string[]> {
 export async function getAllDocParams(): Promise<{ category: string; slug: string }[]> {
   'use cache'
   cacheTag('docs')
-  cacheLife('hours')
+  cacheLife('max')
   const supabase = createPublicClient()
   const { data } = await supabase
     .from('docs')

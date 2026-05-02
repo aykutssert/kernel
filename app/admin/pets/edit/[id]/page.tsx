@@ -8,7 +8,8 @@ interface Props {
   params: Promise<{ id: string }>
 }
 
-async function EditPetContent({ id }: { id: string }) {
+async function EditPetContent({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   const supabase = createSupabaseClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -24,11 +25,10 @@ async function EditPetContent({ id }: { id: string }) {
   )
 }
 
-export default async function EditPetPage({ params }: Props) {
-  const { id } = await params
+export default function EditPetPage({ params }: Props) {
   return (
     <Suspense fallback={<div className="h-8 w-48 bg-muted animate-pulse rounded-lg" />}>
-      <EditPetContent id={id} />
+      <EditPetContent params={params} />
     </Suspense>
   )
 }

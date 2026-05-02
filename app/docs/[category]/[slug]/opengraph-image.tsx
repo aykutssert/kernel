@@ -14,8 +14,6 @@ export default async function Image({
   const doc = await getDoc(category, slug)
 
   if (doc?.image_url) {
-    const res = await fetch(doc.image_url)
-    const buf = await res.arrayBuffer()
     return new ImageResponse(
       (
         <div style={{ display: 'flex', width: '100%', height: '100%' }}>

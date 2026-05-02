@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation'
+import { Suspense } from 'react'
 import type { Metadata } from 'next'
 import { createPublicClient } from '@/lib/supabase/server'
 import { Navbar } from '@/components/layout/Navbar'
@@ -27,7 +28,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-export default async function PetPage({ params }: Props) {
+async function PetPageContent({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const supabase = createPublicClient()
   const [petResult, docs] = await Promise.all([
@@ -84,5 +85,13 @@ export default async function PetPage({ params }: Props) {
         </div>
       </main>
     </div>
+  )
+}
+
+export default function PetPage({ params }: Props) {
+  return (
+    <Suspense fallback={<div className="min-h-screen" />}>
+      <PetPageContent params={params} />
+    </Suspense>
   )
 }

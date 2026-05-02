@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation'
+import { Suspense } from 'react'
 import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 import { PetViewer } from '@/components/pets/PetViewer'
 import type { Pet } from '@/lib/pets'
@@ -7,7 +8,7 @@ interface Props {
   params: Promise<{ id: string }>
 }
 
-export default async function PreviewPetPage({ params }: Props) {
+async function PreviewPetContent({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const supabase = createSupabaseClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -27,5 +28,13 @@ export default async function PreviewPetPage({ params }: Props) {
       {pet.description && <p className="text-muted-foreground mb-8">{pet.description}</p>}
       <PetViewer spritesheetUrl={pet.spritesheet_url} size={256} />
     </div>
+  )
+}
+
+export default function PreviewPetPage({ params }: Props) {
+  return (
+    <Suspense fallback={<div className="h-8 w-48 bg-muted animate-pulse rounded-lg m-8" />}>
+      <PreviewPetContent params={params} />
+    </Suspense>
   )
 }
