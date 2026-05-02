@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { createPublicClient } from '@/lib/supabase/server'
 import { Navbar } from '@/components/layout/Navbar'
 import { CategoryTabs } from '@/components/layout/CategoryTabs'
+import { PetCardCanvas } from '@/components/pets/PetCardCanvas'
 import { getDocs } from '@/lib/docs'
 import type { Pet } from '@/lib/pets'
 
@@ -33,14 +34,7 @@ export default async function PetsPage() {
                 href={`/pets/${pet.id}`}
                 className="group border border-border rounded-xl overflow-hidden hover:border-foreground/30 transition-colors bg-background"
               >
-                <div className="aspect-square bg-muted/30 flex items-center justify-center overflow-hidden">
-                  <img
-                    src={pet.spritesheet_url}
-                    alt={pet.display_name}
-                    className="w-[192px] h-[208px] object-none object-left-top"
-                    style={{ imageRendering: 'pixelated' }}
-                  />
-                </div>
+                <PetCardCanvas spritesheetUrl={pet.spritesheet_url} size={140} />
                 <div className="p-3">
                   <p className="text-sm font-medium truncate">{pet.display_name}</p>
                   {pet.description && (

@@ -4,6 +4,8 @@
 
 @layer base {
   :root {
+    --checker-a: #e0e0e0;
+    --checker-b: #f5f5f5;
     --background: 60 60% 98%;
     --foreground: 240 10% 3.9%;
     --card: 60 60% 98%;
@@ -29,6 +31,8 @@
   }
 
   .dark {
+    --checker-a: #2a2a2a;
+    --checker-b: #1e1e1e;
     --background: 240 5% 4%;
     --foreground: 0 0% 98%;
     --card: 240 7% 5.9%;
