@@ -7,6 +7,7 @@ import { PetViewer } from '@/components/pets/PetViewer'
 import { getDocs } from '@/lib/docs'
 import { Download, ExternalLink } from 'lucide-react'
 import { LikeButton } from '@/components/pets/LikeButton'
+import { CurlCommand } from '@/components/pets/CurlCommand'
 import type { Pet } from '@/lib/pets'
 
 interface Props {
@@ -68,6 +69,7 @@ export default async function PetPage({ params }: Props) {
                 Source
               </a>
             )}
+            <CurlCommand petId={pet.id} />
           </div>
 
           {/* Right: animated viewer */}
