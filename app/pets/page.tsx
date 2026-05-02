@@ -1,6 +1,8 @@
 import Link from 'next/link'
 import { createPublicClient } from '@/lib/supabase/server'
 import { Navbar } from '@/components/layout/Navbar'
+import { CategoryTabs } from '@/components/layout/CategoryTabs'
+import { getDocs } from '@/lib/docs'
 import type { Pet } from '@/lib/pets'
 
 async function getPublishedPets(): Promise<Pet[]> {
@@ -10,11 +12,12 @@ async function getPublishedPets(): Promise<Pet[]> {
 }
 
 export default async function PetsPage() {
-  const pets = await getPublishedPets()
+  const [pets, docs] = await Promise.all([getPublishedPets(), getDocs()])
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Navbar />
+      <Navbar docs={docs} />
+      <CategoryTabs docs={docs} />
       <main className="flex-1 max-w-[1400px] mx-auto w-full px-4 md:px-0 py-12">
         <div className="mb-8">
           <h1 className="text-2xl font-bold tracking-tight mb-2">Codex Pets</h1>

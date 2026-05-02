@@ -2,7 +2,9 @@ import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { createPublicClient } from '@/lib/supabase/server'
 import { Navbar } from '@/components/layout/Navbar'
+import { CategoryTabs } from '@/components/layout/CategoryTabs'
 import { PetViewer } from '@/components/pets/PetViewer'
+import { getDocs } from '@/lib/docs'
 import { Download } from 'lucide-react'
 import type { Pet } from '@/lib/pets'
 
@@ -21,12 +23,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function PetPage({ params }: Props) {
   const { id } = await params
   const supabase = createPublicClient()
-  const { data: pet } = await supabase.from('pets').select('*').eq('id', id).eq('published', true).single() as { data: Pet | null }
+  const [petResult, docs] = await Promise.all([
+    supabase.from('pets').select('*').eq('id', id).eq('published', true).single(),
+    getDocs(),
+  ])
+  const pet = petResult.data as Pet | null
   if (!pet) notFound()
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Navbar />
+      <Navbar docs={docs} />
+      <CategoryTabs docs={docs} />
       <main className="flex-1 max-w-[900px] mx-auto w-full px-4 md:px-0 py-12">
         <div className="flex flex-col md:flex-row gap-12 items-start">
           {/* Left: info + download */}

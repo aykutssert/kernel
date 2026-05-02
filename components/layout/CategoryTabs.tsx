@@ -10,14 +10,27 @@ export function CategoryTabs({ docs }: { docs: DocMeta[] }) {
 
   const categories = Array.from(new Set(docs.map((d) => d.category)))
 
-  const activeCategory = categories.find((cat) =>
-    pathname.startsWith(`/docs/${cat}`)
-  )
+  const isPets = pathname.startsWith('/pets')
+  const activeCategory = isPets ? null : categories.find((cat) => pathname.startsWith(`/docs/${cat}`))
 
   return (
     <div className="bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-[57px] z-40 border-b">
       <div className="max-w-[1400px] mx-auto w-full px-4 md:px-0">
         <nav className="flex overflow-x-auto scrollbar-none gap-x-6 h-12">
+          <Link
+            href="/pets"
+            className={cn(
+              'group relative h-full flex items-center text-sm font-medium transition-colors whitespace-nowrap shrink-0',
+              isPets ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'
+            )}
+          >
+            Pets
+            <div className={cn(
+              'absolute bottom-0 left-0 w-full h-[1.5px] transition-colors',
+              isPets ? 'bg-foreground dark:bg-[#D5A27F]' : 'bg-transparent group-hover:bg-border'
+            )} />
+          </Link>
+
           {categories.map((cat) => {
             const firstDoc = docs.find((d) => d.category === cat)
             if (!firstDoc) return null
@@ -29,17 +42,13 @@ export function CategoryTabs({ docs }: { docs: DocMeta[] }) {
                 href={href}
                 className={cn(
                   'group relative h-full flex items-center text-sm font-medium transition-colors whitespace-nowrap capitalize shrink-0',
-                  active
-                    ? 'text-foreground'
-                    : 'text-muted-foreground hover:text-foreground'
+                  active ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'
                 )}
               >
                 {cat}
                 <div className={cn(
                   'absolute bottom-0 left-0 w-full h-[1.5px] transition-colors',
-                  active
-                    ? ' bg-foreground dark:bg-[#D5A27F]'
-                    : 'bg-transparent group-hover:bg-border'
+                  active ? 'bg-foreground dark:bg-[#D5A27F]' : 'bg-transparent group-hover:bg-border'
                 )} />
               </Link>
             )
