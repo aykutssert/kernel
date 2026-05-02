@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { Suspense } from 'react'
 import { createClient } from '@/lib/supabase/server'
 import { DocTable } from '@/components/admin/DocTable'
 import type { Doc } from '@/types'
@@ -13,7 +14,7 @@ async function getAllDocs(): Promise<Doc[]> {
   return data ?? []
 }
 
-export default async function AdminPage() {
+async function DocList() {
   const docs = await getAllDocs()
 
   if (docs.length === 0) {
@@ -32,5 +33,13 @@ export default async function AdminPage() {
       <h1 className="text-xl font-semibold mb-6">All docs</h1>
       <DocTable docs={docs} />
     </div>
+  )
+}
+
+export default function AdminPage() {
+  return (
+    <Suspense fallback={<div className="h-8 w-48 bg-muted animate-pulse rounded-lg" />}>
+      <DocList />
+    </Suspense>
   )
 }
