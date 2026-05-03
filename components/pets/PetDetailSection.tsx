@@ -19,6 +19,9 @@ function StateThumb({
   onClick: () => void
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const frameRef = useRef(0)
+  const rafRef = useRef<number>(0)
+  const lastTimeRef = useRef(0)
   const thumbH = Math.round(CELL_HEIGHT * (THUMB_SIZE / CELL_WIDTH))
 
   useEffect(() => {
@@ -26,8 +29,20 @@ function StateThumb({
     if (!canvas) return
     const ctx = canvas.getContext('2d')
     if (!ctx) return
-    ctx.clearRect(0, 0, CELL_WIDTH, CELL_HEIGHT)
-    ctx.drawImage(img, 0, state.row * CELL_HEIGHT, CELL_WIDTH, CELL_HEIGHT, 0, 0, CELL_WIDTH, CELL_HEIGHT)
+    frameRef.current = 0
+
+    function draw(time: number) {
+      if (time - lastTimeRef.current >= 1000 / FPS) {
+        lastTimeRef.current = time
+        ctx!.clearRect(0, 0, CELL_WIDTH, CELL_HEIGHT)
+        ctx!.drawImage(img, frameRef.current * CELL_WIDTH, state.row * CELL_HEIGHT, CELL_WIDTH, CELL_HEIGHT, 0, 0, CELL_WIDTH, CELL_HEIGHT)
+        frameRef.current = (frameRef.current + 1) % state.frames
+      }
+      rafRef.current = requestAnimationFrame(draw)
+    }
+
+    rafRef.current = requestAnimationFrame(draw)
+    return () => cancelAnimationFrame(rafRef.current)
   }, [img, state])
 
   return (
