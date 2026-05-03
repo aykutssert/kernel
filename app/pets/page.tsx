@@ -9,7 +9,7 @@ import { PetsSearchBar } from '@/components/pets/PetsSearchBar'
 import { PetsSortTabs } from '@/components/pets/PetsSortTabs'
 import { getDocs } from '@/lib/docs'
 import { getPets, PER_PAGE } from '@/lib/pets-data'
-import { ChevronLeft, ChevronRight, Download, ExternalLink, Heart, Eye } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Download, ExternalLink, Heart, Eye, SearchX, PawPrint } from 'lucide-react'
 import { LikeButton } from '@/components/pets/LikeButton'
 import { cn } from '@/lib/utils'
 
@@ -69,9 +69,32 @@ async function PetsList({ searchParams }: Props) {
       </div>
 
       {pets.length === 0 ? (
-        <p className="text-sm text-muted-foreground">
-          {q ? `No results for "${q}".` : 'No pets yet.'}
-        </p>
+        <div className="flex flex-col items-center justify-center py-24 text-center">
+          {q ? (
+            <>
+              <SearchX className="w-10 h-10 text-muted-foreground/30 mb-4" />
+              <p className="text-sm font-medium mb-1">No pets found for &ldquo;{q}&rdquo;</p>
+              <p className="text-xs text-muted-foreground mb-6">Try a different search term.</p>
+              <Link
+                href={(() => {
+                  const p = new URLSearchParams()
+                  if (sortVal !== 'newest') p.set('sort', sortVal)
+                  if (showNsfw) p.set('nsfw', '1')
+                  const s = p.toString()
+                  return s ? `/pets?${s}` : '/pets'
+                })()}
+                className="px-4 py-2 text-sm font-medium border border-border rounded-lg hover:bg-muted transition-colors"
+              >
+                Clear search
+              </Link>
+            </>
+          ) : (
+            <>
+              <PawPrint className="w-10 h-10 text-muted-foreground/30 mb-4" />
+              <p className="text-sm text-muted-foreground">No pets yet.</p>
+            </>
+          )}
+        </div>
       ) : (
         <>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
