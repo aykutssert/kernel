@@ -4,8 +4,10 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Sidebar } from '@/components/layout/Sidebar'
 import { OnThisPage } from '@/components/layout/OnThisPage'
+import { ScrollFadeAside } from '@/components/layout/ScrollFadeAside'
 import { MobileOnThisPage } from '@/components/layout/MobileOnThisPage'
 import { CategoryTabs } from '@/components/layout/CategoryTabs'
+import { TagFilterBar } from '@/components/layout/TagFilterBar'
 import { DocContent } from '@/components/docs/DocContent'
 import { CopyPageButton } from '@/components/docs/CopyPageButton'
 import { CopyCodeButton } from '@/components/docs/CopyCodeButton'
@@ -60,14 +62,15 @@ async function DocPageContent({ params }: { params: Promise<{ category: string; 
       <DocViewTracker title={doc.title} slug={doc.slug} category={doc.category} />
       <Navbar docs={docs} />
       <CategoryTabs docs={docs} />
+      <TagFilterBar docs={docs} activeTags={doc.tags ?? []} />
       <div id="main-content" className="flex flex-1 max-w-[1400px] mx-auto w-full">
         {/* Left sidebar */}
-        <aside className="hidden md:block w-[260px] shrink-0 sticky top-[105px] h-[calc(100vh-105px)] overflow-y-auto">
+        <ScrollFadeAside className="hidden md:block w-[260px] shrink-0 sticky top-[105px] h-[calc(100vh-105px)] overflow-y-auto scrollbar-none border-r border-border">
           <Sidebar docs={docs} />
-        </aside>
+        </ScrollFadeAside>
 
         {/* Content */}
-        <main className="flex-1 min-w-0 px-4 md:pl-20 md:pr-0 py-10 max-w-[760px] pb-32">
+        <main className="flex-1 min-w-0 px-4 md:px-10 pt-6 pb-32">
           <div className="mb-8">
             <Link
               href={`/docs/${firstInCategory.category}/${firstInCategory.slug}`}
@@ -166,7 +169,7 @@ async function DocPageContent({ params }: { params: Promise<{ category: string; 
         </main>
 
         {/* Right sidebar */}
-        <aside className="hidden lg:block w-[260px] shrink-0 sticky top-[105px] h-[calc(100vh-105px)] overflow-y-auto pl-20">
+        <ScrollFadeAside className="hidden lg:block w-[200px] shrink-0 sticky top-[105px] h-[calc(100vh-105px)] overflow-y-auto scrollbar-none border-l border-border pl-5">
           {(() => {
             const docTags = doc.tags ?? []
             const related = docTags.length > 0
@@ -174,7 +177,7 @@ async function DocPageContent({ params }: { params: Promise<{ category: string; 
               : []
             if (related.length > 0) {
               return (
-                <div className="py-8 space-y-1">
+                <div className="pt-6 pb-8 space-y-1">
                   <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Related</p>
                   {related.map((d) => (
                     <a
@@ -190,7 +193,7 @@ async function DocPageContent({ params }: { params: Promise<{ category: string; 
             }
             return <OnThisPage content={doc.content} />
           })()}
-        </aside>
+        </ScrollFadeAside>
       </div>
       <Footer />
       <ScrollToTop />
