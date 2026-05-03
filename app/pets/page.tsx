@@ -219,7 +219,7 @@ export default async function PetsPage({ searchParams }: Props) {
     <div className="flex flex-col min-h-screen">
       <Navbar docs={docs} />
       <CategoryTabs docs={docs} />
-      <main className="flex-1 max-w-[1400px] mx-auto w-full px-4 md:px-0 py-12">
+      <main className="flex-1 max-w-[1400px] mx-auto w-full px-4 md:px-0 pt-6 pb-12">
         <Suspense fallback={<PetsGridSkeleton />}>
           <PetsList searchParams={searchParams} />
         </Suspense>
