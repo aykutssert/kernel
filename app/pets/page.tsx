@@ -7,7 +7,7 @@ import { PetsSearchBar } from '@/components/pets/PetsSearchBar'
 import { PetsSortTabs } from '@/components/pets/PetsSortTabs'
 import { getDocs } from '@/lib/docs'
 import { getPets, PER_PAGE } from '@/lib/pets-data'
-import { ChevronLeft, ChevronRight, Download, ExternalLink, Heart } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Download, ExternalLink, Heart, Eye } from 'lucide-react'
 import { LikeButton } from '@/components/pets/LikeButton'
 import { cn } from '@/lib/utils'
 
@@ -18,7 +18,7 @@ interface Props {
 async function PetsList({ searchParams }: Props) {
   const { page: pageParam, q = '', sort = 'newest', nsfw } = await searchParams
   const page = Math.max(1, parseInt(pageParam ?? '1') || 1)
-  const sortVal = sort === 'liked' ? 'liked' : 'newest'
+  const sortVal = sort === 'liked' ? 'liked' : sort === 'viewed' ? 'viewed' : 'newest'
   const showNsfw = nsfw === '1'
 
   const { pets, total, totalLikes } = await getPets(page, q, sortVal, showNsfw)
@@ -79,15 +79,19 @@ async function PetsList({ searchParams }: Props) {
                   <PetCardCanvas spritesheetUrl={pet.spritesheet_url} size={140} />
                 </Link>
                 <div className="px-3 pt-3 pb-3 flex-1 flex flex-col">
-                  <div className="flex items-center justify-between gap-1 mb-0.5">
-                    <p className="text-sm font-semibold truncate">{pet.display_name}</p>
-                    <span className="inline-flex items-center gap-1 text-xs text-muted-foreground shrink-0">
+                  <p className="text-sm font-semibold truncate mb-1">{pet.display_name}</p>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="inline-flex items-center gap-0.5 text-xs text-muted-foreground">
+                      <Eye className="w-3 h-3" />
+                      {(pet.views_count ?? 0).toLocaleString()}
+                    </span>
+                    <span className="inline-flex items-center gap-0.5 text-xs text-muted-foreground">
                       <Heart className={cn('w-3 h-3', pet.likes_count > 0 ? 'fill-rose-500 text-rose-500' : 'text-muted-foreground')} />
-                      {pet.likes_count}
+                      {pet.likes_count.toLocaleString()}
                     </span>
                   </div>
                   {pet.description && (
-                    <p className="text-xs text-muted-foreground mt-1 line-clamp-2 leading-relaxed flex-1">{pet.description}</p>
+                    <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed flex-1">{pet.description}</p>
                   )}
                 </div>
                 <div className="px-3 pb-3 flex flex-wrap gap-2">

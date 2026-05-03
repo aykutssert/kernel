@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from 'react'
 import { CODEX_PET_STATES, CELL_WIDTH, CELL_HEIGHT } from '@/lib/pets'
 
 const FPS = 8
-const IDLE = CODEX_PET_STATES[0]
 
 interface PetCardCanvasProps {
   spritesheetUrl: string
@@ -15,9 +14,11 @@ export function PetCardCanvas({ spritesheetUrl, size = 140 }: PetCardCanvasProps
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const imgRef = useRef<HTMLImageElement | null>(null)
   const [loaded, setLoaded] = useState(false)
+
+  const stateIndexRef = useRef(0)
   const frameRef = useRef(0)
-  const rafRef = useRef<number>(0)
   const lastTimeRef = useRef(0)
+  const rafRef = useRef<number>(0)
 
   useEffect(() => {
     const img = new Image()
@@ -37,18 +38,23 @@ export function PetCardCanvas({ spritesheetUrl, size = 140 }: PetCardCanvasProps
     function draw(time: number) {
       if (time - lastTimeRef.current >= 1000 / FPS) {
         lastTimeRef.current = time
+
+        const state = CODEX_PET_STATES[stateIndexRef.current]
         ctx!.clearRect(0, 0, CELL_WIDTH, CELL_HEIGHT)
         ctx!.drawImage(
           imgRef.current!,
           frameRef.current * CELL_WIDTH,
-          IDLE.row * CELL_HEIGHT,
-          CELL_WIDTH,
-          CELL_HEIGHT,
+          state.row * CELL_HEIGHT,
+          CELL_WIDTH, CELL_HEIGHT,
           0, 0,
-          CELL_WIDTH,
-          CELL_HEIGHT
+          CELL_WIDTH, CELL_HEIGHT
         )
-        frameRef.current = (frameRef.current + 1) % IDLE.frames
+
+        frameRef.current++
+        if (frameRef.current >= state.frames) {
+          frameRef.current = 0
+          stateIndexRef.current = (stateIndexRef.current + 1) % CODEX_PET_STATES.length
+        }
       }
       rafRef.current = requestAnimationFrame(draw)
     }
@@ -65,8 +71,7 @@ export function PetCardCanvas({ spritesheetUrl, size = 140 }: PetCardCanvasProps
         style={{
           width: size,
           height: h,
-          backgroundImage:
-            'repeating-conic-gradient(var(--checker-a) 0% 25%, var(--checker-b) 0% 50%)',
+          backgroundImage: 'repeating-conic-gradient(var(--checker-a) 0% 25%, var(--checker-b) 0% 50%)',
           backgroundSize: '12px 12px',
         }}
       >
@@ -74,11 +79,7 @@ export function PetCardCanvas({ spritesheetUrl, size = 140 }: PetCardCanvasProps
           ref={canvasRef}
           width={CELL_WIDTH}
           height={CELL_HEIGHT}
-          style={{
-            imageRendering: 'pixelated',
-            width: size,
-            height: h,
-          }}
+          style={{ imageRendering: 'pixelated', width: size, height: h }}
         />
       </div>
     </div>

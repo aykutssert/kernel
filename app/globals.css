@@ -94,8 +94,8 @@ body {
   font-family: var(--font-sans);
 }
 
-button { cursor: pointer; }
-button:disabled { cursor: not-allowed; }
+button { cursor: pointer !important; }
+button:disabled { cursor: not-allowed !important; }
 
 /* rehype-pretty-code dual theme */
 .prose pre span {

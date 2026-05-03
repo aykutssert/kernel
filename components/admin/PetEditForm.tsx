@@ -1,8 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { PetViewer } from '@/components/pets/PetViewer'
+import { toast } from 'sonner'
+import { ConfirmDialog } from './ConfirmDialog'
 import type { Pet } from '@/lib/pets'
 
 export function PetEditForm({ pet }: { pet: Pet }) {
@@ -15,7 +17,24 @@ export function PetEditForm({ pet }: { pet: Pet }) {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
 
-  async function handleSave() {
+  const initial = useRef({ displayName: pet.display_name, description: pet.description ?? '', sourceUrl: pet.source_url ?? '', published: pet.published, isNsfw: pet.is_nsfw })
+  const isDirty =
+    displayName !== initial.current.displayName ||
+    description !== initial.current.description ||
+    sourceUrl !== initial.current.sourceUrl ||
+    published !== initial.current.published ||
+    isNsfw !== initial.current.isNsfw
+
+  useEffect(() => {
+    if (!isDirty) return
+    function onBeforeUnload(e: BeforeUnloadEvent) {
+      e.preventDefault()
+    }
+    window.addEventListener('beforeunload', onBeforeUnload)
+    return () => window.removeEventListener('beforeunload', onBeforeUnload)
+  }, [isDirty])
+
+  const handleSave = useCallback(async () => {
     setSaving(true)
     setError('')
     const res = await fetch('/api/pets/save', {
@@ -33,9 +52,21 @@ export function PetEditForm({ pet }: { pet: Pet }) {
     })
     const data = await res.json()
     if (!res.ok) { setError(data.error ?? 'Save failed'); setSaving(false); return }
+    toast.success('Pet saved.')
     router.push('/admin/pets')
     router.refresh()
-  }
+  }, [pet.id, pet.spritesheet_url, displayName, description, sourceUrl, published, isNsfw, router])
+
+  useEffect(() => {
+    function onKeyDown(e: KeyboardEvent) {
+      if ((e.metaKey || e.ctrlKey) && e.key === 's') {
+        e.preventDefault()
+        handleSave()
+      }
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [handleSave])
 
   return (
     <div className="flex gap-12 items-start">
@@ -99,13 +130,23 @@ export function PetEditForm({ pet }: { pet: Pet }) {
 
           <div className="flex items-center gap-3">
             {error && <p className="text-sm text-red-500">{error}</p>}
-            <button
-              type="button"
-              onClick={() => router.back()}
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Cancel
-            </button>
+            {isDirty ? (
+              <ConfirmDialog
+                title="Discard changes?"
+                description="You have unsaved changes. If you leave now, they will be lost."
+                onConfirm={() => router.back()}
+                variant="warning"
+                confirmLabel="Discard"
+              >
+                <button type="button" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  Cancel
+                </button>
+              </ConfirmDialog>
+            ) : (
+              <button type="button" onClick={() => router.back()} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                Cancel
+              </button>
+            )}
             <button
               onClick={handleSave}
               disabled={saving}

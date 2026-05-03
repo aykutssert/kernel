@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils'
 const TABS = [
   { label: 'Newest', value: 'newest' },
   { label: 'Most liked', value: 'liked' },
+  { label: 'Most viewed', value: 'viewed' },
 ] as const
 
 type SortValue = (typeof TABS)[number]['value']

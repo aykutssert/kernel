@@ -1,8 +1,11 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { Plus } from 'lucide-react'
+import { Suspense } from 'react'
 import { LogoutButton } from '@/components/admin/LogoutButton'
 import { ThemeToggle } from '@/components/layout/ThemeToggle'
+import { AdminNavLinks } from '@/components/admin/AdminNavLinks'
+import { AdminGlobalSearch } from '@/components/admin/AdminGlobalSearch'
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -14,17 +17,22 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <span className="font-semibold text-sm">Kernel</span>
           </Link>
           <span className="text-muted-foreground">/</span>
-          <Link href="/admin" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-            Admin
-          </Link>
+          <Suspense fallback={<div className="w-32 h-4 bg-muted animate-pulse rounded" />}>
+            <AdminNavLinks />
+          </Suspense>
           <div className="ml-auto flex items-center gap-2">
+            <AdminGlobalSearch />
             <ThemeToggle />
-            <Link href="/admin/pets" className="text-sm text-muted-foreground hover:text-foreground transition-colors px-2">
-              Pets
+            <Link
+              href="/admin/pets/bulk"
+              className="inline-flex items-center gap-1.5 text-sm bg-foreground text-background px-3 py-1.5 rounded-lg hover:opacity-90 transition-opacity"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              Bulk import
             </Link>
             <Link
               href="/admin/pets/new"
-              className="inline-flex items-center gap-1.5 text-sm border border-border px-3 py-1.5 rounded-lg hover:bg-muted transition-colors"
+              className="inline-flex items-center gap-1.5 text-sm bg-foreground text-background px-3 py-1.5 rounded-lg hover:opacity-90 transition-opacity"
             >
               <Plus className="w-3.5 h-3.5" />
               New pet

@@ -25,6 +25,7 @@ export interface Pet {
   published: boolean
   is_nsfw: boolean
   likes_count: number
+  views_count: number | null
   created_at: string
 }
 

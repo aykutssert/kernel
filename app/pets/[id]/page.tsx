@@ -6,9 +6,10 @@ import { Navbar } from '@/components/layout/Navbar'
 import { CategoryTabs } from '@/components/layout/CategoryTabs'
 import { PetViewer } from '@/components/pets/PetViewer'
 import { getDocs } from '@/lib/docs'
-import { Download, ExternalLink } from 'lucide-react'
+import { Download, ExternalLink, Eye } from 'lucide-react'
 import { LikeButton } from '@/components/pets/LikeButton'
 import { CurlCommand } from '@/components/pets/CurlCommand'
+import { ViewTracker } from '@/components/pets/ViewTracker'
 import type { Pet } from '@/lib/pets'
 
 interface Props {
@@ -39,6 +40,8 @@ async function PetPageContent({ params }: { params: Promise<{ id: string }> }) {
   if (!pet) notFound()
 
   return (
+    <>
+    <ViewTracker petId={pet.id} />
     <div className="flex flex-col min-h-screen">
       <Navbar docs={docs} />
       <CategoryTabs docs={docs} />
@@ -51,7 +54,7 @@ async function PetPageContent({ params }: { params: Promise<{ id: string }> }) {
             {pet.description && (
               <p className="text-muted-foreground mb-8 leading-relaxed">{pet.description}</p>
             )}
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3">
               <a
                 href={`/api/pets/download?id=${pet.id}`}
                 className="inline-flex items-center gap-2 px-4 py-2.5 bg-foreground text-background rounded-lg text-sm font-medium hover:opacity-90 transition-opacity"
@@ -60,6 +63,10 @@ async function PetPageContent({ params }: { params: Promise<{ id: string }> }) {
                 Download .codex-pet
               </a>
               <LikeButton petId={pet.id} initialCount={pet.likes_count ?? 0} showCount />
+              <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground">
+                <Eye className="w-4 h-4" />
+                {(pet.views_count ?? 0).toLocaleString()}
+              </span>
             </div>
             <p className="text-xs text-muted-foreground mt-2">
               Includes <code>pet.json</code> + <code>spritesheet.webp</code>
@@ -85,6 +92,7 @@ async function PetPageContent({ params }: { params: Promise<{ id: string }> }) {
         </div>
       </main>
     </div>
+    </>
   )
 }
 

@@ -19,7 +19,7 @@ export async function getPets(
   const supabase = createPublicClient()
   const from = (page - 1) * PER_PAGE
   const to = from + PER_PAGE - 1
-  const orderCol = sort === 'liked' ? 'likes_count' : 'created_at'
+  const orderCol = sort === 'liked' ? 'likes_count' : sort === 'viewed' ? 'views_count' : 'created_at'
 
   let query = supabase
     .from('pets')

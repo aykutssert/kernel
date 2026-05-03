@@ -1,9 +1,11 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { slugify, cn } from '@/lib/utils'
 import { ImagePlus, X } from 'lucide-react'
+import { toast } from 'sonner'
+import { ConfirmDialog } from './ConfirmDialog'
 import type { Doc } from '@/types'
 
 interface DocFormProps {
@@ -31,9 +33,23 @@ export function DocForm({ doc, categories, allDocs }: DocFormProps) {
   const [saving, setSaving] = useState(false)
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState('')
-  const [previewTab, setPreviewTab] = useState<'write' | 'preview'>('write')
+  const [previewTab, setPreviewTab] = useState<'write' | 'preview' | 'split'>('write')
   const [previewHtml, setPreviewHtml] = useState('')
   const [previewLoading, setPreviewLoading] = useState(false)
+
+  const isMounted = useRef(false)
+  const [isDirty, setIsDirty] = useState(false)
+  useEffect(() => {
+    if (!isMounted.current) { isMounted.current = true; return }
+    setIsDirty(true)
+  }, [title, category, customCategory, slug, sourceUrl, content, orderIndex, published, imageUrl, tags])
+
+  useEffect(() => {
+    if (!isDirty) return
+    function onBeforeUnload(e: BeforeUnloadEvent) { e.preventDefault() }
+    window.addEventListener('beforeunload', onBeforeUnload)
+    return () => window.removeEventListener('beforeunload', onBeforeUnload)
+  }, [isDirty])
 
   const effectiveCategory = category === '__new__' ? customCategory : category
   const categoryDocs = allDocs
@@ -79,6 +95,13 @@ export function DocForm({ doc, categories, allDocs }: DocFormProps) {
     setUploading(false)
   }
 
+  useEffect(() => {
+    if (previewTab !== 'split') return
+    const timer = setTimeout(() => loadPreview(), 600)
+    return () => clearTimeout(timer)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [content, previewTab])
+
   async function loadPreview() {
     setPreviewLoading(true)
     const res = await fetch('/api/preview', {
@@ -91,13 +114,12 @@ export function DocForm({ doc, categories, allDocs }: DocFormProps) {
     setPreviewLoading(false)
   }
 
-  function handleTabChange(tab: 'write' | 'preview') {
+  function handleTabChange(tab: 'write' | 'preview' | 'split') {
     setPreviewTab(tab)
-    if (tab === 'preview') loadPreview()
+    if (tab === 'preview' || tab === 'split') loadPreview()
   }
 
-  async function handleSave(e: React.FormEvent) {
-    e.preventDefault()
+  const doSave = useCallback(async () => {
     setSaving(true)
     setError('')
 
@@ -132,8 +154,26 @@ export function DocForm({ doc, categories, allDocs }: DocFormProps) {
     const data = await res.json()
     if (!res.ok) { setError(data.error ?? 'Save failed'); setSaving(false); return }
 
-    router.push('/admin')
+    setIsDirty(false)
+    toast.success(isEdit ? 'Document saved.' : 'Document created.')
+    router.push('/admin/docs')
     router.refresh()
+  }, [allDocs, slug, doc, title, effectiveCategory, content, sourceUrl, orderIndex, published, imageUrl, tags, isEdit, categoryDocs, router])
+
+  useEffect(() => {
+    function onKeyDown(e: KeyboardEvent) {
+      if ((e.metaKey || e.ctrlKey) && e.key === 's') {
+        e.preventDefault()
+        doSave()
+      }
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [doSave])
+
+  function handleSave(e: React.FormEvent) {
+    e.preventDefault()
+    doSave()
   }
 
   return (
@@ -179,7 +219,18 @@ export function DocForm({ doc, categories, allDocs }: DocFormProps) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1.5">Slug</label>
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="block text-sm font-medium">Slug</label>
+              {title && (
+                <button
+                  type="button"
+                  onClick={() => setSlug(slugify(title))}
+                  className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Generate from title
+                </button>
+              )}
+            </div>
             <input
               type="text"
               value={slug}
@@ -277,7 +328,7 @@ export function DocForm({ doc, categories, allDocs }: DocFormProps) {
           <div className="flex items-center justify-between mb-1.5">
             <label className="text-sm font-medium">Content (Markdown)</label>
             <div className="flex border border-border rounded-lg overflow-hidden text-xs">
-              {(['write', 'preview'] as const).map((tab) => (
+              {(['write', 'split', 'preview'] as const).map((tab) => (
                 <button
                   key={tab}
                   type="button"
@@ -289,13 +340,31 @@ export function DocForm({ doc, categories, allDocs }: DocFormProps) {
                       : 'text-muted-foreground hover:text-foreground'
                   )}
                 >
-                  {tab}
+                  {tab === 'split' ? 'Split' : tab === 'write' ? 'Write' : 'Preview'}
                 </button>
               ))}
             </div>
           </div>
 
-          {previewTab === 'write' ? (
+          {previewTab === 'split' ? (
+            <div className="grid grid-cols-2 gap-4">
+              <textarea
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                required
+                rows={28}
+                className="w-full px-3 py-2 text-sm border border-border rounded-lg bg-background font-mono focus:outline-none focus:ring-2 focus:ring-ring resize-none"
+                placeholder="# Title&#10;&#10;Write your markdown here..."
+              />
+              <div className="min-h-[400px] px-4 py-3 border border-border rounded-lg bg-background overflow-auto">
+                {previewLoading ? (
+                  <p className="text-sm text-muted-foreground">Loading preview…</p>
+                ) : (
+                  <div className="prose prose-lg max-w-none" dangerouslySetInnerHTML={{ __html: previewHtml }} />
+                )}
+              </div>
+            </div>
+          ) : previewTab === 'write' ? (
             <textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
@@ -330,13 +399,23 @@ export function DocForm({ doc, categories, allDocs }: DocFormProps) {
 
           <div className="flex items-center gap-3">
             {error && <p className="text-sm text-red-500">{error}</p>}
-            <button
-              type="button"
-              onClick={() => router.back()}
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Cancel
-            </button>
+            {isDirty ? (
+              <ConfirmDialog
+                title="Discard changes?"
+                description="You have unsaved changes. If you leave now, they will be lost."
+                onConfirm={() => router.back()}
+                variant="warning"
+                confirmLabel="Discard"
+              >
+                <button type="button" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  Cancel
+                </button>
+              </ConfirmDialog>
+            ) : (
+              <button type="button" onClick={() => router.back()} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                Cancel
+              </button>
+            )}
             {isEdit && (
               <a
                 href={`/admin/preview/${doc!.id}`}
