@@ -4,7 +4,16 @@ import Image from 'next/image'
 export function Footer() {
   return (
     <footer className="border-t border-border mt-auto">
-      <div className="max-w-[1400px] mx-auto w-full px-4 md:px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="max-w-[1400px] mx-auto w-full px-4 md:px-6 pt-5 pb-3">
+        <p className="text-xs text-muted-foreground/50 text-center leading-relaxed mb-5">
+          Pets are shared by the community. Some may be inspired by existing characters or brands. We don&apos;t claim rights to those characters or brands.{' '}
+          Formal takedown requests can be sent to{' '}
+          <a href="mailto:aykutssert@gmail.com" className="underline underline-offset-2 hover:text-muted-foreground transition-colors">
+            here
+          </a>.
+        </p>
+      </div>
+      <div className="max-w-[1400px] mx-auto w-full px-4 md:px-6 pb-6 flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <Image src="/kernel-logo.svg" alt="Kernel" width={16} height={16} className="opacity-60" />
           <span>Kernel</span>
