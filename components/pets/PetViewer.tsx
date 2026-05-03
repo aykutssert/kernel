@@ -5,13 +5,63 @@ import { CODEX_PET_STATES, CELL_WIDTH, CELL_HEIGHT } from '@/lib/pets'
 import { cn } from '@/lib/utils'
 
 const FPS = 8
+const THUMB_SIZE = 80
 
-interface PetViewerProps {
-  spritesheetUrl: string
-  size?: number
+function StateThumb({
+  img,
+  state,
+  active,
+  onClick,
+}: {
+  img: HTMLImageElement
+  state: (typeof CODEX_PET_STATES)[number]
+  active: boolean
+  onClick: () => void
+}) {
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const thumbH = Math.round(CELL_HEIGHT * (THUMB_SIZE / CELL_WIDTH))
+
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+    ctx.clearRect(0, 0, CELL_WIDTH, CELL_HEIGHT)
+    ctx.drawImage(img, 0, state.row * CELL_HEIGHT, CELL_WIDTH, CELL_HEIGHT, 0, 0, CELL_WIDTH, CELL_HEIGHT)
+  }, [img, state])
+
+  return (
+    <button
+      onClick={onClick}
+      className={cn(
+        'flex flex-col items-center gap-1.5 p-2 rounded-xl border transition-colors',
+        active
+          ? 'border-foreground/40 bg-foreground/5'
+          : 'border-foreground/10 hover:border-foreground/25 hover:bg-foreground/5'
+      )}
+    >
+      <div
+        className="rounded overflow-hidden"
+        style={{
+          width: THUMB_SIZE,
+          height: thumbH,
+          backgroundImage: 'repeating-conic-gradient(var(--checker-a) 0% 25%, var(--checker-b) 0% 50%)',
+          backgroundSize: '8px 8px',
+        }}
+      >
+        <canvas
+          ref={canvasRef}
+          width={CELL_WIDTH}
+          height={CELL_HEIGHT}
+          style={{ imageRendering: 'pixelated', width: THUMB_SIZE, height: thumbH }}
+        />
+      </div>
+      <span className="text-xs text-muted-foreground">{state.label}</span>
+    </button>
+  )
 }
 
-export function PetViewer({ spritesheetUrl, size = 192 }: PetViewerProps) {
+export function PetViewer({ spritesheetUrl, size = 192 }: { spritesheetUrl: string; size?: number }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const imgRef = useRef<HTMLImageElement | null>(null)
   const [activeState, setActiveState] = useState(0)
@@ -34,7 +84,6 @@ export function PetViewer({ spritesheetUrl, size = 192 }: PetViewerProps) {
     if (!canvas) return
     const ctx = canvas.getContext('2d')
     if (!ctx) return
-
     const state = CODEX_PET_STATES[activeState]
     frameRef.current = 0
 
@@ -43,16 +92,7 @@ export function PetViewer({ spritesheetUrl, size = 192 }: PetViewerProps) {
         lastTimeRef.current = time
         const img = imgRef.current!
         ctx!.clearRect(0, 0, CELL_WIDTH, CELL_HEIGHT)
-        ctx!.drawImage(
-          img,
-          frameRef.current * CELL_WIDTH,
-          state.row * CELL_HEIGHT,
-          CELL_WIDTH,
-          CELL_HEIGHT,
-          0, 0,
-          CELL_WIDTH,
-          CELL_HEIGHT
-        )
+        ctx!.drawImage(img, frameRef.current * CELL_WIDTH, state.row * CELL_HEIGHT, CELL_WIDTH, CELL_HEIGHT, 0, 0, CELL_WIDTH, CELL_HEIGHT)
         frameRef.current = (frameRef.current + 1) % state.frames
       }
       rafRef.current = requestAnimationFrame(draw)
@@ -66,6 +106,7 @@ export function PetViewer({ spritesheetUrl, size = 192 }: PetViewerProps) {
 
   return (
     <div className="flex flex-col items-center gap-6">
+      {/* Main viewer */}
       <div
         className="rounded-xl border border-border flex items-center justify-center overflow-hidden"
         style={{
@@ -83,22 +124,23 @@ export function PetViewer({ spritesheetUrl, size = 192 }: PetViewerProps) {
         />
       </div>
 
-      <div className="grid grid-cols-3 gap-2 w-full max-w-sm">
-        {CODEX_PET_STATES.map((s, i) => (
-          <button
-            key={s.name}
-            onClick={() => setActiveState(i)}
-            className={cn(
-              'px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors',
-              activeState === i
-                ? 'border-foreground/40 text-foreground bg-foreground/10'
-                : 'border-foreground/15 text-muted-foreground hover:text-foreground hover:border-foreground/40'
-            )}
-          >
-            {s.label}
-          </button>
-        ))}
-      </div>
+      {/* Thumbnail grid */}
+      {loaded && imgRef.current && (
+        <div className="w-full">
+          <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Animations</p>
+          <div className="grid grid-cols-3 gap-2">
+            {CODEX_PET_STATES.map((s, i) => (
+              <StateThumb
+                key={s.name}
+                img={imgRef.current!}
+                state={s}
+                active={activeState === i}
+                onClick={() => setActiveState(i)}
+              />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
