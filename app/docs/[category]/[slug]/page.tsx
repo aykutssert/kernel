@@ -13,6 +13,7 @@ import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { ScrollToTop } from '@/components/layout/ScrollToTop'
 import { getDocs, getDoc } from '@/lib/docs'
+import { DocViewTracker } from '@/components/docs/DocViewTracker'
 import { ExternalLink, ChevronLeft, ChevronRight } from 'lucide-react'
 
 interface Props {
@@ -56,6 +57,7 @@ async function DocPageContent({ params }: { params: Promise<{ category: string; 
 
   return (
     <div className="flex flex-col min-h-screen">
+      <DocViewTracker title={doc.title} slug={doc.slug} category={doc.category} />
       <Navbar docs={docs} />
       <CategoryTabs docs={docs} />
       <div id="main-content" className="flex flex-1 max-w-[1400px] mx-auto w-full">

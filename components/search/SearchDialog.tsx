@@ -3,8 +3,9 @@
 import { useEffect, useState, useCallback, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { useRouter } from 'next/navigation'
-import { Search, FileText, X } from 'lucide-react'
+import { Search, FileText, X, Clock } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { getRecentDocs, type RecentDoc } from '@/components/docs/DocViewTracker'
 
 interface Result {
   id: string
@@ -31,6 +32,7 @@ export function SearchDialog({ open, onOpenChange, initialTag }: SearchDialogPro
   const [results, setResults] = useState<Result[]>([])
   const [loading, setLoading] = useState(false)
   const [selected, setSelected] = useState(0)
+  const [recentDocs, setRecentDocs] = useState<RecentDoc[]>([])
 
   const fetchResults = useCallback((q: string, tag: string) => {
     setLoading(true)
@@ -51,7 +53,7 @@ export function SearchDialog({ open, onOpenChange, initialTag }: SearchDialogPro
 
   useEffect(() => {
     if (!open) { setQuery(''); setResults([]) }
-    else setActiveTag(initialTag ?? '')
+    else { setActiveTag(initialTag ?? ''); setRecentDocs(getRecentDocs()) }
   }, [open, initialTag])
 
   const navigate = useCallback(
@@ -132,7 +134,28 @@ export function SearchDialog({ open, onOpenChange, initialTag }: SearchDialogPro
             </div>
           )}
 
-          {results.length > 0 && (
+          {!query && recentDocs.length > 0 && (
+            <div className="py-2">
+              <p className="px-4 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/60">
+                Recently viewed
+              </p>
+              {recentDocs.map((doc) => (
+                <button
+                  key={`${doc.category}/${doc.slug}`}
+                  onClick={() => { router.push(`/docs/${doc.category}/${doc.slug}`); onOpenChange(false) }}
+                  className="w-full flex items-center gap-3 px-4 py-2.5 text-left hover:bg-accent/50 transition-colors"
+                >
+                  <Clock className="w-4 h-4 text-muted-foreground shrink-0" />
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium truncate">{doc.title}</p>
+                    <p className="text-xs text-muted-foreground capitalize">{doc.category}</p>
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
+
+          {query && results.length > 0 && (
             <ul className="py-2 max-h-80 overflow-y-auto">
               {results.map((result, i) => (
                 <li key={result.id}>
