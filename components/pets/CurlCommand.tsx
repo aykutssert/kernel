@@ -24,9 +24,9 @@ export function CurlCommand({ petId }: Props) {
       <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
         Install via terminal
       </p>
-      <div className="relative flex items-center gap-3 bg-[#111] text-[#e5e5e5] rounded-xl px-4 py-3.5 font-mono text-xs">
+      <div className="relative flex items-center gap-3 bg-[#111] text-[#e5e5e5] rounded-xl px-4 py-3.5 font-mono text-xs overflow-hidden">
         <Terminal className="w-4 h-4 shrink-0 text-green-400" />
-        <span className="flex-1 overflow-x-auto whitespace-nowrap scrollbar-none select-all">
+        <span className="flex-1 min-w-0 overflow-x-auto whitespace-nowrap scrollbar-none select-all">
           {command}
         </span>
         <button
