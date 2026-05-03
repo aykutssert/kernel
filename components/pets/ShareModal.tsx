@@ -96,12 +96,9 @@ function ShareModalContent({ petId, petName, description, spritesheetUrl, onClos
 
   return (
     <>
-      {/* Backdrop */}
-      <div className="fixed inset-0 z-[200] bg-black/40" onClick={onClose} />
-
-      {/* Modal */}
-      <div className="fixed inset-0 z-[201] flex items-center justify-center p-4">
-        <div className="w-full max-w-md bg-background border border-border rounded-2xl shadow-2xl overflow-hidden">
+      {/* Backdrop + centering wrapper — click outside to close */}
+      <div className="fixed inset-0 z-[200] bg-black/40 flex items-center justify-center p-4" onClick={onClose}>
+        <div className="w-full max-w-lg bg-background border border-border rounded-2xl shadow-2xl overflow-hidden" onClick={(e) => e.stopPropagation()}>
           {/* Header */}
           <div className="flex items-center justify-between px-5 py-4 border-b border-border">
             <span className="text-sm font-semibold">Share</span>
@@ -168,6 +165,7 @@ function ShareModalContent({ petId, petName, description, spritesheetUrl, onClos
     </>
   )
 }
+
 
 export function ShareButton({ petId, petName, description, spritesheetUrl }: Omit<Props, 'onClose'>) {
   const [open, setOpen] = useState(false)
