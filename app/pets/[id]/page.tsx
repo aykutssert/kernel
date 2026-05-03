@@ -75,7 +75,7 @@ async function PetPageContent({ params }: { params: Promise<{ id: string }> }) {
               </a>
               <LikeButton petId={pet.id} initialCount={pet.likes_count ?? 0} showCount />
               <ShareButton petId={pet.id} petName={pet.display_name} description={pet.description} spritesheetUrl={pet.spritesheet_url} />
-              <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground">
+              <span className="inline-flex items-center gap-1.5 px-3 py-2 text-sm text-muted-foreground border border-foreground/15 rounded-lg">
                 <Eye className="w-4 h-4" />
                 {(pet.views_count ?? 0).toLocaleString()}
               </span>

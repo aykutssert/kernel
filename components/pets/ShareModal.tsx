@@ -177,7 +177,7 @@ export function ShareButton({ petId, petName, description, spritesheetUrl }: Omi
     <>
       <button
         onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-2 px-4 py-2.5 border border-border rounded-lg text-sm font-medium hover:bg-foreground/5 transition-colors"
+        className="inline-flex items-center gap-2 px-3 py-2 border border-foreground/15 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:border-foreground/40 transition-colors"
       >
         <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current" aria-hidden="true">
           <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.748l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
