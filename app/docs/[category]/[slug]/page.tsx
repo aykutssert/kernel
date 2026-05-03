@@ -10,6 +10,7 @@ import { DocContent } from '@/components/docs/DocContent'
 import { CopyPageButton } from '@/components/docs/CopyPageButton'
 import { CopyCodeButton } from '@/components/docs/CopyCodeButton'
 import { Navbar } from '@/components/layout/Navbar'
+import { Footer } from '@/components/layout/Footer'
 import { getDocs, getDoc } from '@/lib/docs'
 import { ExternalLink, ChevronLeft, ChevronRight } from 'lucide-react'
 
@@ -188,6 +189,7 @@ async function DocPageContent({ params }: { params: Promise<{ category: string; 
           })()}
         </aside>
       </div>
+      <Footer />
     </div>
   )
 }

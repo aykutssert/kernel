@@ -4,6 +4,7 @@ import type { Metadata } from 'next'
 import { createPublicClient } from '@/lib/supabase/server'
 import { Navbar } from '@/components/layout/Navbar'
 import { CategoryTabs } from '@/components/layout/CategoryTabs'
+import { Footer } from '@/components/layout/Footer'
 import { PetViewer } from '@/components/pets/PetViewer'
 import { getDocs } from '@/lib/docs'
 import { Download, ExternalLink, Eye } from 'lucide-react'
@@ -45,7 +46,7 @@ async function PetPageContent({ params }: { params: Promise<{ id: string }> }) {
     <div className="flex flex-col min-h-screen">
       <Navbar docs={docs} />
       <CategoryTabs docs={docs} />
-      <main className="flex-1 max-w-[900px] mx-auto w-full px-4 md:px-0 py-12">
+      <main className="flex-1 max-w-[900px] mx-auto w-full px-4 md:px-0 py-12 mb-0">
         <div className="flex flex-col md:flex-row gap-12 items-start">
           {/* Left: info + download */}
           <div className="flex-1 min-w-0">
@@ -91,6 +92,7 @@ async function PetPageContent({ params }: { params: Promise<{ id: string }> }) {
           </div>
         </div>
       </main>
+      <Footer />
     </div>
     </>
   )

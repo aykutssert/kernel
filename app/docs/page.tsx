@@ -1,5 +1,6 @@
 import { Navbar } from '@/components/layout/Navbar'
 import { Sidebar } from '@/components/layout/Sidebar'
+import { Footer } from '@/components/layout/Footer'
 import { getDocs } from '@/lib/docs'
 
 export default async function DocsIndexPage() {
@@ -19,6 +20,7 @@ export default async function DocsIndexPage() {
           Select a page from the sidebar.
         </main>
       </div>
+      <Footer />
     </div>
   )
 }

@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { Suspense } from 'react'
 import { Navbar } from '@/components/layout/Navbar'
 import { CategoryTabs } from '@/components/layout/CategoryTabs'
+import { Footer } from '@/components/layout/Footer'
 import { PetCardCanvas } from '@/components/pets/PetCardCanvas'
 import { PetsSearchBar } from '@/components/pets/PetsSearchBar'
 import { PetsSortTabs } from '@/components/pets/PetsSortTabs'
@@ -196,6 +197,7 @@ export default async function PetsPage({ searchParams }: Props) {
           <PetsList searchParams={searchParams} />
         </Suspense>
       </main>
+      <Footer />
     </div>
   )
 }
