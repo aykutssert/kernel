@@ -2,7 +2,7 @@ import { cacheTag, cacheLife } from 'next/cache'
 import { createPublicClient } from '@/lib/supabase/server'
 import type { Pet } from '@/lib/pets'
 
-const PER_PAGE = 12
+const PER_PAGE = 15
 
 export { PER_PAGE }
 
