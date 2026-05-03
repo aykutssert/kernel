@@ -3,6 +3,7 @@ import { Suspense } from 'react'
 import { Navbar } from '@/components/layout/Navbar'
 import { CategoryTabs } from '@/components/layout/CategoryTabs'
 import { Footer } from '@/components/layout/Footer'
+import { ScrollToTop } from '@/components/layout/ScrollToTop'
 import { PetCardCanvas } from '@/components/pets/PetCardCanvas'
 import { PetsSearchBar } from '@/components/pets/PetsSearchBar'
 import { PetsSortTabs } from '@/components/pets/PetsSortTabs'
@@ -198,6 +199,7 @@ export default async function PetsPage({ searchParams }: Props) {
         </Suspense>
       </main>
       <Footer />
+      <ScrollToTop />
     </div>
   )
 }
