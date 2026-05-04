@@ -32,6 +32,9 @@ export function RoamingPetClient({ spritesheetUrl }: { spritesheetUrl: string | 
   const wasThrownRef = useRef(false)
   const bubbleTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const lastActivityTimeRef = useRef(Date.now())
+  
+  const foodRef = useRef<{x: number, y: number, velY: number} | null>(null)
+  const foodElementRef = useRef<HTMLDivElement>(null)
 
   const showSpeech = (phrases: string[], durationMs?: number) => {
     if (!bubbleRef.current) return
@@ -141,7 +144,7 @@ export function RoamingPetClient({ spritesheetUrl }: { spritesheetUrl: string | 
         velRef.current.x = 0
         velRef.current.y = 0
       } 
-      else if (posRef.current.y < window.innerHeight - VISIBLE_HEIGHT || Math.abs(velRef.current.y) > 0.1 || Math.abs(velRef.current.x) > 5) {
+      else if (posRef.current.y < window.innerHeight - VISIBLE_HEIGHT || Math.abs(velRef.current.y) > 0.1 || Math.abs(velRef.current.x) > 10) {
         // IN THE AIR or Thrown fast
         velRef.current.y += 0.8 * speedMult // Gravity
         
@@ -210,6 +213,30 @@ export function RoamingPetClient({ spritesheetUrl }: { spritesheetUrl: string | 
               velRef.current.x = 0
               showSpeech(["Zzz..."]) // Stay asleep
            }
+        } else if (foodRef.current) {
+           // FOOD CHASE LOGIC
+           const dist = foodRef.current.x - (posRef.current.x + VISIBLE_WIDTH / 2)
+           
+           if (Math.abs(dist) > 20) {
+              if (dist > 0) {
+                 changeState('running-right')
+                 velRef.current.x = 7.0 * speedMult // Run slightly faster for food
+              } else {
+                 changeState('running-left')
+                 velRef.current.x = -7.0 * speedMult
+              }
+           } else {
+              velRef.current.x = 0
+              changeState('idle')
+              // Eat it if it's on the ground
+              if (foodRef.current.y >= window.innerHeight - 50) {
+                 foodRef.current = null
+                 showSpeech(["Yummy!", "🍎❤️", "Delicious!"], 3000)
+                 velRef.current.y = -8 * speedMult // Happy jump
+                 changeState('jumping')
+              }
+           }
+           stateTimerRef.current = 0 // Keep timer reset while chasing
         } else {
            // Normal AI Logic
            stateTimerRef.current++
@@ -278,6 +305,29 @@ export function RoamingPetClient({ spritesheetUrl }: { spritesheetUrl: string | 
       if (posRef.current.x > window.innerWidth - VISIBLE_WIDTH) posRef.current.x = window.innerWidth - VISIBLE_WIDTH
       if (posRef.current.y < 0) posRef.current.y = 0
       if (posRef.current.y > window.innerHeight - VISIBLE_HEIGHT) posRef.current.y = window.innerHeight - VISIBLE_HEIGHT
+
+      // FOOD PHYSICS
+      if (foodRef.current) {
+         foodRef.current.velY += 0.8 * speedMult // Gravity for food
+         foodRef.current.y += foodRef.current.velY
+         
+         // Floor collision for food
+         if (foodRef.current.y > window.innerHeight - 30) {
+            foodRef.current.y = window.innerHeight - 30
+            if (foodRef.current.velY > 3) {
+               foodRef.current.velY *= -0.4 // bounce
+            } else {
+               foodRef.current.velY = 0 // settle
+            }
+         }
+         
+         if (foodElementRef.current) {
+            foodElementRef.current.style.transform = `translate(${foodRef.current.x}px, ${foodRef.current.y}px)`
+            foodElementRef.current.style.opacity = '1'
+         }
+      } else if (foodElementRef.current) {
+         foodElementRef.current.style.opacity = '0'
+      }
 
       // Render Loop
       ctx!.clearRect(0, 0, CELL_WIDTH, CELL_HEIGHT)
@@ -367,6 +417,33 @@ export function RoamingPetClient({ spritesheetUrl }: { spritesheetUrl: string | 
           }}
         />
       </div>
+      
+      {/* Food Element */}
+      <div 
+        ref={foodElementRef}
+        className="absolute top-0 left-0 text-2xl transition-opacity duration-200"
+        style={{ opacity: 0, willChange: 'transform' }}
+      >
+        🍎
+      </div>
+
+      {/* Feed Button */}
+      <button 
+        onClick={() => {
+           if (!foodRef.current) {
+             foodRef.current = {
+                x: Math.max(20, Math.random() * (window.innerWidth - 40)),
+                y: -50,
+                velY: 0
+             }
+             hideSpeech() // Hide Zzz if sleeping
+             lastActivityTimeRef.current = Date.now() // Wake up
+           }
+        }}
+        className="fixed bottom-4 left-4 z-[10000] bg-background/80 backdrop-blur-sm border border-border px-3 py-2 rounded-full shadow-lg text-sm font-medium hover:bg-muted transition-colors pointer-events-auto flex items-center gap-2"
+      >
+        <span>🍎</span> <span className="hidden sm:inline">Feed</span>
+      </button>
     </div>
   )
 }
