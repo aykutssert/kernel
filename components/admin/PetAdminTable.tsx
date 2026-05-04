@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { Pencil, Trash2, Search, X, Eye, Heart, ChevronUp, ChevronDown, ChevronsUpDown, Copy } from 'lucide-react'
+import { Pencil, Trash2, Search, X, Eye, Heart, ChevronUp, ChevronDown, ChevronsUpDown, Copy, PawPrint } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 import { ConfirmDialog } from './ConfirmDialog'
@@ -54,6 +54,20 @@ export function PetAdminTable({ pets: initialPets }: { pets: Pet[] }) {
       router.push(`/admin/pets/edit/${newId}`)
     } else {
       toast.error('Failed to duplicate pet.')
+    }
+  }
+
+  async function handleSetRoaming(id: string) {
+    const res = await fetch('/api/admin/settings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ key: 'roaming_pet_id', value: id }),
+    })
+    if (res.ok) {
+      toast.success('Set as global roaming pet.')
+      router.refresh()
+    } else {
+      toast.error('Failed to set roaming pet.')
     }
   }
 
@@ -197,9 +211,17 @@ export function PetAdminTable({ pets: initialPets }: { pets: Pet[] }) {
               </td>
               <td className="px-4 py-3">
                 <div className="flex items-center gap-1 justify-end">
+                  <button
+                    onClick={() => handleSetRoaming(pet.id)}
+                    className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                    title="Set as global roaming pet"
+                  >
+                    <PawPrint className="w-3.5 h-3.5" />
+                  </button>
                   <Link
                     href={`/admin/pets/edit/${pet.id}`}
                     className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                    title="Edit"
                   >
                     <Pencil className="w-3.5 h-3.5" />
                   </Link>
