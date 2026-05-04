@@ -1,6 +1,6 @@
 import { cacheTag, cacheLife } from 'next/cache'
 import { createPublicClient } from '@/lib/supabase/server'
-import type { Doc, DocMeta } from '@/types'
+import type { Doc, DocMeta, TaggedDoc } from '@/types'
 
 export async function getDocs(): Promise<DocMeta[]> {
   'use cache'
@@ -71,17 +71,31 @@ export async function getAllDocsMeta(): Promise<Pick<Doc, 'id' | 'title' | 'slug
   return data ?? []
 }
 
-export async function getDocsByTag(tag: string): Promise<DocMeta[]> {
+export async function getDocsByTag(tag: string): Promise<TaggedDoc[]> {
   'use cache'
   cacheTag('docs', `tag-${tag}`)
   cacheLife('max')
   const supabase = createPublicClient()
   const { data } = await supabase
     .from('docs')
-    .select('id, title, slug, category, order_index, published, tags')
+    .select('id, title, slug, category, description, content, image_url, order_index, published, tags, created_at')
     .eq('published', true)
     .contains('tags', [tag])
     .order('category')
+    .order('order_index')
+  return data ?? []
+}
+
+export async function getPromptDocs(): Promise<TaggedDoc[]> {
+  'use cache'
+  cacheTag('docs', 'prompts')
+  cacheLife('max')
+  const supabase = createPublicClient()
+  const { data } = await supabase
+    .from('docs')
+    .select('id, title, slug, category, description, content, image_url, order_index, published, tags, created_at')
+    .eq('published', true)
+    .eq('category', 'prompts')
     .order('order_index')
   return data ?? []
 }

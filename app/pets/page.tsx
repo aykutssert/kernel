@@ -104,7 +104,7 @@ async function PetsList({ searchParams }: Props) {
         <>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
             {pets.map((pet) => (
-              <div key={pet.id} className="border border-black/10 dark:border-white/10 rounded-xl overflow-hidden bg-background flex flex-col shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:border-black/50 dark:hover:border-white/50">
+              <div key={pet.id} className="border border-border rounded-xl overflow-hidden bg-background flex flex-col shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:border-foreground/40">
                 <Link href={`/pets/${pet.id}`} className="block">
                   <PetCardCanvas spritesheetUrl={pet.spritesheet_url} size={140} />
                 </Link>

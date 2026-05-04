@@ -124,7 +124,7 @@ function ShareModalContent({ petId, petName, description, spritesheetUrl, onClos
                   {description && (
                     <p className="text-sm text-black/60 line-clamp-2 leading-snug mt-1">{description}</p>
                   )}
-                  <span className="mt-3 self-start text-[11px] font-bold font-mono border-2 border-black/80 text-black/80 px-2 py-0.5 rounded">
+                  <span className="mt-3 self-start text-[11px] font-bold font-mono border-2 border-foreground/80 text-foreground/80 px-2 py-0.5 rounded">
                     kernel-indol.vercel.app
                   </span>
                 </div>

@@ -25,3 +25,18 @@ export interface DocMeta {
   published: boolean
   tags: string[]
 }
+
+export type TaggedDoc = Pick<
+  Doc,
+  | 'id'
+  | 'title'
+  | 'slug'
+  | 'category'
+  | 'description'
+  | 'content'
+  | 'image_url'
+  | 'order_index'
+  | 'published'
+  | 'tags'
+  | 'created_at'
+>

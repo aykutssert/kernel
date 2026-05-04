@@ -4,9 +4,9 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { cn } from '@/lib/utils'
 
 const TABS = [
-  { label: 'Newest', value: 'newest' },
-  { label: 'Most liked', value: 'liked' },
-  { label: 'Most viewed', value: 'viewed' },
+  { label: 'Newest', shortLabel: 'Newest', value: 'newest' },
+  { label: 'Most liked', shortLabel: 'Liked', value: 'liked' },
+  { label: 'Most viewed', shortLabel: 'Viewed', value: 'viewed' },
 ] as const
 
 type SortValue = (typeof TABS)[number]['value']
@@ -31,20 +31,21 @@ export function PetsSortTabs({ defaultSort, showNsfw }: { defaultSort: SortValue
   }
 
   return (
-    <div className="flex items-center justify-between gap-4">
-      <div className="inline-flex items-center gap-1 p-1 rounded-lg border border-border bg-muted/40">
+    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+      <div className="grid grid-cols-3 gap-1 rounded-lg border border-border bg-muted/40 p-1 sm:inline-flex sm:w-auto sm:items-center">
         {TABS.map((tab) => (
           <button
             key={tab.value}
             onClick={() => handleSort(tab.value)}
             className={cn(
-              'px-3 py-1 rounded-md text-xs font-medium transition-colors',
+              'rounded-md px-2 py-1 text-xs font-medium transition-colors sm:px-3',
               defaultSort === tab.value
                 ? 'bg-background text-foreground shadow-sm border border-border'
                 : 'text-muted-foreground hover:text-foreground'
             )}
           >
-            {tab.label}
+            <span className="sm:hidden">{tab.shortLabel}</span>
+            <span className="hidden sm:inline">{tab.label}</span>
           </button>
         ))}
       </div>
@@ -52,7 +53,7 @@ export function PetsSortTabs({ defaultSort, showNsfw }: { defaultSort: SortValue
       <button
         onClick={toggleNsfw}
         aria-label="Toggle NSFW content"
-        className="flex items-center gap-2.5 shrink-0"
+        className="flex shrink-0 items-center justify-between gap-2.5 sm:justify-start"
       >
         <span className="text-xs text-muted-foreground select-none">Include NSFW</span>
         <span className={cn(

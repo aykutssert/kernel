@@ -70,7 +70,7 @@ async function DocPageContent({ params }: { params: Promise<{ category: string; 
         </ScrollFadeAside>
 
         {/* Content */}
-        <main className="flex-1 min-w-0 px-4 md:px-10 pt-6 pb-32">
+        <main className="flex-1 min-w-0 px-4 md:px-10 pt-3 pb-32">
           <div className="mb-8">
             <Link
               href={`/docs/${firstInCategory.category}/${firstInCategory.slug}`}
@@ -92,7 +92,7 @@ async function DocPageContent({ params }: { params: Promise<{ category: string; 
                 {doc.tags.map((tag) => (
                   <Link
                     key={tag}
-                    href={`/tags/${tag}`}
+                    href={`/prompts?tag=${encodeURIComponent(tag)}`}
                     className="px-2 py-0.5 rounded text-xs font-mono bg-muted text-muted-foreground hover:bg-foreground hover:text-background transition-colors"
                   >
                     {tag}
@@ -189,7 +189,7 @@ async function DocPageContent({ params }: { params: Promise<{ category: string; 
               : []
             if (related.length > 0) {
               return (
-                <div className="pt-6 pb-8 space-y-1">
+                <div className="pt-1.5 pb-8 space-y-1">
                   <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Related</p>
                   {related.map((d) => (
                     <a

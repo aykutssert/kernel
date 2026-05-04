@@ -26,7 +26,7 @@ export function Sidebar({ docs, onNavigate }: SidebarProps) {
   }, {} as GroupedDocs)
 
   return (
-    <nav className="w-full pt-6 pb-8 pl-0 pr-4">
+    <nav className="w-full pt-1.5 pb-8 pl-0 pr-4">
       {Object.entries(grouped).map(([category, pages]) => (
         <CategoryGroup
           key={category}

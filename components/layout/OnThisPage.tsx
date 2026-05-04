@@ -55,7 +55,7 @@ export function OnThisPage({ content: _ }: { content: string }) {
   if (headings.length === 0) return null
 
   return (
-    <nav className="pt-6 pb-8">
+    <nav className="pt-1.5 pb-8">
       <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
         On this page
       </p>

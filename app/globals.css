@@ -25,7 +25,7 @@
     --accent-foreground: 240 5.9% 10%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 96%;
+    --border: 240 5.9% 86%;
     --input: 240 5.9% 93%;
     --ring: 240 5.9% 10%;
     --radius: 0.5rem;
@@ -52,7 +52,7 @@
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 10%;
+    --border: 240 3.7% 18%;
     --input: 240 3.7% 13%;
     --ring: 240 4.9% 83.9%;
   }
@@ -100,6 +100,29 @@ body {
 @utility scrollbar-none {
   scrollbar-width: none;
   &::-webkit-scrollbar { display: none; }
+}
+
+.filter-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--border)) transparent;
+}
+
+.filter-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.filter-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.filter-scrollbar::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 999px;
+}
+
+.filter-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.45);
 }
 
 button { cursor: pointer !important; }

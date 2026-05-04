@@ -16,13 +16,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }))
 
   const tagUrls: MetadataRoute.Sitemap = tags.map((tag) => ({
-    url: `${baseUrl}/tags/${tag}`,
+    url: `${baseUrl}/prompts?tag=${encodeURIComponent(tag)}`,
     changeFrequency: 'weekly',
     priority: 0.5,
   }))
 
   return [
     { url: baseUrl, changeFrequency: 'daily', priority: 1 },
+    { url: `${baseUrl}/prompts`, changeFrequency: 'weekly', priority: 0.8 },
     ...docUrls,
     ...tagUrls,
   ]

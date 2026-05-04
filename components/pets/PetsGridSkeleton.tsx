@@ -22,7 +22,7 @@ export function PetsGridSkeleton() {
       {/* Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
         {Array.from({ length: 15 }).map((_, i) => (
-          <div key={i} className="border border-black/10 dark:border-white/10 rounded-xl overflow-hidden bg-background flex flex-col">
+          <div key={i} className="border border-border rounded-xl overflow-hidden bg-background flex flex-col">
             {/* Canvas area */}
             <div className="aspect-square bg-muted animate-pulse" />
             {/* Card body */}

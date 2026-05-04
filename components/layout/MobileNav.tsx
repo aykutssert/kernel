@@ -25,7 +25,7 @@ function MobileCategoryGroup({
   const filtered = activeTag ? pages.filter((p) => (p.tags ?? []).includes(activeTag)) : pages
 
   return (
-    <div className="border-b border-border/50 last:border-0 pb-1 last:pb-0">
+    <div className="border-b border-border last:border-0 pb-1 last:pb-0">
       <button
         onClick={() => setOpen((o) => !o)}
         className="w-full flex items-center justify-between py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors"

@@ -14,7 +14,8 @@ export function CategoryTabs({ docs }: { docs: DocMeta[] }) {
 
   const categories = Array.from(new Set(docs.map((d) => d.category)))
   const isPets = pathname.startsWith('/pets')
-  const activeCategory = isPets ? null : categories.find((cat) => pathname.startsWith(`/docs/${cat}`))
+  const isPrompts = pathname.startsWith('/prompts')
+  const activeCategory = isPets ? null : isPrompts ? 'prompts' : categories.find((cat) => pathname.startsWith(`/docs/${cat}`))
 
   const update = useCallback(() => {
     const el = navRef.current
@@ -65,7 +66,7 @@ export function CategoryTabs({ docs }: { docs: DocMeta[] }) {
           {categories.map((cat) => {
             const firstDoc = docs.find((d) => d.category === cat)
             if (!firstDoc) return null
-            const href = `/docs/${cat}/${firstDoc.slug}`
+            const href = cat === 'prompts' ? '/prompts' : `/docs/${cat}/${firstDoc.slug}`
             const active = activeCategory === cat
             return (
               <Link

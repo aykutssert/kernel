@@ -41,16 +41,16 @@ export function TagFilterBar({ docs, activeTags = [] }: { docs: DocMeta[]; activ
         <div
           ref={scrollRef}
           onScroll={update}
-          className="flex items-center gap-1.5 overflow-x-auto scrollbar-none py-2.5"
+          className="flex items-center gap-1.5 overflow-x-auto scrollbar-none py-2"
         >
           {allTags.map((tag) => {
             const active = activeTags.includes(tag)
             return (
               <Link
                 key={tag}
-                href={`/tags/${tag}`}
+                href={`/prompts?tag=${encodeURIComponent(tag)}`}
                 className={cn(
-                  'shrink-0 px-2 py-0.5 rounded text-[11px] font-mono transition-colors whitespace-nowrap',
+                  'shrink-0 px-2 py-0.5 rounded border border-border text-[11px] font-mono transition-colors whitespace-nowrap',
                   active
                     ? 'bg-foreground text-background'
                     : 'bg-muted text-muted-foreground hover:text-foreground hover:bg-foreground/10'
