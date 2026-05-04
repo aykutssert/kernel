@@ -16,7 +16,7 @@ import { Footer } from '@/components/layout/Footer'
 import { ScrollToTop } from '@/components/layout/ScrollToTop'
 import { getDocs, getDoc } from '@/lib/docs'
 import { DocViewTracker } from '@/components/docs/DocViewTracker'
-import { ExternalLink, ChevronLeft, ChevronRight } from 'lucide-react'
+import { ExternalLink, ChevronLeft, ChevronRight, ImageIcon } from 'lucide-react'
 
 interface Props {
   params: Promise<{ category: string; slug: string }>
@@ -121,7 +121,16 @@ async function DocPageContent({ params }: { params: Promise<{ category: string; 
             </div>
           )}
 
-          <DocContent content={doc.content} />
+          {doc.required_images && (
+            <div className="flex items-center gap-2 mb-4 px-4 py-2 rounded-full border w-fit text-sm font-medium
+              bg-amber-50 border-amber-200 text-amber-700
+              dark:bg-amber-950/40 dark:border-amber-800/50 dark:text-amber-400">
+              <ImageIcon className="w-4 h-4 shrink-0" />
+              <span>Requires {doc.required_images} {doc.required_images === 1 ? 'image' : 'images'}</span>
+            </div>
+          )}
+
+          <DocContent content={doc.content} variables={doc.variables ?? []} />
           <CopyCodeButton />
 
           {doc.source_url && (

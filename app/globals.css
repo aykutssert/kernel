@@ -231,6 +231,14 @@ button:disabled { cursor: not-allowed !important; }
   color: hsl(var(--foreground));
 }
 
+/* Raw doc content — Shiki dual-theme color variables */
+.doc-raw span {
+  color: var(--shiki-light) !important;
+}
+.dark .doc-raw span {
+  color: var(--shiki-dark) !important;
+}
+
 @keyframes heart-pop {
   0%   { transform: scale(1); }
   30%  { transform: scale(1.45); }

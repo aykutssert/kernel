@@ -1,39 +1,35 @@
+import { codeToHtml } from 'shiki'
 import { normalizeContent } from '@/lib/utils'
-import { unified } from 'unified'
-import remarkParse from 'remark-parse'
-import remarkGfm from 'remark-gfm'
-import remarkRehype from 'remark-rehype'
-import rehypeSlug from 'rehype-slug'
-import rehypeAutolinkHeadings from 'rehype-autolink-headings'
-import rehypePrettyCode from 'rehype-pretty-code'
-import rehypeStringify from 'rehype-stringify'
+import { DocRawContent } from './DocRawContent'
+
+interface Variable {
+  name: string
+  default?: string
+}
 
 interface DocContentProps {
   content: string
+  variables?: Variable[]
 }
 
-export async function DocContent({ content }: DocContentProps) {
-  const result = await unified()
-    .use(remarkParse)
-    .use(remarkGfm)
-    .use(remarkRehype, { allowDangerousHtml: true })
-    .use(rehypeSlug)
-    .use(rehypeAutolinkHeadings, {
-      behavior: 'append',
-      properties: { className: ['anchor'], ariaHidden: true, tabIndex: -1 },
-      content: { type: 'text', value: '#' },
-    })
-    .use(rehypePrettyCode, {
-      theme: { dark: 'one-dark-pro', light: 'one-light' },
-      keepBackground: true,
-    })
-    .use(rehypeStringify, { allowDangerousHtml: true })
-    .process(normalizeContent(content))
+const FENCE_RE = /^```(\w+)?\n([\s\S]*?)```\s*$/
 
-  return (
-    <div
-      className="prose prose-lg max-w-none prose-p:leading-7 prose-p:text-base"
-      dangerouslySetInnerHTML={{ __html: String(result) }}
-    />
-  )
+function detectLang(raw: string): { lang: string; code: string } {
+  const trimmed = raw.trim()
+  const match = trimmed.match(FENCE_RE)
+  if (match) return { lang: match[1] ?? 'text', code: match[2] }
+  return { lang: 'markdown', code: raw }
+}
+
+export async function DocContent({ content, variables = [] }: DocContentProps) {
+  const normalized = normalizeContent(content)
+  const { lang, code } = detectLang(normalized)
+
+  const html = await codeToHtml(code, {
+    lang,
+    themes: { dark: 'one-dark-pro', light: 'one-light' },
+    defaultColor: false,
+  })
+
+  return <DocRawContent html={html} content={code} variables={variables} />
 }

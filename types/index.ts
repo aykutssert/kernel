@@ -6,6 +6,8 @@ export interface Doc {
   content: string
   source_url: string | null
   image_url: string | null
+  required_images: number | null
+  variables: { name: string; default?: string }[]
   tags: string[]
   order_index: number
   published: boolean

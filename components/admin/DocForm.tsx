@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { slugify, cn } from '@/lib/utils'
-import { ImagePlus, X } from 'lucide-react'
+import { ImagePlus, X, Plus } from 'lucide-react'
 import { toast } from 'sonner'
 import { ConfirmDialog } from './ConfirmDialog'
 import type { Doc } from '@/types'
@@ -28,6 +28,10 @@ export function DocForm({ doc, categories, allDocs }: DocFormProps) {
   const [orderIndex, setOrderIndex] = useState(String(doc?.order_index ?? 0))
   const [published, setPublished] = useState(doc?.published ?? false)
   const [imageUrl, setImageUrl] = useState(doc?.image_url ?? '')
+  const [requiredImages, setRequiredImages] = useState<string>(String(doc?.required_images ?? ''))
+  const [variables, setVariables] = useState<{ name: string; default: string }[]>(
+    (doc?.variables ?? []).map((v) => ({ name: v.name, default: v.default ?? '' }))
+  )
   const [tags, setTags] = useState<string[]>(doc?.tags ?? [])
   const [tagInput, setTagInput] = useState('')
   const [saving, setSaving] = useState(false)
@@ -42,7 +46,7 @@ export function DocForm({ doc, categories, allDocs }: DocFormProps) {
   useEffect(() => {
     if (!isMounted.current) { isMounted.current = true; return }
     setIsDirty(true)
-  }, [title, category, customCategory, slug, sourceUrl, content, orderIndex, published, imageUrl, tags])
+  }, [title, category, customCategory, slug, sourceUrl, content, orderIndex, published, imageUrl, tags, requiredImages, variables])
 
   useEffect(() => {
     if (!isDirty) return
@@ -139,6 +143,11 @@ export function DocForm({ doc, categories, allDocs }: DocFormProps) {
       order_index: parseInt(orderIndex) || 0,
       published,
       image_url: imageUrl || null,
+      required_images: requiredImages !== '' ? parseInt(requiredImages) : null,
+      variables: variables.filter((v) => v.name.trim()).map((v) => ({
+        name: v.name.trim(),
+        ...(v.default.trim() ? { default: v.default.trim() } : {}),
+      })),
       tags,
     }
 
@@ -261,6 +270,20 @@ export function DocForm({ doc, categories, allDocs }: DocFormProps) {
               className="w-full px-3 py-2 text-sm border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-ring"
             />
           </div>
+
+          {effectiveCategory === 'prompts' && (
+            <div>
+              <label className="block text-sm font-medium mb-1.5">Required images <span className="text-muted-foreground font-normal">(optional)</span></label>
+              <input
+                type="number"
+                min={1}
+                value={requiredImages}
+                onChange={(e) => setRequiredImages(e.target.value)}
+                placeholder="e.g. 2"
+                className="w-full px-3 py-2 text-sm border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-ring"
+              />
+            </div>
+          )}
         </div>
 
         {/* Tags */}
@@ -284,6 +307,52 @@ export function DocForm({ doc, categories, allDocs }: DocFormProps) {
               className="flex-1 min-w-[140px] text-sm bg-transparent outline-none"
             />
           </div>
+        </div>
+
+        {/* Variables */}
+        <div>
+          <div className="flex items-center justify-between mb-1.5">
+            <label className="block text-sm font-medium">Variables</label>
+            <button
+              type="button"
+              onClick={() => setVariables((v) => [...v, { name: '', default: '' }])}
+              className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              Add variable
+            </button>
+          </div>
+          {variables.length === 0 ? (
+            <p className="text-xs text-muted-foreground">No variables. Use <code className="font-mono bg-muted px-1 py-0.5 rounded">{'{{variable_name}}'}</code> in content.</p>
+          ) : (
+            <div className="space-y-2">
+              {variables.map((v, i) => (
+                <div key={i} className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={v.name}
+                    onChange={(e) => setVariables((vars) => vars.map((x, j) => j === i ? { ...x, name: e.target.value.replace(/\s+/g, '_') } : x))}
+                    placeholder="variable_name"
+                    className="flex-1 px-3 py-2 text-sm border border-border rounded-lg bg-background font-mono focus:outline-none focus:ring-2 focus:ring-ring"
+                  />
+                  <input
+                    type="text"
+                    value={v.default}
+                    onChange={(e) => setVariables((vars) => vars.map((x, j) => j === i ? { ...x, default: e.target.value } : x))}
+                    placeholder="default value (optional)"
+                    className="flex-1 px-3 py-2 text-sm border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-ring"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setVariables((vars) => vars.filter((_, j) => j !== i))}
+                    className="p-2 text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Image upload */}
