@@ -1,6 +1,13 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
+const PUBLIC_API_PREFIXES = [
+  '/api/search',
+  '/api/pets/like',
+  '/api/pets/download',
+  '/api/pets/view',
+]
+
 export async function proxy(request: NextRequest) {
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
     return NextResponse.next({ request })
@@ -28,16 +35,24 @@ export async function proxy(request: NextRequest) {
   )
 
   const { data: { user } } = await supabase.auth.getUser()
+  const { pathname } = request.nextUrl
 
-  if (request.nextUrl.pathname.startsWith('/admin') && !user) {
+  if (pathname.startsWith('/admin') && !user) {
     const url = request.nextUrl.clone()
     url.pathname = '/login'
     return NextResponse.redirect(url)
+  }
+
+  if (pathname.startsWith('/api/')) {
+    const isPublic = PUBLIC_API_PREFIXES.some((p) => pathname.startsWith(p))
+    if (!isPublic && !user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
   }
 
   return supabaseResponse
 }
 
 export const config = {
-  matcher: ['/admin/:path*'],
+  matcher: ['/admin/:path*', '/api/:path*'],
 }
