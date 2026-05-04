@@ -4,6 +4,7 @@ import { Navbar } from '@/components/layout/Navbar'
 import { CategoryTabs } from '@/components/layout/CategoryTabs'
 import { Footer } from '@/components/layout/Footer'
 import { TagPageClient } from '@/components/tags/TagPageClient'
+import { PromptsGridSkeleton } from '@/components/prompts/PromptsGridSkeleton'
 import { getAllTags, getDocs, getPromptDocs } from '@/lib/docs'
 
 interface Props {
@@ -15,7 +16,7 @@ export const metadata: Metadata = {
   description: 'Browse and filter Kernel prompts.',
 }
 
-async function PromptsPageContent({ searchParams }: Props) {
+async function PromptsContent({ searchParams }: Props) {
   const params = await searchParams
   const tags = Array.isArray(params.tag)
     ? params.tag
@@ -26,30 +27,32 @@ async function PromptsPageContent({ searchParams }: Props) {
     ? params.sort
     : 'default'
 
-  const [docs, allDocs, allTags] = await Promise.all([getPromptDocs(), getDocs(), getAllTags()])
+  const [docs, allTags] = await Promise.all([getPromptDocs(), getAllTags()])
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <Navbar docs={allDocs} />
-      <CategoryTabs docs={allDocs} />
-      <div className="mx-auto w-full max-w-[1400px] px-4 py-6">
-        <TagPageClient
-          docs={docs}
-          allTags={allTags}
-          tags={tags}
-          initialQuery={params.q ?? ''}
-          initialSort={sort}
-        />
-      </div>
-      <Footer />
-    </div>
+    <TagPageClient
+      docs={docs}
+      allTags={allTags}
+      tags={tags}
+      initialQuery={params.q ?? ''}
+      initialSort={sort}
+    />
   )
 }
 
-export default function PromptsPage({ searchParams }: Props) {
+export default async function PromptsPage({ searchParams }: Props) {
+  const docs = await getDocs()
+
   return (
-    <Suspense fallback={<div className="min-h-screen" />}>
-      <PromptsPageContent searchParams={searchParams} />
-    </Suspense>
+    <div className="flex min-h-screen flex-col">
+      <Navbar docs={docs} />
+      <CategoryTabs docs={docs} />
+      <main className="mx-auto w-full max-w-[1400px] px-4 py-6">
+        <Suspense fallback={<PromptsGridSkeleton />}>
+          <PromptsContent searchParams={searchParams} />
+        </Suspense>
+      </main>
+      <Footer />
+    </div>
   )
 }
