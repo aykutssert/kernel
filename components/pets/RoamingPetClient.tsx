@@ -296,12 +296,7 @@ export function RoamingPetClient({ spritesheetUrl }: { spritesheetUrl: string | 
       // Sprite frame update at 8fps
       if (time - lastTimeRef.current >= 1000 / FPS) {
         lastTimeRef.current = time
-        if (stateRef.current.name === 'failed') {
-          // Play the animation once and stick to the last frame
-          frameRef.current = Math.min(frameRef.current + 1, stateRef.current.frames - 1)
-        } else {
-          frameRef.current = (frameRef.current + 1) % stateRef.current.frames
-        }
+        frameRef.current = (frameRef.current + 1) % stateRef.current.frames
       }
 
       rafRef.current = requestAnimationFrame(draw)
