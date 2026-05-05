@@ -55,13 +55,13 @@ export function DocVersionHandler({ doc, versions, currentHtml, currentLang }: P
   return (
     <div className="space-y-6">
       {/* Tabs */}
-      <div className="flex items-center gap-1 p-1 rounded-lg bg-muted/50 w-fit">
+      <div className="flex items-center gap-1 p-1 rounded-lg border border-border bg-muted/40 w-fit">
         <button
           type="button"
           onClick={() => setActiveTab('content')}
           className={cn(
             "flex items-center gap-2 px-4 py-1.5 text-sm font-medium rounded-md transition-all",
-            activeTab === 'content' ? "bg-background shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground"
+            activeTab === 'content' ? "bg-background shadow-sm text-foreground border border-border" : "text-muted-foreground hover:text-foreground"
           )}
         >
           <FileText className="w-4 h-4" />
@@ -72,7 +72,7 @@ export function DocVersionHandler({ doc, versions, currentHtml, currentLang }: P
           onClick={() => setActiveTab('versions')}
           className={cn(
             "flex items-center gap-2 px-4 py-1.5 text-sm font-medium rounded-md transition-all",
-            activeTab === 'versions' ? "bg-background shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground"
+            activeTab === 'versions' ? "bg-background shadow-sm text-foreground border border-border" : "text-muted-foreground hover:text-foreground"
           )}
         >
           <History className="w-4 h-4" />
