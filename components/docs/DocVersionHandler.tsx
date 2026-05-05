@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { History, FileText, ChevronRight, GitCompare, X, Clock, User } from 'lucide-react'
 import * as diff from 'diff'
+import { encode } from 'gpt-tokenizer'
 import { cn } from '@/lib/utils'
 import type { Doc, DocVersion } from '@/types'
 import { DocRawContent } from './DocRawContent'
@@ -35,19 +36,38 @@ export function DocVersionHandler({ doc, versions, currentHtml, currentLang }: P
   const renderDiff = (oldText: string, newText: string) => {
     const changes = diff.diffWordsWithSpace(oldText, newText)
     
+    let addedTokens = 0
+    let removedTokens = 0
+    
+    changes.forEach(part => {
+      if (part.added) addedTokens += encode(part.value).length
+      if (part.removed) removedTokens += encode(part.value).length
+    })
+    
     return (
-      <div className="font-mono text-xs leading-relaxed whitespace-pre-wrap p-5 rounded-md bg-[#F5F5F5] dark:bg-[#262626] border border-border">
-        {changes.map((part, index) => (
-          <span
-            key={index}
-            className={cn(
-              part.added ? "bg-emerald-500/20 text-emerald-700 dark:text-emerald-400" : 
-              part.removed ? "bg-rose-500/20 text-rose-700 dark:text-rose-400 line-through" : ""
-            )}
-          >
-            {part.value}
-          </span>
-        ))}
+      <div className="space-y-6">
+        <div className="flex items-center gap-6 text-[13px] font-mono">
+          <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
+            <span>≈+{addedTokens} tokens</span>
+          </div>
+          <div className="flex items-center gap-1.5 text-rose-600 dark:text-rose-400">
+            <span>≈-{removedTokens} tokens</span>
+          </div>
+        </div>
+
+        <div className="font-mono text-xs leading-relaxed whitespace-pre-wrap p-5 rounded-md bg-[#F5F5F5] dark:bg-[#262626] border border-border">
+          {changes.map((part, index) => (
+            <span
+              key={index}
+              className={cn(
+                part.added ? "bg-emerald-500/20 text-emerald-700 dark:text-emerald-400" : 
+                part.removed ? "bg-rose-500/20 text-rose-700 dark:text-rose-400 line-through" : ""
+              )}
+            >
+              {part.value}
+            </span>
+          ))}
+        </div>
       </div>
     )
   }
@@ -167,13 +187,8 @@ export function DocVersionHandler({ doc, versions, currentHtml, currentLang }: P
             </div>
             
             <div className="p-4 bg-muted/30 border-b flex items-center gap-6 text-xs font-medium">
-              <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
-                <div className="w-2 h-2 rounded-full bg-emerald-500" />
-                Additions
-              </div>
-              <div className="flex items-center gap-1.5 text-rose-600 dark:text-rose-400">
-                <div className="w-2 h-2 rounded-full bg-rose-500" />
-                Deletions
+              <div className="flex items-center gap-1.5 text-foreground/70 italic">
+                Changes between v{comparingVersion.version_number} and current version
               </div>
             </div>
 
