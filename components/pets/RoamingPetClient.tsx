@@ -33,16 +33,18 @@ export function RoamingPetClient({ spritesheetUrl }: { spritesheetUrl: string | 
   const frameRef = useRef(0)
   const rafRef = useRef(0)
   const lastTimeRef = useRef(0)
-  
+
   const isHoveredRef = useRef(false)
   const isDraggingRef = useRef(false)
   const dragVelocityRef = useRef({ x: 0, y: 0 })
   const lastPointerPosRef = useRef({ x: 0, y: 0 })
+  const dragDistanceRef = useRef(0)
   const wasThrownRef = useRef(false)
+  const forceWaveUntilRef = useRef(0)
   const bubbleTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const lastActivityTimeRef = useRef(Date.now())
-  
-  const foodRef = useRef<{x: number, y: number, velY: number} | null>(null)
+
+  const foodRef = useRef<{ x: number, y: number, velY: number } | null>(null)
   const foodElementRef = useRef<HTMLDivElement>(null)
 
   const showSpeech = (phrases: string[], durationMs?: number) => {
@@ -79,13 +81,15 @@ export function RoamingPetClient({ spritesheetUrl }: { spritesheetUrl: string | 
     function handlePointerMove(e: PointerEvent) {
       lastActivityTimeRef.current = Date.now()
       if (!isDraggingRef.current) return
-      
+
       const dx = e.clientX - lastPointerPosRef.current.x
       const dy = e.clientY - lastPointerPosRef.current.y
-      
+
+      dragDistanceRef.current += Math.abs(dx) + Math.abs(dy)
+
       posRef.current.x += dx
       posRef.current.y += dy
-      
+
       // Clamp bounds immediately while dragging
       const currentVisibleWidth = Math.round(CELL_WIDTH * (window.innerWidth < 768 ? 0.35 : 0.5))
       const currentVisibleHeight = Math.round(CELL_HEIGHT * (window.innerWidth < 768 ? 0.35 : 0.5))
@@ -93,10 +97,10 @@ export function RoamingPetClient({ spritesheetUrl }: { spritesheetUrl: string | 
       if (posRef.current.x > window.innerWidth - currentVisibleWidth) posRef.current.x = window.innerWidth - currentVisibleWidth
       if (posRef.current.y < 0) posRef.current.y = 0
       if (posRef.current.y > window.innerHeight - currentVisibleHeight) posRef.current.y = window.innerHeight - currentVisibleHeight
-      
-      // Calculate throw velocity based on drag speed
-      dragVelocityRef.current.x = dx * 0.8
-      dragVelocityRef.current.y = dy * 0.8
+
+      // Calculate throw velocity based on drag speed (slightly slower overall)
+      dragVelocityRef.current.x = dx * 0.5
+      dragVelocityRef.current.y = dy * 0.5
 
       lastPointerPosRef.current = { x: e.clientX, y: e.clientY }
     }
@@ -104,15 +108,27 @@ export function RoamingPetClient({ spritesheetUrl }: { spritesheetUrl: string | 
     function handlePointerUp() {
       if (isDraggingRef.current) {
         isDraggingRef.current = false
-        // Apply the throw!
-        velRef.current.x = dragVelocityRef.current.x
-        velRef.current.y = dragVelocityRef.current.y
         isHoveredRef.current = false
         stateTimerRef.current = 0 // reset AI timer
-        wasThrownRef.current = true
+
+        if (dragDistanceRef.current < 10) {
+          // It was just a click!
+          forceWaveUntilRef.current = Date.now() + 2000
+          showSpeech([
+            "Hi there!",
+            "Hello!",
+            "Nice to see you!",
+            "Teehee!",
+          ], 2000)
+        } else {
+          // Apply the throw!
+          velRef.current.x = dragVelocityRef.current.x
+          velRef.current.y = dragVelocityRef.current.y
+          wasThrownRef.current = true
+        }
       }
     }
-    
+
     function handleKeyDown() {
       lastActivityTimeRef.current = Date.now()
     }
@@ -148,7 +164,7 @@ export function RoamingPetClient({ spritesheetUrl }: { spritesheetUrl: string | 
 
     function draw(time: number) {
       const isMobile = window.innerWidth < 768
-      const speedMult = isMobile ? 0.5 : 1.0
+      const speedMult = isMobile ? 0.2 : 0.4
       const currentVisibleWidth = Math.round(CELL_WIDTH * (isMobile ? 0.35 : 0.5))
       const currentVisibleHeight = Math.round(CELL_HEIGHT * (isMobile ? 0.35 : 0.5))
 
@@ -157,11 +173,11 @@ export function RoamingPetClient({ spritesheetUrl }: { spritesheetUrl: string | 
         changeState('waiting') // acts like it's dangling
         velRef.current.x = 0
         velRef.current.y = 0
-      } 
+      }
       else if (posRef.current.y < window.innerHeight - currentVisibleHeight || Math.abs(velRef.current.y) > 0.1 || Math.abs(velRef.current.x) > 10) {
         // IN THE AIR or Thrown fast
         velRef.current.y += 0.8 * speedMult // Gravity
-        
+
         // Wall Bounce while flying (Predictive)
         if (posRef.current.x + velRef.current.x <= 0) {
           posRef.current.x = 0
@@ -181,135 +197,135 @@ export function RoamingPetClient({ spritesheetUrl }: { spritesheetUrl: string | 
 
         // Floor collision and bounce (Predictive)
         if (posRef.current.y + velRef.current.y >= window.innerHeight - currentVisibleHeight) {
-           posRef.current.y = window.innerHeight - currentVisibleHeight
-           if (velRef.current.y > 6) {
-             // Bounce up
-             velRef.current.y *= -0.4
-             velRef.current.x *= 0.8 // friction on hit
-             changeState('jumping')
-           } else {
-             // Settle on ground
-             velRef.current.y = 0
-             velRef.current.x = 0
-             changeState('idle')
-             
-             // Complain if dropped
-             if (wasThrownRef.current) {
-                wasThrownRef.current = false
-                showSpeech([
-                   "Ouch!",
-                   "Hey, watch it!",
-                   "That hurt!",
-                   "Don't throw me!",
-                   "Are you crazy?!",
-                   "My head...",
-                   "Why did you do that?"
-                ], 3000)
-             }
-           }
+          posRef.current.y = window.innerHeight - currentVisibleHeight
+          if (velRef.current.y > 6) {
+            // Bounce up
+            velRef.current.y *= -0.4
+            velRef.current.x *= 0.8 // friction on hit
+            changeState('jumping')
+          } else {
+            // Settle on ground
+            velRef.current.y = 0
+            velRef.current.x = 0
+            changeState('idle')
+
+            // Complain if dropped
+            if (wasThrownRef.current) {
+              wasThrownRef.current = false
+              showSpeech([
+                "Ouch!",
+                "Hey, watch it!",
+                "That hurt!",
+                "Don't throw me!",
+                "Are you crazy?!",
+                "My head...",
+                "Why did you do that?"
+              ], 3000)
+            }
+          }
         } else {
-           // Free falling / flying animation
-           changeState('jumping')
+          // Free falling / flying animation
+          changeState('jumping')
         }
-      } 
-      else if (isHoveredRef.current) {
-        // Hovering on ground
+      }
+      else if (isHoveredRef.current || Date.now() < forceWaveUntilRef.current) {
+        // Hovering or clicked on ground
         velRef.current.x = 0
         changeState('waving')
-      } 
+      }
       else {
         // AI Logic on ground
         const isAfk = (Date.now() - lastActivityTimeRef.current) > 30000 // 30 seconds
 
         if (isAfk) {
-           if (stateRef.current.name !== 'failed') {
-              changeState('failed')
-              velRef.current.x = 0
-              showSpeech(["Zzz..."]) // Stay asleep
-           }
+          if (stateRef.current.name !== 'failed') {
+            changeState('failed')
+            velRef.current.x = 0
+            showSpeech(["Zzz..."]) // Stay asleep
+          }
         } else if (foodRef.current) {
-           // FOOD CHASE LOGIC
-           const dist = foodRef.current.x - (posRef.current.x + currentVisibleWidth / 2)
-           
-           if (Math.abs(dist) > 20) {
-              if (dist > 0) {
-                 changeState('running-right')
-                 velRef.current.x = 7.0 * speedMult // Run slightly faster for food
-              } else {
-                 changeState('running-left')
-                 velRef.current.x = -7.0 * speedMult
-              }
-           } else {
-              velRef.current.x = 0
-              changeState('idle')
-              // Eat it if it's on the ground
-              if (foodRef.current.y >= window.innerHeight - 50) {
-                 foodRef.current = null
-                 showSpeech(["Yummy!", "🍎❤️", "Delicious!"], 3000)
-                 velRef.current.y = -8 * speedMult // Happy jump
-                 changeState('jumping')
-              }
-           }
-           stateTimerRef.current = 0 // Keep timer reset while chasing
+          // FOOD CHASE LOGIC
+          const dist = foodRef.current.x - (posRef.current.x + currentVisibleWidth / 2)
+
+          if (Math.abs(dist) > 20) {
+            if (dist > 0) {
+              changeState('running-right')
+              velRef.current.x = 7.0 * speedMult // Run slightly faster for food
+            } else {
+              changeState('running-left')
+              velRef.current.x = -7.0 * speedMult
+            }
+          } else {
+            velRef.current.x = 0
+            changeState('idle')
+            // Eat it if it's on the ground
+            if (foodRef.current.y >= window.innerHeight - 50) {
+              foodRef.current = null
+              showSpeech(["Yummy!", "🍎❤️", "Delicious!"], 3000)
+              velRef.current.y = -8 * speedMult // Happy jump
+              changeState('jumping')
+            }
+          }
+          stateTimerRef.current = 0 // Keep timer reset while chasing
         } else {
-           // Normal AI Logic
-           stateTimerRef.current++
-           if (stateTimerRef.current > 60 * (2 + Math.random() * 3)) { // change every 2-5 seconds
-             stateTimerRef.current = 0
-             const rand = Math.random()
-             // 15% chance to jump
-             if (rand < 0.15) {
-               changeState('jumping')
-               velRef.current.y = -16 * speedMult
-               velRef.current.x = (Math.random() > 0.5 ? 5.0 : -5.0) * speedMult
-               hideSpeech()
-             } 
-             // 35% chance to idle
-             else if (rand < 0.5) {
-                changeState('idle')
-                velRef.current.x = 0
-                
-                // 100% chance to speak when idling
-                showSpeech([
-                   "What a cool page!",
-                   "Try dragging me!",
-                   "I'm generated by Codex.",
-                   "Need a code review?",
-                   "It's so quiet here...",
-                   "Click me!",
-                   "Are you writing code?",
-                   "Bloop."
-                ], 3000)
-             } 
-             // 30% chance to run right
-             else if (rand < 0.7) {
-                changeState('running-right')
-                velRef.current.x = 5.0 * speedMult
-                hideSpeech()
-             } 
-             // 30% chance to run left
-             else {
-                changeState('running-left')
-                velRef.current.x = -5.0 * speedMult
-                hideSpeech()
-             }
-           }
-           
-           // Ground wall bounds
-           if (posRef.current.x <= 0) {
-             posRef.current.x = 0
-             changeState('running-right')
-             velRef.current.x = 5.0 * speedMult
-             stateTimerRef.current = 0
-           } else if (posRef.current.x + currentVisibleWidth >= window.innerWidth) {
-             posRef.current.x = window.innerWidth - currentVisibleWidth
-             changeState('running-left')
-             velRef.current.x = -5.0 * speedMult
-             stateTimerRef.current = 0
-           }
+          // Normal AI Logic
+          stateTimerRef.current++
+          if (stateTimerRef.current > 60 * (2 + Math.random() * 3)) { // change every 2-5 seconds
+            stateTimerRef.current = 0
+            const rand = Math.random()
+            // 15% chance to jump
+            if (rand < 0.15) {
+              changeState('jumping')
+              velRef.current.y = -16 * speedMult
+              velRef.current.x = (Math.random() > 0.5 ? 5.0 : -5.0) * speedMult
+              hideSpeech()
+            }
+            // 35% chance to idle
+            else if (rand < 0.5) {
+              changeState('idle')
+              velRef.current.x = 0
+
+              // 100% chance to speak when idling
+              showSpeech([
+                "What a cool page!",
+                "Try dragging me!",
+                "I'm generated by Codex.",
+                "Need a code review?",
+                "It's so quiet here...",
+                "Click me!",
+                "Are you writing code?",
+                "Bloop."
+              ], 3000)
+            }
+            // 30% chance to run right
+            else if (rand < 0.7) {
+              changeState('running-right')
+              velRef.current.x = 5.0 * speedMult
+              hideSpeech()
+            }
+            // 30% chance to run left
+            else {
+              changeState('running-left')
+              velRef.current.x = -5.0 * speedMult
+              hideSpeech()
+            }
+          }
+
+          // Ground wall bounds
+          if (posRef.current.x <= 0) {
+            posRef.current.x = 0
+            changeState('running-right')
+            velRef.current.x = 5.0 * speedMult
+            stateTimerRef.current = 0
+          } else if (posRef.current.x + currentVisibleWidth >= window.innerWidth) {
+            posRef.current.x = window.innerWidth - currentVisibleWidth
+            changeState('running-left')
+            velRef.current.x = -5.0 * speedMult
+            stateTimerRef.current = 0
+          }
         }
       }
-      
+
       // Apply velocities
       posRef.current.x += velRef.current.x
       posRef.current.y += velRef.current.y
@@ -322,25 +338,25 @@ export function RoamingPetClient({ spritesheetUrl }: { spritesheetUrl: string | 
 
       // FOOD PHYSICS
       if (foodRef.current) {
-         foodRef.current.velY += 0.8 * speedMult // Gravity for food
-         foodRef.current.y += foodRef.current.velY
-         
-         // Floor collision for food
-         if (foodRef.current.y > window.innerHeight - 30) {
-            foodRef.current.y = window.innerHeight - 30
-            if (foodRef.current.velY > 3) {
-               foodRef.current.velY *= -0.4 // bounce
-            } else {
-               foodRef.current.velY = 0 // settle
-            }
-         }
-         
-         if (foodElementRef.current) {
-            foodElementRef.current.style.transform = `translate(${foodRef.current.x}px, ${foodRef.current.y}px)`
-            foodElementRef.current.style.opacity = '1'
-         }
+        foodRef.current.velY += 0.8 * speedMult // Gravity for food
+        foodRef.current.y += foodRef.current.velY
+
+        // Floor collision for food
+        if (foodRef.current.y > window.innerHeight - 30) {
+          foodRef.current.y = window.innerHeight - 30
+          if (foodRef.current.velY > 3) {
+            foodRef.current.velY *= -0.4 // bounce
+          } else {
+            foodRef.current.velY = 0 // settle
+          }
+        }
+
+        if (foodElementRef.current) {
+          foodElementRef.current.style.transform = `translate(${foodRef.current.x}px, ${foodRef.current.y}px)`
+          foodElementRef.current.style.opacity = '1'
+        }
       } else if (foodElementRef.current) {
-         foodElementRef.current.style.opacity = '0'
+        foodElementRef.current.style.opacity = '0'
       }
 
       // Render Loop
@@ -374,7 +390,7 @@ export function RoamingPetClient({ spritesheetUrl }: { spritesheetUrl: string | 
 
   return (
     <div className="fixed inset-0 pointer-events-none z-[9999] overflow-hidden">
-      <div 
+      <div
         ref={containerRef}
         className="absolute top-0 left-0"
         style={{
@@ -383,10 +399,10 @@ export function RoamingPetClient({ spritesheetUrl }: { spritesheetUrl: string | 
           willChange: 'transform'
         }}
       >
-        <div 
+        <div
           ref={bubbleRef}
           className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-background border border-border text-foreground rounded-2xl shadow-sm text-[11px] font-medium opacity-0 transition-opacity duration-300 pointer-events-none whitespace-nowrap"
-          style={{ 
+          style={{
             boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
             transformOrigin: 'bottom center'
           }}
@@ -396,33 +412,33 @@ export function RoamingPetClient({ spritesheetUrl }: { spritesheetUrl: string | 
           width={CELL_WIDTH}
           height={CELL_HEIGHT}
           className="w-full h-full pointer-events-auto cursor-grab active:cursor-grabbing"
-          onMouseEnter={() => { 
+          onMouseEnter={() => {
             if (!isDraggingRef.current) {
               isHoveredRef.current = true
               showSpeech([
-                 "Hi there!",
-                 "Hello!",
-                 "Hey!",
-                 "*waves*",
-                 "Nice to see you!"
+                "Hi there!",
+                "Hello!",
+                "Hey!",
+                "Nice to see you!"
               ]) // No timeout, stays while hovered
             }
           }}
-          onMouseLeave={() => { 
-            isHoveredRef.current = false 
+          onMouseLeave={() => {
+            isHoveredRef.current = false
             hideSpeech()
           }}
           onPointerDown={(e) => {
             isDraggingRef.current = true
             isHoveredRef.current = false
+            dragDistanceRef.current = 0
             lastPointerPosRef.current = { x: e.clientX, y: e.clientY }
             e.currentTarget.setPointerCapture(e.pointerId)
             showSpeech([
-               "Whoa!",
-               "Put me down!",
-               "Let me go!",
-               "Hey!",
-               "Flying time!"
+              "Whoa!",
+              "Put me down!",
+              "Let me go!",
+              "Hey!",
+              "Flying time!"
             ]) // No timeout, stays while grabbed
           }}
           style={{
@@ -431,9 +447,9 @@ export function RoamingPetClient({ spritesheetUrl }: { spritesheetUrl: string | 
           }}
         />
       </div>
-      
+
       {/* Food Element */}
-      <div 
+      <div
         ref={foodElementRef}
         className="absolute top-0 left-0 text-2xl transition-opacity duration-200"
         style={{ opacity: 0, willChange: 'transform' }}
@@ -442,17 +458,17 @@ export function RoamingPetClient({ spritesheetUrl }: { spritesheetUrl: string | 
       </div>
 
       {/* Feed Button */}
-      <button 
+      <button
         onClick={() => {
-           if (!foodRef.current) {
-             foodRef.current = {
-                x: Math.max(20, Math.random() * (window.innerWidth - 40)),
-                y: -50,
-                velY: 0
-             }
-             hideSpeech() // Hide Zzz if sleeping
-             lastActivityTimeRef.current = Date.now() // Wake up
-           }
+          if (!foodRef.current) {
+            foodRef.current = {
+              x: Math.max(20, Math.random() * (window.innerWidth - 40)),
+              y: -50,
+              velY: 0
+            }
+            hideSpeech() // Hide Zzz if sleeping
+            lastActivityTimeRef.current = Date.now() // Wake up
+          }
         }}
         className="fixed bottom-4 left-4 z-[10000] bg-background/80 backdrop-blur-sm border border-border px-3 py-2 rounded-full shadow-lg text-sm font-medium hover:bg-muted transition-colors pointer-events-auto flex items-center gap-2"
       >
