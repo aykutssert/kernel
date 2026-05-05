@@ -2,8 +2,9 @@ import { AdminShell } from '@/components/admin/AdminShell'
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { connection } from 'next/server'
+import { Suspense } from 'react'
 
-export default async function AdminDashboardLayout({ children }: { children: React.ReactNode }) {
+async function AdminGuard({ children }: { children: React.ReactNode }) {
   await connection()
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -22,5 +23,15 @@ export default async function AdminDashboardLayout({ children }: { children: Rea
     redirect('/')
   }
 
-  return <AdminShell>{children}</AdminShell>
+  return <>{children}</>
+}
+
+export default function AdminDashboardLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <Suspense fallback={<div className="min-h-screen animate-pulse bg-muted/20" />}>
+      <AdminGuard>
+        <AdminShell>{children}</AdminShell>
+      </AdminGuard>
+    </Suspense>
+  )
 }
