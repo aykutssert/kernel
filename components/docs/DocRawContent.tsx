@@ -46,7 +46,7 @@ export function DocRawContent({ html, content, variables, withLines = true }: Pr
   }
 
   const RawView = (
-    <div className="rounded-xl border border-foreground/20 overflow-hidden">
+    <div className="rounded-md border border-foreground/20 overflow-hidden">
       <div
         className={`doc-raw ${withLines ? 'with-lines' : ''} text-xs leading-relaxed font-mono
           [&_pre]:whitespace-pre-wrap [&_pre]:break-words [&_pre]:m-0
@@ -62,7 +62,7 @@ export function DocRawContent({ html, content, variables, withLines = true }: Pr
 
   return (
     <div className="space-y-4">
-      <div className="rounded-xl border border-foreground/20 p-4 space-y-3">
+      <div className="rounded-md border border-foreground/20 p-4 space-y-3">
         <p className="text-sm font-semibold">Variables</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {variables.map((v) => (
