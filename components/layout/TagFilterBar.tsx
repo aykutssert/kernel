@@ -53,7 +53,7 @@ export function TagFilterBar({ docs, activeTags = [] }: { docs: DocMeta[]; activ
                   'shrink-0 px-2 py-0.5 rounded border border-border text-[11px] font-mono transition-colors whitespace-nowrap',
                   active
                     ? 'bg-foreground text-background'
-                    : 'bg-muted text-muted-foreground hover:text-foreground hover:bg-foreground/10'
+                    : 'bg-muted text-foreground hover:text-foreground hover:bg-foreground/10'
                 )}
               >
                 {tag}
