@@ -6,6 +6,7 @@ import { Footer } from '@/components/layout/Footer'
 import { TagPageClient } from '@/components/tags/TagPageClient'
 import { PromptsGridSkeleton } from '@/components/prompts/PromptsGridSkeleton'
 import { getAllTags, getDocs, getPromptDocs } from '@/lib/docs'
+import { withPromptPreviews } from '@/lib/prompt-preview'
 
 interface Props {
   searchParams: Promise<{ q?: string; tag?: string | string[]; sort?: string; auth?: string }>
@@ -27,7 +28,8 @@ async function PromptsContent({ searchParams }: Props) {
     ? params.sort
     : 'default'
 
-  const [docs, allTags] = await Promise.all([getPromptDocs(), getAllTags()])
+  const [rawDocs, allTags] = await Promise.all([getPromptDocs(), getAllTags()])
+  const docs = await withPromptPreviews(rawDocs, (doc) => doc.image_url ? 4 : 8)
 
   return (
     <TagPageClient

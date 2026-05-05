@@ -19,9 +19,10 @@ interface LikeButtonProps {
   initialCount?: number
   compact?: boolean
   showCount?: boolean
+  onChange?: (liked: boolean, count: number) => void
 }
 
-export function LikeButton({ petId, initialCount = 0, compact = false, showCount = false }: LikeButtonProps) {
+export function LikeButton({ petId, initialCount = 0, compact = false, showCount = false, onChange }: LikeButtonProps) {
   const [liked, setLiked] = useState(false)
   const [count, setCount] = useState(initialCount)
   const [loading, setLoading] = useState(false)
@@ -54,6 +55,7 @@ export function LikeButton({ petId, initialCount = 0, compact = false, showCount
         const data = await res.json()
         setLiked(data.liked)
         setCount(data.count)
+        onChange?.(data.liked, data.count)
         if (data.liked) {
           setAnimating(true)
           setTimeout(() => setAnimating(false), 400)
@@ -62,7 +64,7 @@ export function LikeButton({ petId, initialCount = 0, compact = false, showCount
     } finally {
       setLoading(false)
     }
-  }, [petId, loading])
+  }, [petId, loading, onChange])
 
   return (
     <button

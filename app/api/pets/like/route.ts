@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { revalidateTag } from 'next/cache'
 import { createClient, createServiceClient } from '@/lib/supabase/server'
 
 const rateLimit = new Map<string, number[]>()
@@ -96,6 +97,7 @@ export async function POST(req: Request) {
       await supabase.rpc('adjust_pet_likes', { p_pet_id: id, p_delta: 1 })
     }
 
+    revalidateTag('pets', 'max')
     const { data: updated } = await supabase.from('pets').select('likes_count').eq('id', id).single()
     return NextResponse.json({ liked: !existing, count: updated?.likes_count ?? 0 })
   }
@@ -121,6 +123,7 @@ export async function POST(req: Request) {
     await supabase.rpc('adjust_pet_likes', { p_pet_id: id, p_delta: 1 })
   }
 
+  revalidateTag('pets', 'max')
   const { data: updated } = await supabase.from('pets').select('likes_count').eq('id', id).single()
   return NextResponse.json({ liked: !existing, count: updated?.likes_count ?? 0 })
 }

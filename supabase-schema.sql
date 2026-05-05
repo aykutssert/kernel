@@ -102,3 +102,36 @@ BEGIN
   END IF;
 END;
 $$;
+
+ALTER TABLE docs
+  ADD COLUMN IF NOT EXISTS likes_count integer NOT NULL DEFAULT 0;
+
+CREATE TABLE IF NOT EXISTS doc_likes (
+  doc_id      uuid NOT NULL REFERENCES docs(id) ON DELETE CASCADE,
+  user_id     uuid NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+  created_at  timestamptz NOT NULL DEFAULT now(),
+  PRIMARY KEY (doc_id, user_id)
+);
+
+ALTER TABLE doc_likes ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "doc_likes owner read" ON doc_likes;
+CREATE POLICY "doc_likes owner read" ON doc_likes
+  FOR SELECT USING (auth.uid() = user_id);
+
+DROP POLICY IF EXISTS "doc_likes owner insert" ON doc_likes;
+CREATE POLICY "doc_likes owner insert" ON doc_likes
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+DROP POLICY IF EXISTS "doc_likes owner delete" ON doc_likes;
+CREATE POLICY "doc_likes owner delete" ON doc_likes
+  FOR DELETE USING (auth.uid() = user_id);
+
+CREATE OR REPLACE FUNCTION adjust_doc_likes(p_doc_id uuid, p_delta integer)
+RETURNS void AS $$
+BEGIN
+  UPDATE docs
+  SET likes_count = greatest(0, coalesce(likes_count, 0) + p_delta)
+  WHERE id = p_doc_id;
+END;
+$$ LANGUAGE plpgsql;

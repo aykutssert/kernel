@@ -1,7 +1,8 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { LogOut, UserRound } from 'lucide-react'
+import Link from 'next/link'
+import { Heart, LogOut, UserRound } from 'lucide-react'
 import { AuthDialog } from './AuthDialog'
 import { createClient } from '@/lib/supabase/client'
 
@@ -57,6 +58,16 @@ export function AuthButton() {
     return () => window.removeEventListener('pointerdown', onPointerDown)
   }, [menuOpen])
 
+  useEffect(() => {
+    function onAuthOpen() {
+      setMode('signin')
+      setDialogOpen(true)
+    }
+
+    window.addEventListener('kernel-auth-open', onAuthOpen)
+    return () => window.removeEventListener('kernel-auth-open', onAuthOpen)
+  }, [])
+
   function openAuth(nextMode: AuthMode) {
     setMode(nextMode)
     setDialogOpen(true)
@@ -111,6 +122,14 @@ export function AuthButton() {
             <p className="truncate text-xs font-medium">{label}</p>
             {user.email && <p className="mt-0.5 truncate text-[11px] text-muted-foreground">{user.email}</p>}
           </div>
+          <Link
+            href="/account/likes"
+            onClick={() => setMenuOpen(false)}
+            className="flex w-full items-center gap-2 border-b border-border px-3 py-2 text-left text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          >
+            <Heart className="h-3.5 w-3.5" />
+            Liked
+          </Link>
           <button
             type="button"
             onClick={handleSignOut}

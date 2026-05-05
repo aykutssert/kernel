@@ -5,38 +5,11 @@ import Link from 'next/link'
 import { Copy, ExternalLink, SlidersHorizontal, Search, X } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
-import type { TaggedDoc } from '@/types'
+import { PromptLikeButton } from '@/components/docs/PromptLikeButton'
+import { PromptRawPreview } from '@/components/docs/PromptRawPreview'
+import type { TaggedDocWithPreview } from '@/lib/prompt-preview'
 
 type SortOption = 'default' | 'alpha' | 'newest' | 'oldest'
-
-function wrapTextLine(line: string, maxChars = 58) {
-  const words = line.trim().split(/\s+/)
-  const wrapped: string[] = []
-  let current = ''
-
-  for (const word of words) {
-    const next = current ? `${current} ${word}` : word
-    if (next.length > maxChars && current) {
-      wrapped.push(current)
-      current = word
-    } else {
-      current = next
-    }
-  }
-
-  if (current) wrapped.push(current)
-  return wrapped
-}
-
-function linePreview(content: string, maxLines = 8) {
-  const rawLines = content.trim().split('\n').filter((line) => line.trim())
-  const lines = rawLines.length <= 2
-    ? rawLines.flatMap((line) => wrapTextLine(line))
-    : rawLines
-  const preview = lines.slice(0, maxLines)
-  const remaining = Math.max(0, lines.length - preview.length)
-  return { preview, remaining }
-}
 
 function tagTone(index: number) {
   const tones = [
@@ -71,10 +44,14 @@ function promptsHref(params: { tags?: string[]; q?: string; sort?: SortOption })
   return query ? `/prompts?${query}` : '/prompts'
 }
 
-function TagDocCard({ doc }: { doc: TaggedDoc }) {
-  const { preview, remaining } = linePreview(doc.content, doc.image_url ? 4 : 8)
+function TagDocCard({ doc }: { doc: TaggedDocWithPreview }) {
   const visibleTags = (doc.tags ?? []).slice(0, 3)
   const hiddenTags = Math.max(0, (doc.tags ?? []).length - visibleTags.length)
+
+  async function handleCopy() {
+    await navigator.clipboard.writeText(doc.content)
+    toast.success('Prompt copied.')
+  }
 
   return (
     <article className="mb-4 break-inside-avoid overflow-hidden rounded-md border border-border bg-background transition-colors hover:border-foreground/30 dark:bg-[#080808]">
@@ -116,19 +93,8 @@ function TagDocCard({ doc }: { doc: TaggedDoc }) {
             </p>
           )}
 
-          <div className="mt-3 overflow-hidden rounded-md border border-border bg-[#F5F5F5] p-2.5 font-mono text-[11px] leading-5 dark:bg-[#262626]">
-            {preview.map((line, index) => (
-              <div key={`${doc.id}-${index}`} className="grid grid-cols-[2ch_1fr] gap-3 whitespace-pre">
-                <span className="select-none text-right text-muted-foreground/70">{index + 1}</span>
-                <span className="truncate text-foreground/90">{line}</span>
-              </div>
-            ))}
-            {remaining > 0 && (
-              <div className="mt-1 grid grid-cols-[2ch_1fr] gap-3 text-muted-foreground">
-                <span>...</span>
-                <span>+{remaining} more lines</span>
-              </div>
-            )}
+          <div className="mt-3">
+            <PromptRawPreview html={doc.preview_html} remaining={doc.preview_remaining} />
           </div>
 
           {visibleTags.length > 0 && (
@@ -151,9 +117,15 @@ function TagDocCard({ doc }: { doc: TaggedDoc }) {
         </div>
       </div>
 
-      <div className="mx-3.5 flex items-center justify-end border-t border-border py-2.5 text-muted-foreground">
+      <div className="mx-3.5 flex items-center justify-between border-t border-border py-2.5 text-muted-foreground">
+        <PromptLikeButton docId={doc.id} initialCount={doc.likes_count ?? 0} compact />
         <div className="flex items-center gap-2.5">
-          <button className="transition-colors hover:text-foreground" aria-label="Copy prompt">
+          <button
+            type="button"
+            onClick={handleCopy}
+            className="transition-colors hover:text-foreground"
+            aria-label="Copy prompt"
+          >
             <Copy className="h-3.5 w-3.5" />
           </button>
           <Link href={`/docs/${doc.category}/${doc.slug}`} className="transition-colors hover:text-foreground" aria-label="Open doc">
@@ -176,7 +148,7 @@ export function TagPageClient({
 }: {
   tag?: string
   tags?: string[]
-  docs: TaggedDoc[]
+  docs: TaggedDocWithPreview[]
   allTags: string[]
   initialQuery?: string
   initialSort?: SortOption
@@ -240,7 +212,7 @@ export function TagPageClient({
       return a.localeCompare(b)
     })
 
-  const grouped = sorted.reduce<Record<string, TaggedDoc[]>>((acc, doc) => {
+  const grouped = sorted.reduce<Record<string, TaggedDocWithPreview[]>>((acc, doc) => {
     if (!acc[doc.category]) acc[doc.category] = []
     acc[doc.category].push(doc)
     return acc

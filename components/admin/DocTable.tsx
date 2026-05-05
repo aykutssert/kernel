@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { Pencil, Eye, Search, X, ChevronUp, ChevronDown, ChevronsUpDown, Copy } from 'lucide-react'
+import { Pencil, Eye, Search, X, ChevronUp, ChevronDown, ChevronsUpDown, Copy, Heart } from 'lucide-react'
 import { toast } from 'sonner'
 import { DeleteDocButton } from './DeleteDocButton'
 import { ReorderPanel } from './ReorderPanel'
@@ -11,7 +11,7 @@ import { cn } from '@/lib/utils'
 import type { Doc } from '@/types'
 
 type StatusFilter = 'all' | 'published' | 'draft'
-type SortKey = 'order_index' | 'title' | 'updated_at' | 'published'
+type SortKey = 'order_index' | 'title' | 'updated_at' | 'published' | 'likes_count'
 type SortDir = 'asc' | 'desc'
 
 function fmtDate(iso: string) {
@@ -46,6 +46,7 @@ function sortDocs(docs: Doc[], key: SortKey, dir: SortDir) {
     else if (key === 'title') cmp = a.title.localeCompare(b.title)
     else if (key === 'updated_at') cmp = a.updated_at.localeCompare(b.updated_at)
     else if (key === 'published') cmp = Number(b.published) - Number(a.published)
+    else if (key === 'likes_count') cmp = (a.likes_count ?? 0) - (b.likes_count ?? 0)
     return dir === 'asc' ? cmp : -cmp
   })
 }
@@ -185,8 +186,8 @@ export function DocTable({ docs: initialDocs }: { docs: Doc[] }) {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border bg-muted/50">
-                {([['order_index', '#'], ['title', 'Title'], ['category', 'Category'], ['slug', 'Slug'], ['updated_at', 'Updated'], ['content', 'Length'], ['published', 'Status']] as [SortKey | string, string][]).map(([key, label]) => {
-                  const sortable = ['order_index', 'title', 'updated_at', 'published'].includes(key)
+                {([['order_index', '#'], ['title', 'Title'], ['category', 'Category'], ['slug', 'Slug'], ['likes_count', 'Likes'], ['updated_at', 'Updated'], ['content', 'Length'], ['published', 'Status']] as [SortKey | string, string][]).map(([key, label]) => {
+                  const sortable = ['order_index', 'title', 'updated_at', 'published', 'likes_count'].includes(key)
                   return (
                     <th
                       key={key}
@@ -210,6 +211,12 @@ export function DocTable({ docs: initialDocs }: { docs: Doc[] }) {
                   <td className="px-4 py-3 font-medium">{doc.title}</td>
                   <td className="px-4 py-3 text-muted-foreground">{doc.category}</td>
                   <td className="px-4 py-3 text-muted-foreground font-mono text-xs">{doc.slug}</td>
+                  <td className="px-4 py-3 text-right text-xs tabular-nums text-muted-foreground">
+                    <span className="inline-flex items-center justify-end gap-1">
+                      <Heart className={cn('h-3 w-3', (doc.likes_count ?? 0) > 0 ? 'fill-rose-500 text-rose-500' : 'text-muted-foreground')} />
+                      {(doc.likes_count ?? 0).toLocaleString()}
+                    </span>
+                  </td>
                   <td className="px-4 py-3 text-muted-foreground text-xs">{fmtDate(doc.updated_at)}</td>
                   <td className="px-4 py-3"><ContentLength content={doc.content} /></td>
                   <td className="px-4 py-3">

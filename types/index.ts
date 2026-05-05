@@ -12,6 +12,7 @@ export interface Doc {
   tags: string[]
   order_index: number
   published: boolean
+  likes_count?: number | null
   created_at: string
   updated_at: string
 }
@@ -26,6 +27,7 @@ export interface DocMeta {
   tags: string[]
   description: string | null
   image_url: string | null
+  likes_count?: number | null
 }
 
 export type TaggedDoc = Pick<
@@ -41,6 +43,7 @@ export type TaggedDoc = Pick<
   | 'published'
   | 'tags'
   | 'created_at'
+  | 'likes_count'
 >
 
 export interface DocVersion {

@@ -13,6 +13,7 @@ import { DocContent, renderDocHtml } from '@/components/docs/DocContent'
 import { DocVersionHandler } from '@/components/docs/DocVersionHandler'
 import { CopyPageButton } from '@/components/docs/CopyPageButton'
 import { CopyCodeButton } from '@/components/docs/CopyCodeButton'
+import { PromptLikeButton } from '@/components/docs/PromptLikeButton'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { ScrollToTop } from '@/components/layout/ScrollToTop'
@@ -87,7 +88,12 @@ async function DocPageContent({ params }: { params: Promise<{ category: string; 
               <h1 className="text-[1.75rem] font-bold tracking-tight leading-tight" style={{ fontFamily: '"Anthropic Serif Display", Georgia, "Times New Roman", Times, serif' }}>
                 {doc.title}
               </h1>
-              <CopyPageButton content={doc.content} />
+              <div className="flex shrink-0 items-center gap-2">
+                {doc.category === 'prompts' && (
+                  <PromptLikeButton docId={doc.id} initialCount={doc.likes_count ?? 0} />
+                )}
+                <CopyPageButton content={doc.content} />
+              </div>
             </div>
             {doc.description && (
               <p className="text-sm text-muted-foreground mt-2">{doc.description}</p>

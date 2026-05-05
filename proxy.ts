@@ -4,6 +4,7 @@ import { NextResponse, type NextRequest } from 'next/server'
 const PUBLIC_API_PREFIXES = [
   '/api/search',
   '/api/auth',
+  '/api/docs/like',
   '/api/pets/like',
   '/api/pets/download',
   '/api/pets/view',
