@@ -85,7 +85,7 @@ export function AuthButton() {
         <button
           type="button"
           onClick={() => openAuth('signin')}
-          className="flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:border-foreground/30 hover:text-foreground"
+          className="flex h-8 items-center gap-1.5 rounded-lg border border-border px-3 text-xs font-medium text-muted-foreground transition-colors hover:border-foreground/30 hover:text-foreground"
         >
           <UserRound className="h-3.5 w-3.5" />
           <span className="hidden sm:inline">Sign in</span>
@@ -110,7 +110,7 @@ export function AuthButton() {
       <button
         type="button"
         onClick={() => setMenuOpen((open) => !open)}
-        className="flex max-w-[132px] items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:border-foreground/30 hover:text-foreground"
+        className="flex h-8 max-w-[132px] items-center gap-1.5 rounded-lg border border-border px-3 text-xs font-medium text-muted-foreground transition-colors hover:border-foreground/30 hover:text-foreground"
       >
         <UserRound className="h-3.5 w-3.5 shrink-0" />
         <span className="hidden truncate sm:block">{label}</span>

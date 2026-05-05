@@ -42,6 +42,7 @@ CREATE EXTENSION IF NOT EXISTS citext;
 CREATE TABLE IF NOT EXISTS profiles (
   id          uuid PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
   username    citext NOT NULL UNIQUE,
+  is_admin    boolean NOT NULL DEFAULT false,
   created_at  timestamptz NOT NULL DEFAULT now(),
   updated_at  timestamptz NOT NULL DEFAULT now(),
   CONSTRAINT profiles_username_format CHECK (username::text ~ '^[a-z0-9_]{3,24}$')
@@ -135,3 +136,32 @@ BEGIN
   WHERE id = p_doc_id;
 END;
 $$ LANGUAGE plpgsql;
+
+CREATE TABLE IF NOT EXISTS site_feedback (
+  id           uuid NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id      uuid REFERENCES profiles(id) ON DELETE SET NULL,
+  fingerprint  text, -- Spam kontrolü için IP hash veya browser fingerprint
+  author_name  text NOT NULL DEFAULT 'Anonymous',
+  content      text NOT NULL,
+  source       text NOT NULL DEFAULT 'Site', -- Reddit, Twitter vb.
+  status       text NOT NULL DEFAULT 'pending', -- pending, published, archived
+  is_featured  boolean NOT NULL DEFAULT false,
+  created_at   timestamptz NOT NULL DEFAULT now()
+);
+
+ALTER TABLE site_feedback ENABLE ROW LEVEL SECURITY;
+
+-- Herkes yorum yazabilir (Spam kontrolü API tarafında yapılacak)
+DROP POLICY IF EXISTS "Anyone can insert feedback" ON site_feedback;
+CREATE POLICY "Anyone can insert feedback" ON site_feedback
+  FOR INSERT WITH CHECK (true);
+
+-- Sadece admin (veya yayındaki yorumları herkes) görebilir
+DROP POLICY IF EXISTS "Anyone can read published feedback" ON site_feedback;
+CREATE POLICY "Anyone can read published feedback" ON site_feedback
+  FOR SELECT USING (status = 'published' OR auth.uid() IN (SELECT id FROM profiles WHERE is_admin = true));
+
+-- Sadece admin güncelleyebilir veya silebilir
+DROP POLICY IF EXISTS "Admin can manage feedback" ON site_feedback;
+CREATE POLICY "Admin can manage feedback" ON site_feedback
+  FOR ALL USING (auth.uid() IN (SELECT id FROM profiles WHERE is_admin = true));

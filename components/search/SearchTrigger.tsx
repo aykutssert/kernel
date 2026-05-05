@@ -35,7 +35,7 @@ export function SearchTrigger({ allTags = [] }: { allTags?: string[] }) {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="flex items-center gap-2 w-full max-w-xs px-3 py-1.5 text-sm text-muted-foreground border border-border rounded-md
+        className="flex h-8 items-center gap-2 w-full max-w-xs px-3 text-xs text-muted-foreground border border-border rounded-lg
         hover:bg-[#EEEEE8] dark:hover:bg-[#171513]
         transition-colors"
       >

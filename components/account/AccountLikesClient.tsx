@@ -1,8 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import Link from 'next/link'
-import { Heart, PawPrint } from 'lucide-react'
+import { Heart, PawPrint, Search, X } from 'lucide-react'
 import { LikedPetCard } from '@/components/account/LikedPetCard'
 import { LikedPromptCard } from '@/components/account/LikedPromptCard'
 import type { LikedDoc, LikedPet } from '@/lib/account'
@@ -20,52 +20,104 @@ export function AccountLikesClient({
 }) {
   const [pets, setPets] = useState(initialPets)
   const [prompts, setPrompts] = useState(initialPrompts)
-  const count = type === 'prompts' ? prompts.length : pets.length
+  const [query, setQuery] = useState('')
+
+  // High-performance memoized filtering
+  const filteredItems = useMemo(() => {
+    const q = query.toLowerCase().trim()
+    if (type === 'prompts') {
+      if (!q) return prompts
+      return prompts.filter(p => 
+        p.title.toLowerCase().includes(q) || 
+        p.description?.toLowerCase().includes(q) ||
+        p.category.toLowerCase().includes(q)
+      )
+    } else {
+      if (!q) return pets
+      return pets.filter(p => 
+        p.display_name.toLowerCase().includes(q) ||
+        p.description?.toLowerCase().includes(q)
+      )
+    }
+  }, [query, type, prompts, pets])
+
+  const totalCount = type === 'prompts' ? prompts.length : pets.length
+  const filteredCount = filteredItems.length
 
   return (
     <>
-      <div className="mb-4 flex items-end justify-between">
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="mb-2 text-2xl font-bold tracking-tight">Liked</h1>
-          <p className="text-sm text-muted-foreground">Items you liked while signed in.</p>
+          <h1 className="mb-1 text-2xl font-bold tracking-tight">Library</h1>
+          <p className="text-sm text-muted-foreground">Manage your saved prompts and pet companions.</p>
         </div>
-        <p className="text-xs text-muted-foreground">
-          {count} {type === 'prompts' ? 'prompt' : 'pet'}{count !== 1 ? 's' : ''}
+        
+        {/* Search Input - Studio Grade UI */}
+        <div className="relative w-full max-w-sm">
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder={`Search in ${type}...`}
+            className="w-full rounded-full border border-border bg-muted/50 py-2 pl-9 pr-10 text-sm transition-all focus:border-foreground focus:bg-background focus:outline-none focus:ring-1 focus:ring-foreground"
+          />
+          {query && (
+            <button 
+              onClick={() => setQuery('')}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
+        </div>
+      </div>
+
+      <div className="mb-8 flex items-center justify-between border-b border-border pb-2">
+        <div className="flex items-center gap-2">
+          <Link
+            href="/account/likes?type=pets"
+            className={`inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs font-medium transition-colors ${type === 'pets' ? 'bg-foreground text-background' : 'text-muted-foreground hover:text-foreground hover:bg-muted'}`}
+          >
+            <PawPrint className="h-3.5 w-3.5" />
+            Pets
+          </Link>
+          <Link
+            href="/account/likes?type=prompts"
+            className={`inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs font-medium transition-colors ${type === 'prompts' ? 'bg-foreground text-background' : 'text-muted-foreground hover:text-foreground hover:bg-muted'}`}
+          >
+            <Heart className="h-3.5 w-3.5" />
+            Prompts
+          </Link>
+        </div>
+        <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-wider">
+          {query ? `${filteredCount} matched` : `${totalCount} total`}
         </p>
       </div>
 
-      <div className="mb-8 flex items-center gap-2 border-b border-border pb-2">
-        <Link
-          href="/account/likes?type=pets"
-          className={`inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs font-medium transition-colors ${type === 'pets' ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
-        >
-          <PawPrint className="h-3.5 w-3.5" />
-          Pets
-        </Link>
-        <Link
-          href="/account/likes?type=prompts"
-          className={`inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs font-medium transition-colors ${type === 'prompts' ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
-        >
-          <Heart className="h-3.5 w-3.5" />
-          Prompts
-        </Link>
-      </div>
-
-      {count === 0 ? (
+      {filteredCount === 0 ? (
         <div className="flex flex-col items-center justify-center py-24 text-center">
-          <Heart className="mb-4 h-10 w-10 text-muted-foreground/30" />
-          <p className="mb-1 text-sm font-medium">No liked {type === 'prompts' ? 'prompts' : 'pets'} yet.</p>
-          <p className="mb-6 text-xs text-muted-foreground">Like {type === 'prompts' ? 'prompts' : 'pets'} while signed in and they will show up here.</p>
-          <Link
-            href={type === 'prompts' ? '/prompts' : '/pets'}
-            className="rounded-lg border border-border px-4 py-2 text-sm font-medium transition-colors hover:bg-muted"
-          >
-            Browse {type === 'prompts' ? 'prompts' : 'pets'}
-          </Link>
+          <div className="mb-4 rounded-full bg-muted p-4">
+            {query ? <Search className="h-8 w-8 text-muted-foreground/50" /> : <Heart className="h-8 w-8 text-muted-foreground/30" />}
+          </div>
+          <p className="mb-1 text-sm font-medium">
+            {query ? `No results for "${query}"` : `No liked ${type === 'prompts' ? 'prompts' : 'pets'} yet.`}
+          </p>
+          <p className="mb-6 text-xs text-muted-foreground">
+            {query ? 'Try a different keyword or clear the search.' : `Like ${type === 'prompts' ? 'prompts' : 'pets'} while signed in to see them here.`}
+          </p>
+          {!query && (
+            <Link
+              href={type === 'prompts' ? '/prompts' : '/pets'}
+              className="rounded-lg border border-border px-4 py-2 text-sm font-medium transition-colors hover:bg-muted"
+            >
+              Browse {type === 'prompts' ? 'prompts' : 'pets'}
+            </Link>
+          )}
         </div>
       ) : type === 'prompts' ? (
         <div className="grid items-start gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {prompts.map((doc) => (
+          {(filteredItems as LikedDoc[]).map((doc) => (
             <LikedPromptCard
               key={doc.id}
               doc={doc}
@@ -75,7 +127,7 @@ export function AccountLikesClient({
         </div>
       ) : (
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-          {pets.map((pet) => (
+          {(filteredItems as LikedPet[]).map((pet) => (
             <LikedPetCard
               key={pet.id}
               pet={pet}
