@@ -36,20 +36,28 @@ export function DocRawContent({ html, content, variables }: Props) {
 
   const hasVars = variables.length > 0
 
-  if (!hasVars) {
-    return (
-      <div className="rounded-xl border border-foreground/20 overflow-hidden">
-        <div
-          className="doc-raw text-sm leading-relaxed font-mono
-            [&_pre]:whitespace-pre-wrap [&_pre]:break-words [&_pre]:m-0
-            [&_pre]:p-6 [&_pre]:bg-[#F5F5F5]! dark:[&_pre]:bg-[#262626]!"
-          dangerouslySetInnerHTML={{ __html: html }}
-        />
-      </div>
-    )
+  let displayHtml = html
+  if (hasVars) {
+    displayHtml = html.replace(/\{\{(\w+)\}\}/g, (match, name) => {
+      const val = values[name]
+      return `<span class="var-highlight px-1 py-0.5 mx-0.5 rounded bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300 font-mono text-[0.85em] leading-none">${val || name}</span>`
+    })
   }
 
-  const segments = parseSegments(content)
+  const RawView = (
+    <div className="rounded-xl border border-foreground/20 overflow-hidden">
+      <div
+        className="doc-raw text-[13px] leading-relaxed font-mono
+          [&_pre]:whitespace-pre-wrap [&_pre]:break-words [&_pre]:m-0
+          [&_pre]:p-5 [&_pre]:bg-[#F5F5F5]! dark:[&_pre]:bg-[#262626]!"
+        dangerouslySetInnerHTML={{ __html: displayHtml }}
+      />
+    </div>
+  )
+
+  if (!hasVars) {
+    return RawView
+  }
 
   return (
     <div className="space-y-4">
@@ -71,18 +79,7 @@ export function DocRawContent({ html, content, variables }: Props) {
           ))}
         </div>
       </div>
-
-      <div className="rounded-xl border border-foreground/20 overflow-hidden">
-        <div className="text-sm font-mono p-6 bg-[#F5F5F5] dark:bg-[#262626] whitespace-pre-wrap break-words leading-relaxed">
-          {segments.map((seg, i) => {
-            if (seg.type === 'text') return seg.value
-            const val = values[seg.name]
-            return (
-              <span key={i} className="px-1.5 py-0.5 rounded bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300 font-mono text-[0.8em]">{val || seg.name}</span>
-            )
-          })}
-        </div>
-      </div>
+      {RawView}
     </div>
   )
 }

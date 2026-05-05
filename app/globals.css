@@ -255,11 +255,30 @@ button:disabled { cursor: not-allowed !important; }
 }
 
 /* Raw doc content — Shiki dual-theme color variables */
-.doc-raw span {
-  color: var(--shiki-light) !important;
+.doc-raw span:not(.var-highlight) {
+  color: var(--shiki-light);
 }
-.dark .doc-raw span {
-  color: var(--shiki-dark) !important;
+.dark .doc-raw span:not(.var-highlight) {
+  color: var(--shiki-dark);
+}
+
+/* Shiki line numbers for Raw Doc */
+.doc-raw code {
+  counter-reset: step;
+  counter-increment: step 0;
+}
+.doc-raw .line {
+  display: inline-block;
+  width: 100%;
+}
+.doc-raw .line::before {
+  content: counter(step);
+  counter-increment: step;
+  width: 1.5rem;
+  margin-right: 1rem;
+  display: inline-block;
+  text-align: right;
+  color: hsl(var(--muted-foreground) / 0.4);
 }
 
 @keyframes heart-pop {

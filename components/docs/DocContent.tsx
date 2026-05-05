@@ -18,6 +18,16 @@ function detectLang(raw: string): { lang: string; code: string } {
   const trimmed = raw.trim()
   const match = trimmed.match(FENCE_RE)
   if (match) return { lang: match[1] ?? 'text', code: match[2] }
+
+  if (trimmed.startsWith('{') && trimmed.endsWith('}')) {
+    return { lang: 'json', code: raw }
+  }
+  
+  // If it starts with frontmatter dashes, or looks like a yaml manifest
+  if (trimmed.startsWith('---') || /^name:\s+/m.test(trimmed) || /^description:\s+/m.test(trimmed) || /^system_prompt:\s+/m.test(trimmed)) {
+    return { lang: 'yaml', code: raw }
+  }
+
   return { lang: 'markdown', code: raw }
 }
 
