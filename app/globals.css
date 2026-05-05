@@ -263,15 +263,15 @@ button:disabled { cursor: not-allowed !important; }
 }
 
 /* Shiki line numbers for Raw Doc */
-.doc-raw code {
+.doc-raw.with-lines code {
   counter-reset: step;
   counter-increment: step 0;
 }
-.doc-raw .line {
+.doc-raw.with-lines .line {
   display: inline-block;
   width: 100%;
 }
-.doc-raw .line::before {
+.doc-raw.with-lines .line::before {
   content: counter(step);
   counter-increment: step;
   width: 1.5rem;

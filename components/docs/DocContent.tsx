@@ -41,5 +41,5 @@ export async function DocContent({ content, variables = [] }: DocContentProps) {
     defaultColor: false,
   })
 
-  return <DocRawContent html={html} content={code} variables={variables} />
+  return <DocRawContent html={html} content={code} variables={variables} withLines={lang !== 'markdown'} />
 }

@@ -11,6 +11,7 @@ interface Props {
   html: string
   content: string
   variables: Variable[]
+  withLines?: boolean
 }
 
 type Segment = { type: 'text'; value: string } | { type: 'var'; name: string }
@@ -29,7 +30,7 @@ function parseSegments(content: string): Segment[] {
   return parts
 }
 
-export function DocRawContent({ html, content, variables }: Props) {
+export function DocRawContent({ html, content, variables, withLines = true }: Props) {
   const [values, setValues] = useState<Record<string, string>>(
     Object.fromEntries(variables.map((v) => [v.name, v.default ?? '']))
   )
@@ -47,9 +48,9 @@ export function DocRawContent({ html, content, variables }: Props) {
   const RawView = (
     <div className="rounded-xl border border-foreground/20 overflow-hidden">
       <div
-        className="doc-raw text-xs leading-relaxed font-mono
+        className={`doc-raw ${withLines ? 'with-lines' : ''} text-xs leading-relaxed font-mono
           [&_pre]:whitespace-pre-wrap [&_pre]:break-words [&_pre]:m-0
-          [&_pre]:p-5 [&_pre]:bg-[#F5F5F5]! dark:[&_pre]:bg-[#262626]!"
+          [&_pre]:p-5 [&_pre]:bg-[#F5F5F5]! dark:[&_pre]:bg-[#262626]!`}
         dangerouslySetInnerHTML={{ __html: displayHtml }}
       />
     </div>
