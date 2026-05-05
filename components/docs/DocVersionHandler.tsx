@@ -46,12 +46,14 @@ export function DocVersionHandler({ doc, versions, currentHtml, currentLang }: P
     
     return (
       <div className="space-y-6">
-        <div className="flex items-center gap-6 text-[13px] font-mono">
-          <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
-            <span>≈+{addedTokens} tokens</span>
+        <div className="flex items-center gap-5 text-[13px] font-mono select-none">
+          <div className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
+            <span className="text-base leading-none translate-y-[0.5px]">≈</span>
+            <span>+{addedTokens} tokens</span>
           </div>
-          <div className="flex items-center gap-1.5 text-rose-600 dark:text-rose-400">
-            <span>≈-{removedTokens} tokens</span>
+          <div className="flex items-center gap-1 text-rose-600 dark:text-rose-400">
+            <span className="text-base leading-none translate-y-[0.5px]">≈</span>
+            <span>-{removedTokens} tokens</span>
           </div>
         </div>
 
