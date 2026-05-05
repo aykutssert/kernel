@@ -93,7 +93,7 @@ async function DocPageContent({ params }: { params: Promise<{ category: string; 
                   <Link
                     key={tag}
                     href={`/prompts?tag=${encodeURIComponent(tag)}`}
-                    className="px-2 py-0.5 rounded border border-border text-xs font-mono bg-muted text-foreground hover:bg-foreground hover:text-background transition-colors"
+                    className="px-2 py-0.5 rounded border border-border text-[11px] font-mono bg-muted text-foreground hover:bg-foreground hover:text-background transition-colors"
                   >
                     {tag}
                   </Link>
