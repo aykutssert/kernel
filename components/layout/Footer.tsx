@@ -6,6 +6,8 @@ export function Footer() {
     <footer className="border-t border-border mt-auto">
       <div className="max-w-[1400px] mx-auto w-full px-4 md:px-6 pt-5 pb-3">
         <p className="text-xs text-muted-foreground/50 text-center leading-relaxed mb-5">
+          Special thanks to <a href="https://prompts.chat/" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-muted-foreground transition-colors">Awesome ChatGPT Prompts</a> and <a href="https://codex-pets.net/" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-muted-foreground transition-colors">Codex Pets</a> for prompt data and assets.
+          <br className="hidden sm:block" />
           Pets are shared by the community. Some may be inspired by existing characters or brands. We don&apos;t claim rights to those characters or brands.{' '}
           Formal takedown requests can be sent to{' '}
           <a href="mailto:aykutssert@gmail.com" className="underline underline-offset-2 hover:text-muted-foreground transition-colors">
