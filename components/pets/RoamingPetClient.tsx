@@ -14,10 +14,19 @@ export function RoamingPetClient({ spritesheetUrl }: { spritesheetUrl: string | 
   const [loaded, setLoaded] = useState(false)
   const pathname = usePathname()
   const [isMobileState, setIsMobileState] = useState(false)
+  const windowSizeRef = useRef({ width: 1000, height: 1000 })
+  const isMobileRef = useRef(false)
 
   useEffect(() => {
-    setIsMobileState(window.innerWidth < 768)
-    const handleResize = () => setIsMobileState(window.innerWidth < 768)
+    windowSizeRef.current = { width: window.innerWidth, height: window.innerHeight }
+    isMobileRef.current = window.innerWidth < 768
+    setIsMobileState(isMobileRef.current)
+    
+    const handleResize = () => {
+      windowSizeRef.current = { width: window.innerWidth, height: window.innerHeight }
+      isMobileRef.current = window.innerWidth < 768
+      setIsMobileState(isMobileRef.current)
+    }
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
   }, [])
@@ -91,12 +100,14 @@ export function RoamingPetClient({ spritesheetUrl }: { spritesheetUrl: string | 
       posRef.current.y += dy
 
       // Clamp bounds immediately while dragging
-      const currentVisibleWidth = Math.round(CELL_WIDTH * (window.innerWidth < 768 ? 0.35 : 0.5))
-      const currentVisibleHeight = Math.round(CELL_HEIGHT * (window.innerWidth < 768 ? 0.35 : 0.5))
+      const winW = windowSizeRef.current.width
+      const winH = windowSizeRef.current.height
+      const currentVisibleWidth = Math.round(CELL_WIDTH * (isMobileRef.current ? 0.35 : 0.5))
+      const currentVisibleHeight = Math.round(CELL_HEIGHT * (isMobileRef.current ? 0.35 : 0.5))
       if (posRef.current.x < 0) posRef.current.x = 0
-      if (posRef.current.x > window.innerWidth - currentVisibleWidth) posRef.current.x = window.innerWidth - currentVisibleWidth
+      if (posRef.current.x > winW - currentVisibleWidth) posRef.current.x = winW - currentVisibleWidth
       if (posRef.current.y < 0) posRef.current.y = 0
-      if (posRef.current.y > window.innerHeight - currentVisibleHeight) posRef.current.y = window.innerHeight - currentVisibleHeight
+      if (posRef.current.y > winH - currentVisibleHeight) posRef.current.y = winH - currentVisibleHeight
 
       // Calculate throw velocity based on drag speed (slightly slower overall)
       dragVelocityRef.current.x = dx * 0.5
@@ -150,8 +161,8 @@ export function RoamingPetClient({ spritesheetUrl }: { spritesheetUrl: string | 
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
-    const currentVisibleHeight = Math.round(CELL_HEIGHT * (window.innerWidth < 768 ? 0.35 : 0.5))
-    posRef.current.y = window.innerHeight - currentVisibleHeight
+    const currentVisibleHeight = Math.round(CELL_HEIGHT * (isMobileRef.current ? 0.35 : 0.5))
+    posRef.current.y = windowSizeRef.current.height - currentVisibleHeight
 
     function changeState(newStateName: string) {
       if (stateRef.current.name === newStateName) return
@@ -163,7 +174,9 @@ export function RoamingPetClient({ spritesheetUrl }: { spritesheetUrl: string | 
     }
 
     function draw(time: number) {
-      const isMobile = window.innerWidth < 768
+      const isMobile = isMobileRef.current
+      const winW = windowSizeRef.current.width
+      const winH = windowSizeRef.current.height
       const speedMult = isMobile ? 0.2 : 0.4
       const currentVisibleWidth = Math.round(CELL_WIDTH * (isMobile ? 0.35 : 0.5))
       const currentVisibleHeight = Math.round(CELL_HEIGHT * (isMobile ? 0.35 : 0.5))
@@ -174,7 +187,7 @@ export function RoamingPetClient({ spritesheetUrl }: { spritesheetUrl: string | 
         velRef.current.x = 0
         velRef.current.y = 0
       }
-      else if (posRef.current.y < window.innerHeight - currentVisibleHeight || Math.abs(velRef.current.y) > 0.1 || Math.abs(velRef.current.x) > 10) {
+      else if (posRef.current.y < winH - currentVisibleHeight || Math.abs(velRef.current.y) > 0.1 || Math.abs(velRef.current.x) > 10) {
         // IN THE AIR or Thrown fast
         velRef.current.y += 0.8 * speedMult // Gravity
 
@@ -183,8 +196,8 @@ export function RoamingPetClient({ spritesheetUrl }: { spritesheetUrl: string | 
           posRef.current.x = 0
           velRef.current.x *= -0.7
           changeState('running-right')
-        } else if (posRef.current.x + velRef.current.x + currentVisibleWidth >= window.innerWidth) {
-          posRef.current.x = window.innerWidth - currentVisibleWidth
+        } else if (posRef.current.x + velRef.current.x + currentVisibleWidth >= winW) {
+          posRef.current.x = winW - currentVisibleWidth
           velRef.current.x *= -0.7
           changeState('running-left')
         }
@@ -196,8 +209,8 @@ export function RoamingPetClient({ spritesheetUrl }: { spritesheetUrl: string | 
         }
 
         // Floor collision and bounce (Predictive)
-        if (posRef.current.y + velRef.current.y >= window.innerHeight - currentVisibleHeight) {
-          posRef.current.y = window.innerHeight - currentVisibleHeight
+        if (posRef.current.y + velRef.current.y >= winH - currentVisibleHeight) {
+          posRef.current.y = winH - currentVisibleHeight
           if (velRef.current.y > 6) {
             // Bounce up
             velRef.current.y *= -0.4
@@ -259,7 +272,7 @@ export function RoamingPetClient({ spritesheetUrl }: { spritesheetUrl: string | 
             velRef.current.x = 0
             changeState('idle')
             // Eat it if it's on the ground
-            if (foodRef.current.y >= window.innerHeight - 50) {
+            if (foodRef.current.y >= winH - 50) {
               foodRef.current = null
               showSpeech(["Yummy!", "🍎❤️", "Delicious!"], 3000)
               velRef.current.y = -8 * speedMult // Happy jump
@@ -317,8 +330,8 @@ export function RoamingPetClient({ spritesheetUrl }: { spritesheetUrl: string | 
             changeState('running-right')
             velRef.current.x = 5.0 * speedMult
             stateTimerRef.current = 0
-          } else if (posRef.current.x + currentVisibleWidth >= window.innerWidth) {
-            posRef.current.x = window.innerWidth - currentVisibleWidth
+          } else if (posRef.current.x + currentVisibleWidth >= winW) {
+            posRef.current.x = winW - currentVisibleWidth
             changeState('running-left')
             velRef.current.x = -5.0 * speedMult
             stateTimerRef.current = 0
@@ -332,9 +345,9 @@ export function RoamingPetClient({ spritesheetUrl }: { spritesheetUrl: string | 
 
       // Force bounds to prevent pet from disappearing completely
       if (posRef.current.x < 0) posRef.current.x = 0
-      if (posRef.current.x > window.innerWidth - currentVisibleWidth) posRef.current.x = window.innerWidth - currentVisibleWidth
+      if (posRef.current.x > winW - currentVisibleWidth) posRef.current.x = winW - currentVisibleWidth
       if (posRef.current.y < 0) posRef.current.y = 0
-      if (posRef.current.y > window.innerHeight - currentVisibleHeight) posRef.current.y = window.innerHeight - currentVisibleHeight
+      if (posRef.current.y > winH - currentVisibleHeight) posRef.current.y = winH - currentVisibleHeight
 
       // FOOD PHYSICS
       if (foodRef.current) {
@@ -342,8 +355,8 @@ export function RoamingPetClient({ spritesheetUrl }: { spritesheetUrl: string | 
         foodRef.current.y += foodRef.current.velY
 
         // Floor collision for food
-        if (foodRef.current.y > window.innerHeight - 30) {
-          foodRef.current.y = window.innerHeight - 30
+        if (foodRef.current.y > winH - 30) {
+          foodRef.current.y = winH - 30
           if (foodRef.current.velY > 3) {
             foodRef.current.velY *= -0.4 // bounce
           } else {
@@ -462,7 +475,7 @@ export function RoamingPetClient({ spritesheetUrl }: { spritesheetUrl: string | 
         onClick={() => {
           if (!foodRef.current) {
             foodRef.current = {
-              x: Math.max(20, Math.random() * (window.innerWidth - 40)),
+              x: Math.max(20, Math.random() * (windowSizeRef.current.width - 40)),
               y: -50,
               velY: 0
             }
