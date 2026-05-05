@@ -23,9 +23,16 @@ function detectLang(raw: string): { lang: string; code: string } {
     return { lang: 'json', code: raw }
   }
   
-  // If it starts with frontmatter dashes, or looks like a yaml manifest
+  // Pure YAML manifests
   if (trimmed.startsWith('---') || /^name:\s+/m.test(trimmed) || /^description:\s+/m.test(trimmed) || /^system_prompt:\s+/m.test(trimmed)) {
     return { lang: 'yaml', code: raw }
+  }
+
+  // For mixed text and JSON (like story: ... instructions: { ... })
+  // jsonc handles unquoted top-level keys and nested JSON blocks gracefully
+  // without turning the entire block into a single green string like YAML does.
+  if (/^(story|instructions):\s+/m.test(trimmed)) {
+    return { lang: 'jsonc', code: raw }
   }
 
   return { lang: 'markdown', code: raw }
