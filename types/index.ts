@@ -15,6 +15,7 @@ export interface Doc {
   likes_count?: number | null
   created_at: string
   updated_at: string
+  liked_by_me?: boolean
 }
 
 export interface DocMeta {

@@ -20,6 +20,7 @@ type DocLikeRow = {
 
 export type LikedDoc = TaggedDocWithPreview & {
   liked_at: string
+  liked_by_me: boolean
 }
 
 export async function getLikedPets(userId: string): Promise<LikedPet[]> {
@@ -90,6 +91,7 @@ export async function getLikedDocs(userId: string): Promise<LikedDoc[]> {
     .map((row) => ({
       ...row.docs,
       liked_at: row.created_at,
+      liked_by_me: true,
     }))
 
   return withPromptPreviews(docs, (doc) => doc.image_url ? 4 : 5)

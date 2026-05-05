@@ -6,6 +6,7 @@ import type { TaggedDoc } from '@/types'
 export type TaggedDocWithPreview = TaggedDoc & {
   preview_html?: string
   preview_remaining?: number
+  liked_by_me?: boolean
 }
 
 function previewCode(content: string, maxLines: number) {

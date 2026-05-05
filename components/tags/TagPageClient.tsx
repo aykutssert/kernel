@@ -1,7 +1,8 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { Copy, ExternalLink, SlidersHorizontal, Search, X } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
@@ -118,7 +119,12 @@ function TagDocCard({ doc }: { doc: TaggedDocWithPreview }) {
       </div>
 
       <div className="mx-3.5 flex items-center justify-between border-t border-border py-2.5 text-muted-foreground">
-        <PromptLikeButton docId={doc.id} initialCount={doc.likes_count ?? 0} compact />
+        <PromptLikeButton
+          docId={doc.id}
+          initialCount={doc.likes_count ?? 0}
+          initialLiked={doc.liked_by_me}
+          compact
+        />
         <div className="flex items-center gap-2.5">
           <button
             type="button"
@@ -154,13 +160,23 @@ export function TagPageClient({
   initialSort?: SortOption
   authStatus?: string
 }) {
-  const activeTags = [...new Set(tags.filter(Boolean))]
+  const router = useRouter()
+  const activeTags = useMemo(() => [...new Set(tags.filter(Boolean))], [tags])
   const [sort, setSort] = useState<SortOption>(initialSort)
   const [promptQuery, setPromptQuery] = useState(initialQuery)
   const [tagQuery, setTagQuery] = useState('')
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
   const shownAuthStatusRef = useRef<string | undefined>(undefined)
   const hasActiveFilters = activeTags.length > 0 || promptQuery.trim() !== '' || tagQuery.trim() !== '' || sort !== 'default'
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setPromptQuery(initialQuery)
+      setSort(initialSort)
+    }, 0)
+
+    return () => window.clearTimeout(timer)
+  }, [initialQuery, initialSort])
 
   useEffect(() => {
     if (!authStatus || shownAuthStatusRef.current === authStatus) return
@@ -181,26 +197,15 @@ export function TagPageClient({
     setSort('default')
   }
 
-  const filteredDocs = docs.filter((doc) => {
-    const query = promptQuery.trim().toLowerCase()
-    const matchesTags = activeTags.length === 0 || activeTags.every((tag) => (doc.tags ?? []).includes(tag))
-    if (!matchesTags) return false
-    if (!query) return true
-    return [
-      doc.title,
-      doc.description ?? '',
-      doc.content,
-      doc.category,
-      ...(doc.tags ?? []),
-    ].join(' ').toLowerCase().includes(query)
-  })
+  useEffect(() => {
+    if (promptQuery.trim() === initialQuery.trim()) return
 
-  const sorted = [...filteredDocs].sort((a, b) => {
-    if (sort === 'alpha') return a.title.localeCompare(b.title)
-    if (sort === 'newest') return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-    if (sort === 'oldest') return new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
-    return 0
-  })
+    const timer = window.setTimeout(() => {
+      router.replace(promptsHref({ tags: activeTags, q: promptQuery.trim(), sort }), { scroll: false })
+    }, 300)
+
+    return () => window.clearTimeout(timer)
+  }, [activeTags, initialQuery, promptQuery, router, sort])
 
   const visibleFilterTags = allTags
     .filter((t) => t.toLowerCase().includes(tagQuery.trim().toLowerCase()))
@@ -212,19 +217,23 @@ export function TagPageClient({
       return a.localeCompare(b)
     })
 
-  const grouped = sorted.reduce<Record<string, TaggedDocWithPreview[]>>((acc, doc) => {
+  const grouped = docs.reduce<Record<string, TaggedDocWithPreview[]>>((acc, doc) => {
     if (!acc[doc.category]) acc[doc.category] = []
     acc[doc.category].push(doc)
     return acc
   }, {})
+
+  function updateSort(nextSort: SortOption) {
+    setSort(nextSort)
+    router.replace(promptsHref({ tags: activeTags, q: promptQuery.trim(), sort: nextSort }), { scroll: false })
+  }
 
   return (
     <div className="grid gap-x-8 gap-y-3 lg:grid-cols-[240px_1fr]">
       <div className="flex min-h-5 items-center gap-2">
           <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Prompts</p>
           <span className="text-xs text-muted-foreground">
-            {filteredDocs.length} result{filteredDocs.length !== 1 ? 's' : ''}
-            {filteredDocs.length !== docs.length ? ` of ${docs.length}` : ''}
+            {docs.length} result{docs.length !== 1 ? 's' : ''}
           </span>
       </div>
       <div className="hidden min-h-5 lg:block" />
@@ -324,7 +333,7 @@ export function TagPageClient({
               ] as [SortOption, string][]).map(([val, label]) => (
                 <button
                   key={val}
-                  onClick={() => setSort(val)}
+                  onClick={() => updateSort(val)}
                   className={cn(
                     'rounded-md border px-2 py-1.5 text-left font-medium transition-colors',
                     sort === val

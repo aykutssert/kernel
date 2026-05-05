@@ -4,15 +4,14 @@ import { Navbar } from '@/components/layout/Navbar'
 import { CategoryTabs } from '@/components/layout/CategoryTabs'
 import { Footer } from '@/components/layout/Footer'
 import { ScrollToTop } from '@/components/layout/ScrollToTop'
-import { PetCardCanvas } from '@/components/pets/PetCardCanvas'
+import { PetListCard } from '@/components/pets/PetListCard'
 import { PetsSearchBar } from '@/components/pets/PetsSearchBar'
 import { PetsSortTabs } from '@/components/pets/PetsSortTabs'
 import { PetsPageScroller } from '@/components/pets/PetsPageScroller'
 import { PetsGridSkeleton } from '@/components/pets/PetsGridSkeleton'
 import { getDocs } from '@/lib/docs'
 import { getPets, PER_PAGE } from '@/lib/pets-data'
-import { ChevronLeft, ChevronRight, Download, ExternalLink, Heart, Eye, SearchX, PawPrint } from 'lucide-react'
-import { LikeButton } from '@/components/pets/LikeButton'
+import { ChevronLeft, ChevronRight, Heart, SearchX, PawPrint } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface Props {
@@ -104,44 +103,7 @@ async function PetsList({ searchParams }: Props) {
         <>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
             {pets.map((pet) => (
-              <div key={pet.id} className="border border-border rounded-xl overflow-hidden bg-background flex flex-col shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:border-foreground/40">
-                <Link href={`/pets/${pet.id}`} className="block">
-                  <PetCardCanvas spritesheetUrl={pet.spritesheet_url} size={140} />
-                </Link>
-                <div className="px-3 pt-3 pb-3 flex-1 flex flex-col">
-                  <p className="text-sm font-semibold truncate mb-1">{pet.display_name}</p>
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="inline-flex items-center gap-0.5 text-xs text-muted-foreground">
-                      <Eye className="w-3 h-3" />
-                      {(pet.views_count ?? 0).toLocaleString()}
-                    </span>
-                    <span className="inline-flex items-center gap-0.5 text-xs text-muted-foreground">
-                      <Heart className={cn('w-3 h-3', pet.likes_count > 0 ? 'fill-rose-500 text-rose-500' : 'text-muted-foreground')} />
-                      {pet.likes_count.toLocaleString()}
-                    </span>
-                  </div>
-                  {pet.description && (
-                    <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed flex-1">{pet.description}</p>
-                  )}
-                </div>
-                <div className="px-3 pb-3 flex flex-wrap gap-2">
-                  <Link
-                    href={`/pets/${pet.id}`}
-                    className="flex-1 flex items-center justify-center gap-1.5 py-1.5 text-xs font-medium border border-foreground/15 rounded-lg text-muted-foreground hover:text-foreground hover:border-foreground/40 transition-colors"
-                  >
-                    <ExternalLink className="w-3.5 h-3.5" />
-                    View
-                  </Link>
-                  <LikeButton petId={pet.id} initialCount={pet.likes_count} compact />
-                  <a
-                    href={`/api/pets/download?id=${pet.id}`}
-                    className="w-full sm:flex-1 flex items-center justify-center gap-1.5 py-1.5 text-xs font-medium border border-foreground/15 rounded-lg text-muted-foreground hover:text-foreground hover:border-foreground/40 transition-colors"
-                  >
-                    <Download className="w-3.5 h-3.5" />
-                    Download
-                  </a>
-                </div>
-              </div>
+              <PetListCard key={pet.id} pet={pet} />
             ))}
           </div>
 

@@ -14,12 +14,16 @@ export function RoamingPetClient({ spritesheetUrl }: { spritesheetUrl: string | 
   const [loaded, setLoaded] = useState(false)
   const pathname = usePathname()
   const [isMobileState, setIsMobileState] = useState(false)
+  const [pageVisible, setPageVisible] = useState(true)
   const windowSizeRef = useRef({ width: 1000, height: 1000 })
   const isMobileRef = useRef(false)
+  const hiddenInAdmin = pathname?.startsWith('/admin')
 
   useEffect(() => {
+    if (hiddenInAdmin) return
     windowSizeRef.current = { width: window.innerWidth, height: window.innerHeight }
     isMobileRef.current = window.innerWidth < 768
+    posRef.current.x = Math.random() * Math.min(300, window.innerWidth)
     setIsMobileState(isMobileRef.current)
     
     const handleResize = () => {
@@ -29,13 +33,13 @@ export function RoamingPetClient({ spritesheetUrl }: { spritesheetUrl: string | 
     }
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
-  }, [])
+  }, [hiddenInAdmin])
 
   const currentScale = isMobileState ? 0.35 : 0.5
   const visibleWidth = Math.round(CELL_WIDTH * currentScale)
   const visibleHeight = Math.round(CELL_HEIGHT * currentScale)
 
-  const posRef = useRef({ x: Math.random() * 300, y: 0 })
+  const posRef = useRef({ x: 0, y: 0 })
   const velRef = useRef({ x: 0, y: 0 })
   const stateRef = useRef<(typeof CODEX_PET_STATES)[number]>(CODEX_PET_STATES.find(s => s.name === 'idle')!)
   const stateTimerRef = useRef(0)
@@ -51,7 +55,7 @@ export function RoamingPetClient({ spritesheetUrl }: { spritesheetUrl: string | 
   const wasThrownRef = useRef(false)
   const forceWaveUntilRef = useRef(0)
   const bubbleTimeoutRef = useRef<NodeJS.Timeout | null>(null)
-  const lastActivityTimeRef = useRef(Date.now())
+  const phraseIndexRef = useRef(0)
 
   const foodRef = useRef<{ x: number, y: number, velY: number } | null>(null)
   const foodElementRef = useRef<HTMLDivElement>(null)
@@ -64,7 +68,9 @@ export function RoamingPetClient({ spritesheetUrl }: { spritesheetUrl: string | 
   const showSpeech = (phrases: string[], durationMs?: number) => {
     if (!bubbleRef.current) return
     if (bubbleTimeoutRef.current) clearTimeout(bubbleTimeoutRef.current)
-    bubbleRef.current.textContent = phrases[Math.floor(Math.random() * phrases.length)]
+    const phrase = phrases[phraseIndexRef.current % phrases.length]
+    phraseIndexRef.current += 1
+    bubbleRef.current.textContent = phrase
     bubbleRef.current.style.opacity = '1'
     if (durationMs) {
       bubbleTimeoutRef.current = setTimeout(() => hideSpeech(), durationMs)
@@ -79,21 +85,19 @@ export function RoamingPetClient({ spritesheetUrl }: { spritesheetUrl: string | 
     if (bubbleRef.current) bubbleRef.current.style.opacity = '0'
   }
 
-  // Don't show in admin to avoid distractions
-  if (pathname?.startsWith('/admin')) return null
-
   useEffect(() => {
+    if (hiddenInAdmin) return
     if (!spritesheetUrl) return
     const img = new Image()
     img.crossOrigin = 'anonymous'
     img.src = spritesheetUrl
     img.onload = () => { imgRef.current = img; setLoaded(true) }
     return () => { img.onload = null }
-  }, [spritesheetUrl])
+  }, [hiddenInAdmin, spritesheetUrl])
 
   useEffect(() => {
+    if (hiddenInAdmin) return
     function handlePointerMove(e: PointerEvent) {
-      lastActivityTimeRef.current = Date.now()
       if (!isDraggingRef.current) return
 
       const dx = e.clientX - lastPointerPosRef.current.x
@@ -145,10 +149,6 @@ export function RoamingPetClient({ spritesheetUrl }: { spritesheetUrl: string | 
       }
     }
 
-    function handleKeyDown() {
-      lastActivityTimeRef.current = Date.now()
-    }
-
     function handleSelectionChange() {
       const selection = document.getSelection()
       if (selection && selection.toString().trim().length > 0) {
@@ -158,7 +158,6 @@ export function RoamingPetClient({ spritesheetUrl }: { spritesheetUrl: string | 
         const centerX = rect.left + rect.width / 2
         
         selectionTargetRef.current = { x: centerX, text: selection.toString().trim() }
-        lastActivityTimeRef.current = Date.now() // Wake up!
       } else {
         selectionTargetRef.current = null
       }
@@ -171,7 +170,6 @@ export function RoamingPetClient({ spritesheetUrl }: { spritesheetUrl: string | 
         if (target.closest('nav') || target.closest('header')) return
         activeInputRef.current = target
         inputKeystrokesRef.current = 0
-        lastActivityTimeRef.current = Date.now()
       }
     }
 
@@ -184,30 +182,34 @@ export function RoamingPetClient({ spritesheetUrl }: { spritesheetUrl: string | 
     function handleInputEvent(e: Event) {
       if (activeInputRef.current === e.target) {
         inputKeystrokesRef.current++
-        lastActivityTimeRef.current = Date.now()
       }
+    }
+
+    function handleVisibilityChange() {
+      setPageVisible(!document.hidden)
+      lastTimeRef.current = 0
     }
 
     window.addEventListener('pointermove', handlePointerMove)
     window.addEventListener('pointerup', handlePointerUp)
-    window.addEventListener('keydown', handleKeyDown)
     document.addEventListener('selectionchange', handleSelectionChange)
     document.addEventListener('focusin', handleFocusIn)
     document.addEventListener('focusout', handleFocusOut)
     document.addEventListener('input', handleInputEvent)
+    document.addEventListener('visibilitychange', handleVisibilityChange)
     return () => {
       window.removeEventListener('pointermove', handlePointerMove)
       window.removeEventListener('pointerup', handlePointerUp)
-      window.removeEventListener('keydown', handleKeyDown)
       document.removeEventListener('selectionchange', handleSelectionChange)
       document.removeEventListener('focusin', handleFocusIn)
       document.removeEventListener('focusout', handleFocusOut)
       document.removeEventListener('input', handleInputEvent)
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
     }
-  }, [])
+  }, [hiddenInAdmin])
 
   useEffect(() => {
-    if (!loaded || !spritesheetUrl) return
+    if (hiddenInAdmin || !loaded || !spritesheetUrl || !pageVisible) return
     const canvas = canvasRef.current
     if (!canvas) return
     const ctx = canvas.getContext('2d')
@@ -299,16 +301,7 @@ export function RoamingPetClient({ spritesheetUrl }: { spritesheetUrl: string | 
         changeState('waving')
       }
       else {
-        // AI Logic on ground
-        const isAfk = (Date.now() - lastActivityTimeRef.current) > 30000 // 30 seconds
-
-        if (isAfk) {
-          if (stateRef.current.name !== 'failed') {
-            changeState('failed')
-            velRef.current.x = 0
-            showSpeech(["Zzz..."]) // Stay asleep
-          }
-        } else if (foodRef.current) {
+        if (foodRef.current) {
           // FOOD CHASE LOGIC
           const dist = foodRef.current.x - (posRef.current.x + currentVisibleWidth / 2)
 
@@ -522,9 +515,9 @@ export function RoamingPetClient({ spritesheetUrl }: { spritesheetUrl: string | 
 
     rafRef.current = requestAnimationFrame(draw)
     return () => cancelAnimationFrame(rafRef.current)
-  }, [loaded, spritesheetUrl])
+  }, [hiddenInAdmin, loaded, pageVisible, spritesheetUrl])
 
-  if (!spritesheetUrl) return null
+  if (hiddenInAdmin || !spritesheetUrl) return null
 
   return (
     <div className="fixed inset-0 pointer-events-none z-[9999] overflow-hidden">
@@ -604,8 +597,7 @@ export function RoamingPetClient({ spritesheetUrl }: { spritesheetUrl: string | 
               y: -50,
               velY: 0
             }
-            hideSpeech() // Hide Zzz if sleeping
-            lastActivityTimeRef.current = Date.now() // Wake up
+            hideSpeech()
           }
         }}
         className="fixed bottom-4 left-4 z-[10000] bg-background/80 backdrop-blur-sm border border-border px-3 py-2 rounded-full shadow-lg text-sm font-medium hover:bg-muted transition-colors pointer-events-auto flex items-center gap-2"

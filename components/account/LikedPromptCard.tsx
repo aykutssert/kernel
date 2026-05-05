@@ -57,6 +57,7 @@ export function LikedPromptCard({
         <PromptLikeButton
           docId={doc.id}
           initialCount={doc.likes_count ?? 0}
+          initialLiked={doc.liked_by_me}
           compact
           onChange={(liked) => {
             if (!liked) onUnlike?.(doc.id)

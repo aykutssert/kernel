@@ -2,6 +2,12 @@ import { cacheTag, cacheLife } from 'next/cache'
 import { createPublicClient } from '@/lib/supabase/server'
 import type { Doc, DocMeta, TaggedDoc, DocVersion } from '@/types'
 
+type PromptSort = 'default' | 'alpha' | 'newest' | 'oldest'
+
+function cleanIlikeQuery(q: string) {
+  return q.trim().replace(/[,%_]/g, ' ').replace(/\s+/g, ' ')
+}
+
 export async function getDocVersions(docId: string): Promise<DocVersion[]> {
   'use cache'
   cacheTag('docs', `versions-${docId}`)
@@ -106,10 +112,53 @@ export async function getPromptDocs(): Promise<TaggedDoc[]> {
   const supabase = createPublicClient()
   const { data } = await supabase
     .from('docs')
-    .select('id, title, slug, category, description, content, image_url, order_index, published, tags, created_at')
+    .select('id, title, slug, category, description, content, image_url, order_index, published, tags, created_at, likes_count')
     .eq('published', true)
     .eq('category', 'prompts')
     .order('order_index')
+  return data ?? []
+}
+
+export async function getPromptDocsFiltered({
+  q = '',
+  tags = [],
+  sort = 'default',
+}: {
+  q?: string
+  tags?: string[]
+  sort?: PromptSort
+}): Promise<TaggedDoc[]> {
+  'use cache'
+  cacheTag('docs', 'prompts')
+  cacheLife('max')
+
+  const supabase = createPublicClient()
+  let query = supabase
+    .from('docs')
+    .select('id, title, slug, category, description, content, image_url, order_index, published, tags, created_at, likes_count')
+    .eq('published', true)
+    .eq('category', 'prompts')
+
+  for (const tag of tags.filter(Boolean)) {
+    query = query.contains('tags', [tag])
+  }
+
+  const safeQuery = cleanIlikeQuery(q)
+  if (safeQuery) {
+    query = query.or(`title.ilike.%${safeQuery}%,description.ilike.%${safeQuery}%,content.ilike.%${safeQuery}%`)
+  }
+
+  if (sort === 'alpha') {
+    query = query.order('title', { ascending: true })
+  } else if (sort === 'newest') {
+    query = query.order('created_at', { ascending: false })
+  } else if (sort === 'oldest') {
+    query = query.order('created_at', { ascending: true })
+  } else {
+    query = query.order('order_index')
+  }
+
+  const { data } = await query
   return data ?? []
 }
 

@@ -5,8 +5,9 @@ import { CategoryTabs } from '@/components/layout/CategoryTabs'
 import { Footer } from '@/components/layout/Footer'
 import { TagPageClient } from '@/components/tags/TagPageClient'
 import { PromptsGridSkeleton } from '@/components/prompts/PromptsGridSkeleton'
-import { getAllTags, getDocs, getPromptDocs } from '@/lib/docs'
+import { getAllTags, getDocs, getPromptDocsFiltered } from '@/lib/docs'
 import { withPromptPreviews } from '@/lib/prompt-preview'
+import { createClient, createServiceClient } from '@/lib/supabase/server'
 
 interface Props {
   searchParams: Promise<{ q?: string; tag?: string | string[]; sort?: string; auth?: string }>
@@ -28,15 +29,38 @@ async function PromptsContent({ searchParams }: Props) {
     ? params.sort
     : 'default'
 
-  const [rawDocs, allTags] = await Promise.all([getPromptDocs(), getAllTags()])
-  const docs = await withPromptPreviews(rawDocs, (doc) => doc.image_url ? 4 : 8)
+  const promptQuery = params.q?.trim() ?? ''
+  const [rawDocs, allTags] = await Promise.all([
+    getPromptDocsFiltered({ q: promptQuery, tags, sort }),
+    getAllTags(),
+  ])
+  const auth = await createClient()
+  const { data: { user } } = await auth.auth.getUser()
+  const likedIds = new Set<string>()
+
+  if (user && rawDocs.length > 0) {
+    const service = createServiceClient()
+    const { data: likes } = await service
+      .from('doc_likes')
+      .select('doc_id')
+      .eq('user_id', user.id)
+      .in('doc_id', rawDocs.map((doc) => doc.id))
+
+    likes?.forEach((like) => likedIds.add(like.doc_id))
+  }
+
+  const docsWithLikes = rawDocs.map((doc) => ({
+    ...doc,
+    liked_by_me: likedIds.has(doc.id),
+  }))
+  const docs = await withPromptPreviews(docsWithLikes, (doc) => doc.image_url ? 4 : 8)
 
   return (
     <TagPageClient
       docs={docs}
       allTags={allTags}
       tags={tags}
-      initialQuery={params.q ?? ''}
+      initialQuery={promptQuery}
       initialSort={sort}
       authStatus={params.auth}
     />

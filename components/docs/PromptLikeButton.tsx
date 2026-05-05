@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Heart } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils'
 type PromptLikeButtonProps = {
   docId: string
   initialCount?: number | null
+  initialLiked?: boolean
   showCount?: boolean
   compact?: boolean
   onChange?: (liked: boolean, count: number) => void
@@ -16,25 +17,14 @@ type PromptLikeButtonProps = {
 export function PromptLikeButton({
   docId,
   initialCount = 0,
+  initialLiked = false,
   showCount = true,
   compact = false,
   onChange,
 }: PromptLikeButtonProps) {
-  const [liked, setLiked] = useState(false)
+  const [liked, setLiked] = useState(initialLiked)
   const [count, setCount] = useState(initialCount ?? 0)
-  const [ready, setReady] = useState(false)
   const [loading, setLoading] = useState(false)
-
-  useEffect(() => {
-    fetch(`/api/docs/like?id=${docId}`)
-      .then((response) => response.json())
-      .then(({ liked, count }) => {
-        setLiked(Boolean(liked))
-        setCount(count ?? 0)
-        setReady(true)
-      })
-      .catch(() => setReady(true))
-  }, [docId])
 
   const toggle = useCallback(async () => {
     if (loading) return
@@ -68,7 +58,7 @@ export function PromptLikeButton({
     <button
       type="button"
       onClick={toggle}
-      disabled={!ready || loading}
+      disabled={loading}
       aria-label={liked ? 'Unlike prompt' : 'Like prompt'}
       className={cn(
         'inline-flex items-center gap-1.5 rounded-md border transition-colors',
@@ -76,7 +66,7 @@ export function PromptLikeButton({
         liked
           ? 'border-rose-500/60 bg-rose-500/10 text-rose-500 hover:bg-rose-500/15'
           : 'border-foreground/15 text-muted-foreground hover:border-foreground/40 hover:text-foreground',
-        (!ready || loading) && 'cursor-not-allowed opacity-50'
+        loading && 'cursor-not-allowed opacity-50'
       )}
     >
       <Heart className={cn(compact ? 'h-3.5 w-3.5' : 'h-3.5 w-3.5', liked && 'fill-rose-500')} />

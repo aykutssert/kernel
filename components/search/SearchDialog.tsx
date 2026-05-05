@@ -49,12 +49,24 @@ export function SearchDialog({ open, onOpenChange, initialTag, allTags = [] }: S
   useEffect(() => {
     if (!open) return
     if (debounceRef.current) clearTimeout(debounceRef.current)
+    if (!query.trim() && !activeTag) {
+      return
+    }
     debounceRef.current = setTimeout(() => fetchResults(query, activeTag), query ? 300 : 0)
   }, [query, activeTag, open, fetchResults])
 
   useEffect(() => {
-    if (!open) { setQuery(''); setResults([]) }
-    else { setActiveTag(initialTag ?? ''); setRecentDocs(getRecentDocs()) }
+    const timer = window.setTimeout(() => {
+      if (!open) {
+        setQuery('')
+        setResults([])
+      } else {
+        setActiveTag(initialTag ?? '')
+        setRecentDocs(getRecentDocs())
+      }
+    }, 0)
+
+    return () => window.clearTimeout(timer)
   }, [open, initialTag])
 
   const navigate = useCallback(
