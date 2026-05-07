@@ -426,7 +426,14 @@ export function ProductResultsList({
 
   if (!signedIn) {
     return (
-      <div className="flex min-h-[360px] flex-col items-center justify-center rounded-md border border-dashed border-border text-center">
+      <div className="relative flex min-h-[360px] flex-col items-center justify-center overflow-hidden rounded-md border border-dashed border-border text-center">
+        <div
+          className="absolute inset-0 [--dot-color:hsl(var(--foreground)/0.12)] dark:[--dot-color:hsl(var(--foreground)/0.07)]"
+          style={{
+            backgroundImage: 'radial-gradient(circle, var(--dot-color) 1px, transparent 1px)',
+            backgroundSize: '22px 22px',
+          }}
+        />
         <PackagePlus className="mb-4 h-10 w-10 text-muted-foreground/30" />
         <p className="text-sm font-medium">Sign in to view results.</p>
         <p className="mt-1 max-w-sm text-xs text-muted-foreground">
@@ -438,7 +445,14 @@ export function ProductResultsList({
 
   if (results.length === 0) {
     return (
-      <div className="flex min-h-[420px] flex-col items-center justify-center rounded-xl border border-dashed border-border px-6 py-12 text-center">
+      <div className="relative flex min-h-[420px] flex-col items-center justify-center overflow-hidden rounded-xl border border-dashed border-border px-6 py-12 text-center">
+        <div
+          className="absolute inset-0 [--dot-color:hsl(var(--foreground)/0.12)] dark:[--dot-color:hsl(var(--foreground)/0.07)]"
+          style={{
+            backgroundImage: 'radial-gradient(circle, var(--dot-color) 1px, transparent 1px)',
+            backgroundSize: '22px 22px',
+          }}
+        />
         <p className="mb-1 text-sm font-semibold">Your generated photos will appear here</p>
         <p className="mb-10 text-xs text-muted-foreground">Follow these three steps to create your first result</p>
 

@@ -134,7 +134,14 @@ export function ProductProductsClient({
   return (
     <>
       {!signedIn ? (
-        <div className="flex min-h-[360px] flex-col items-center justify-center rounded-md border border-dashed border-border text-center">
+        <div className="relative flex min-h-[360px] flex-col items-center justify-center overflow-hidden rounded-md border border-dashed border-border text-center">
+          <div
+            className="absolute inset-0 [--dot-color:hsl(var(--foreground)/0.12)] dark:[--dot-color:hsl(var(--foreground)/0.07)]"
+            style={{
+              backgroundImage: 'radial-gradient(circle, var(--dot-color) 1px, transparent 1px)',
+              backgroundSize: '22px 22px',
+            }}
+          />
           <UserRound className="mb-4 h-10 w-10 text-muted-foreground/30" />
           <p className="text-sm font-medium">Sign in to save products.</p>
           <p className="mt-1 max-w-sm text-xs text-muted-foreground">
@@ -256,7 +263,14 @@ export function ProductProductsClient({
           )}
 
           {products.length === 0 && !showForm && (
-            <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border px-6 py-12 text-center">
+            <div className="relative flex flex-col items-center justify-center overflow-hidden rounded-xl border border-dashed border-border px-6 py-12 text-center">
+              <div
+                className="absolute inset-0 [--dot-color:hsl(var(--foreground)/0.12)] dark:[--dot-color:hsl(var(--foreground)/0.07)]"
+                style={{
+                  backgroundImage: 'radial-gradient(circle, var(--dot-color) 1px, transparent 1px)',
+                  backgroundSize: '22px 22px',
+                }}
+              />
               <p className="mb-1 text-sm font-semibold">No products yet</p>
               <p className="mb-10 text-xs text-muted-foreground">Add your first product to start generating photos</p>
 

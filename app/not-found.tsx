@@ -5,7 +5,14 @@ import { PawPrint, FileText } from 'lucide-react'
 
 export default function NotFound() {
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="relative flex flex-col min-h-screen">
+      <div
+        className="pointer-events-none fixed inset-0 [--dot-color:hsl(var(--foreground)/0.18)] dark:[--dot-color:hsl(var(--foreground)/0.12)]"
+        style={{
+          backgroundImage: 'radial-gradient(circle, var(--dot-color) 1px, transparent 1px)',
+          backgroundSize: '22px 22px',
+        }}
+      />
       <Navbar />
       <main className="flex-1 flex flex-col items-center justify-center px-4 text-center">
         <p className="text-[9rem] font-bold leading-none tabular-nums text-foreground/5 select-none mb-2">
