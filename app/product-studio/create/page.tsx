@@ -8,6 +8,7 @@ import { ProductCreateForm } from '@/components/product-templates/ProductCreateF
 import { getDocs } from '@/lib/docs'
 import { getMyProductProducts } from '@/lib/product-products'
 import { getProductTemplate, getProductTemplates } from '@/lib/product-templates'
+import { getProductUsageSnapshot } from '@/lib/product-usage'
 import { createClient } from '@/lib/supabase/server'
 
 interface Props {
@@ -27,7 +28,10 @@ async function ProductCreateContent({ searchParams }: Props) {
   if (!user) redirect('/product-studio/templates')
   if (templates.length === 0) redirect('/product-studio/templates')
 
-  const initialTemplate = selectedTemplate ?? templates[0]
+  const [initialTemplate, usage] = await Promise.all([
+    Promise.resolve(selectedTemplate ?? templates[0]),
+    getProductUsageSnapshot(user.id),
+  ])
 
   return (
     <ProductCreateForm
@@ -35,6 +39,7 @@ async function ProductCreateContent({ searchParams }: Props) {
       initialTemplate={initialTemplate}
       products={products}
       initialProductId={params.product}
+      usage={usage}
     />
   )
 }
