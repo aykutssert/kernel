@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { Navbar } from '@/components/layout/Navbar'
 import { CategoryTabs } from '@/components/layout/CategoryTabs'
+import { DeveloperSubnav } from '@/components/layout/DeveloperSubnav'
 import { Footer } from '@/components/layout/Footer'
 import { getDocs } from '@/lib/docs'
 import { ArrowRight } from 'lucide-react'
@@ -24,6 +25,7 @@ export default async function DocsIndexPage() {
       <Navbar docs={docs} />
       <CategoryTabs docs={docs} />
       <div className="flex-1 max-w-[1400px] mx-auto w-full px-4 md:px-0 py-8">
+        <DeveloperSubnav />
         <div className="grid gap-8 lg:grid-cols-[240px_1fr]">
           <aside className="hidden lg:block">
             <div className="sticky top-[117px] space-y-1 rounded-md border border-border bg-background p-3">

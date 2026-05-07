@@ -4,6 +4,7 @@ import { useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Upload, X } from 'lucide-react'
 import { toast } from 'sonner'
+import { PRODUCT_TEMPLATE_CATEGORIES } from '@/lib/product-template-categories'
 import type { ProductTemplate } from '@/types'
 
 type Category = ProductTemplate['category']
@@ -12,7 +13,7 @@ export function ProductTemplateForm({ template }: { template?: ProductTemplate }
   const router = useRouter()
   const fileRef = useRef<HTMLInputElement>(null)
   const [name, setName] = useState(template?.name ?? '')
-  const [category, setCategory] = useState<Category>(template?.category ?? 'home_decor')
+  const [category, setCategory] = useState<Category>(template?.category ?? 'beauty_wellness')
   const [imageUrl, setImageUrl] = useState(template?.image_url ?? '')
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [sortOrder, setSortOrder] = useState(template?.sort_order ?? 0)
@@ -102,8 +103,11 @@ export function ProductTemplateForm({ template }: { template?: ProductTemplate }
             onChange={(e) => setCategory(e.target.value as Category)}
             className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
           >
-            <option value="home_decor">Home & Decor</option>
-            <option value="beauty_wellness">Beauty & Wellness</option>
+            {PRODUCT_TEMPLATE_CATEGORIES.map((item) => (
+              <option key={item.value} value={item.value}>
+                {item.label}
+              </option>
+            ))}
           </select>
         </div>
 

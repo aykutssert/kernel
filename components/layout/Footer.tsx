@@ -31,9 +31,15 @@ export function Footer() {
           </a>
         </div>
 
-        <nav className="flex items-center gap-5 text-sm text-muted-foreground">
+        <nav className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm text-muted-foreground">
+          <Link href="/product-studio/templates" className="hover:text-foreground transition-colors">
+            Product Studio
+          </Link>
+          <Link href="/prompts" className="hover:text-foreground transition-colors">
+            Prompts
+          </Link>
           <Link href="/pets" className="hover:text-foreground transition-colors">
-            Pets
+            Codex Pets
           </Link>
           <Link href="/docs" className="hover:text-foreground transition-colors">
             Docs

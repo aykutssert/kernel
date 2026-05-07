@@ -3,12 +3,8 @@
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { X } from 'lucide-react'
+import { PRODUCT_TEMPLATE_CATEGORY_LABELS } from '@/lib/product-template-categories'
 import type { ProductTemplate } from '@/types'
-
-const CATEGORY_LABELS: Record<ProductTemplate['category'], string> = {
-  home_decor: 'Home & Decor',
-  beauty_wellness: 'Beauty & Wellness',
-}
 
 function ProductTemplateCard({
   template,
@@ -18,7 +14,7 @@ function ProductTemplateCard({
   onPreview: (template: ProductTemplate) => void
 }) {
   return (
-    <article className="mb-4 break-inside-avoid overflow-hidden rounded-md border border-border bg-background transition-colors hover:border-foreground/30 dark:bg-[#080808]">
+    <article className="mb-4 break-inside-avoid overflow-hidden rounded-md border border-border bg-background transition-all duration-200 hover:-translate-y-0.5 hover:border-foreground/30 dark:bg-[#080808]">
       <button
         type="button"
         onClick={() => onPreview(template)}
@@ -50,7 +46,7 @@ function ProductTemplateCard({
             </h2>
           </button>
           <span className="shrink-0 rounded-md border border-border bg-background px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
-            {CATEGORY_LABELS[template.category]}
+            {PRODUCT_TEMPLATE_CATEGORY_LABELS[template.category]}
           </span>
         </div>
       </div>
@@ -58,7 +54,7 @@ function ProductTemplateCard({
       <div className="mx-3.5 flex items-center justify-between border-t border-border py-2.5">
         <span className="text-xs text-muted-foreground">Scene reference</span>
         <Link
-          href={`/create/product-image?template=${template.id}`}
+          href={`/product-studio/create?template=${template.id}`}
           className="rounded-md border border-foreground/15 px-2 py-1 text-xs font-medium text-muted-foreground transition-colors hover:border-foreground/40 hover:text-foreground"
         >
           Use template
@@ -91,16 +87,18 @@ function TemplateLightbox({
         aria-label="Close preview"
         onClick={onClose}
       />
-      <div className="relative z-10 flex min-h-screen items-center justify-center p-3 sm:p-6">
-        <div className="w-full max-w-5xl overflow-hidden rounded-md border border-border bg-background shadow-2xl">
+      <div className="relative z-10 flex h-dvh items-center justify-center p-4 sm:p-10">
+        <div className="w-full max-w-2xl overflow-hidden rounded-md border border-border bg-background shadow-2xl">
           <div className="flex items-center justify-between gap-3 border-b border-border px-3 py-2.5 sm:px-4">
             <div className="min-w-0">
               <p className="truncate text-sm font-semibold">{template.name}</p>
-              <p className="mt-0.5 text-xs text-muted-foreground">{CATEGORY_LABELS[template.category]}</p>
+              <p className="mt-0.5 text-xs text-muted-foreground">
+                {PRODUCT_TEMPLATE_CATEGORY_LABELS[template.category]}
+              </p>
             </div>
             <div className="flex shrink-0 items-center gap-2">
               <Link
-                href={`/create/product-image?template=${template.id}`}
+                href={`/product-studio/create?template=${template.id}`}
                 className="rounded-md border border-foreground/15 px-2 py-1 text-xs font-medium text-muted-foreground transition-colors hover:border-foreground/40 hover:text-foreground"
               >
                 Use template
@@ -115,11 +113,11 @@ function TemplateLightbox({
               </button>
             </div>
           </div>
-          <div className="flex max-h-[calc(100vh-96px)] items-center justify-center bg-muted/30 p-2 sm:p-4">
+          <div className="flex max-h-[calc(100dvh-160px)] items-center justify-center bg-muted/30 p-2 sm:p-4">
             <img
               src={template.image_url}
               alt={template.name}
-              className="max-h-[calc(100vh-128px)] w-auto max-w-full rounded-sm object-contain"
+              className="max-h-[calc(100dvh-192px)] w-auto max-w-full rounded-sm object-contain"
             />
           </div>
         </div>

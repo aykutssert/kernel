@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { Suspense } from 'react'
 import { Navbar } from '@/components/layout/Navbar'
 import { CategoryTabs } from '@/components/layout/CategoryTabs'
+import { DeveloperSubnav } from '@/components/layout/DeveloperSubnav'
 import { Footer } from '@/components/layout/Footer'
 import { ScrollToTop } from '@/components/layout/ScrollToTop'
 import { PetListCard } from '@/components/pets/PetListCard'
@@ -185,6 +186,7 @@ export default async function PetsPage({ searchParams }: Props) {
       <Navbar docs={docs} />
       <CategoryTabs docs={docs} />
       <main className="flex-1 max-w-[1400px] mx-auto w-full px-4 md:px-0 pt-6 pb-12">
+        <DeveloperSubnav />
         <Suspense fallback={<PetsGridSkeleton />}>
           <PetsList searchParams={searchParams} />
         </Suspense>

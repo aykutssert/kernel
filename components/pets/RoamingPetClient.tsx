@@ -216,6 +216,7 @@ export function RoamingPetClient({ spritesheetUrl }: { spritesheetUrl: string | 
     if (!ctx) return
 
     const currentVisibleHeight = Math.round(CELL_HEIGHT * (isMobileRef.current ? 0.35 : 0.5))
+    // eslint-disable-next-line react-hooks/immutability
     posRef.current.y = windowSizeRef.current.height - currentVisibleHeight
 
     function changeState(newStateName: string) {

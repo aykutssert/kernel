@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Suspense } from 'react'
 import { Navbar } from '@/components/layout/Navbar'
 import { CategoryTabs } from '@/components/layout/CategoryTabs'
+import { DeveloperSubnav } from '@/components/layout/DeveloperSubnav'
 import { Footer } from '@/components/layout/Footer'
 import { TagPageClient } from '@/components/tags/TagPageClient'
 import { PromptsGridSkeleton } from '@/components/prompts/PromptsGridSkeleton'
@@ -75,6 +76,7 @@ export default async function PromptsPage({ searchParams }: Props) {
       <Navbar docs={docs} />
       <CategoryTabs docs={docs} />
       <main className="mx-auto w-full max-w-[1400px] px-4 py-6">
+        <DeveloperSubnav />
         <Suspense fallback={<PromptsGridSkeleton />}>
           <PromptsContent searchParams={searchParams} />
         </Suspense>

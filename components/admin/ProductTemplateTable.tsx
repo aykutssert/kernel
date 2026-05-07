@@ -7,12 +7,8 @@ import { Pencil, Search, Trash2, X } from 'lucide-react'
 import { toast } from 'sonner'
 import { ConfirmDialog } from './ConfirmDialog'
 import { cn } from '@/lib/utils'
+import { PRODUCT_TEMPLATE_CATEGORY_LABELS } from '@/lib/product-template-categories'
 import type { ProductTemplate } from '@/types'
-
-const CATEGORY_LABELS: Record<ProductTemplate['category'], string> = {
-  home_decor: 'Home & Decor',
-  beauty_wellness: 'Beauty & Wellness',
-}
 
 export function ProductTemplateTable({ templates: initialTemplates }: { templates: ProductTemplate[] }) {
   const router = useRouter()
@@ -54,7 +50,7 @@ export function ProductTemplateTable({ templates: initialTemplates }: { template
   const filtered = templates.filter((template) =>
     !q ||
     template.name.toLowerCase().includes(q) ||
-    CATEGORY_LABELS[template.category].toLowerCase().includes(q)
+    PRODUCT_TEMPLATE_CATEGORY_LABELS[template.category].toLowerCase().includes(q)
   )
 
   return (
@@ -102,7 +98,9 @@ export function ProductTemplateTable({ templates: initialTemplates }: { template
                   <img src={template.image_url} alt="" className="h-10 w-10 rounded object-cover" />
                 </td>
                 <td className="px-4 py-2 font-medium">{template.name}</td>
-                <td className="px-4 py-2 text-muted-foreground">{CATEGORY_LABELS[template.category]}</td>
+                <td className="px-4 py-2 text-muted-foreground">
+                  {PRODUCT_TEMPLATE_CATEGORY_LABELS[template.category]}
+                </td>
                 <td className="px-4 py-2 text-right text-xs tabular-nums text-muted-foreground">{template.sort_order}</td>
                 <td className="px-4 py-2">
                   <button

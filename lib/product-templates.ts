@@ -18,3 +18,15 @@ export async function getProductTemplates(): Promise<ProductTemplate[]> {
 
   return data ?? []
 }
+
+export async function getProductTemplate(id: string): Promise<ProductTemplate | null> {
+  const supabase = createPublicClient()
+  const { data } = await supabase
+    .from('product_templates')
+    .select('id, category, name, image_url, sort_order, is_active, created_at')
+    .eq('id', id)
+    .eq('is_active', true)
+    .maybeSingle()
+
+  return data ?? null
+}

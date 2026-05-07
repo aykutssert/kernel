@@ -66,10 +66,10 @@ export function FeedbackModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
   return createPortal(
     <div
       ref={backdropRef}
-      className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm"
+      className="fixed inset-0 z-[200] flex items-center justify-center bg-black/40 p-3 backdrop-blur-sm sm:p-4"
       onClick={(e) => { if (e.target === backdropRef.current) onClose() }}
     >
-      <div className="relative w-full max-w-md max-h-[90vh] overflow-y-auto rounded-2xl border border-border bg-background shadow-2xl animate-in fade-in zoom-in duration-200 no-scrollbar">
+      <div className="relative max-h-[calc(100dvh-24px)] w-full max-w-md overflow-y-auto rounded-xl border border-border bg-background shadow-2xl animate-in fade-in zoom-in duration-200 no-scrollbar sm:max-h-[90vh]">
         <div className="sticky top-0 z-10 flex items-center justify-between border-b border-border px-4 py-3.5 bg-background/95 backdrop-blur-sm">
           <div className="flex items-center gap-2">
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-foreground/5 text-foreground">
@@ -102,7 +102,7 @@ export function FeedbackModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
               value={content}
               onChange={(e) => setContent(e.target.value)}
               placeholder="Features you want, bugs you found, or general feedback..."
-              className="min-h-[140px] w-full resize-none bg-muted/30 text-sm outline-none placeholder:text-muted-foreground/40 border border-border rounded-xl p-4 focus:border-foreground/30 focus:bg-background transition-all"
+              className="min-h-[140px] w-full resize-none rounded-xl border border-border bg-muted/30 p-4 text-base outline-none transition-all placeholder:text-muted-foreground/40 focus:border-foreground/30 focus:bg-background sm:text-sm"
               required
             />
           </div>
@@ -117,7 +117,7 @@ export function FeedbackModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
                 value={author}
                 onChange={(e) => setAuthor(e.target.value)}
                 placeholder="Anonymous"
-                className="w-full bg-muted/30 text-sm outline-none border border-border rounded-xl px-4 py-2.5 focus:border-foreground/30 focus:bg-background transition-all"
+                className="w-full rounded-xl border border-border bg-muted/30 px-4 py-2.5 text-base outline-none transition-all focus:border-foreground/30 focus:bg-background sm:text-sm"
               />
             </div>
             <div className="space-y-2">
@@ -128,7 +128,7 @@ export function FeedbackModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
                 <select
                   value={source}
                   onChange={(e) => setSource(e.target.value)}
-                  className="w-full appearance-none bg-muted/30 text-sm outline-none border border-border rounded-xl px-4 py-2.5 pr-10 focus:border-foreground/30 focus:bg-background transition-all"
+                  className="w-full appearance-none rounded-xl border border-border bg-muted/30 px-4 py-2.5 pr-10 text-base outline-none transition-all focus:border-foreground/30 focus:bg-background sm:text-sm"
                 >
                   <option value="Site">Website</option>
                   <option value="Reddit">Reddit</option>

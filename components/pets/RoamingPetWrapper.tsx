@@ -1,12 +1,12 @@
 import { Suspense } from 'react'
 import { getRoamingPetSpritesheetUrl } from '@/lib/roaming-pet'
-import { RoamingPetClient } from './RoamingPetClient'
+import { RoamingPetVisibilityGate } from './RoamingPetVisibilityGate'
 
 async function RoamingPetFetcher() {
   const spritesheetUrl = await getRoamingPetSpritesheetUrl()
   if (!spritesheetUrl) return null
 
-  return <RoamingPetClient spritesheetUrl={spritesheetUrl} />
+  return <RoamingPetVisibilityGate spritesheetUrl={spritesheetUrl} />
 }
 
 export function RoamingPetWrapper() {

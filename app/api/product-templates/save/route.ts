@@ -2,8 +2,7 @@ import { NextResponse } from 'next/server'
 import { revalidateTag } from 'next/cache'
 import { createClient } from '@supabase/supabase-js'
 import { requireAdmin } from '@/lib/auth/admin'
-
-const CATEGORIES = new Set(['home_decor', 'beauty_wellness'])
+import { PRODUCT_TEMPLATE_CATEGORY_VALUES } from '@/lib/product-template-categories'
 
 function storagePathFromPublicUrl(url: string) {
   try {
@@ -33,7 +32,7 @@ export async function POST(req: Request) {
 
   const name = body.name?.trim()
   const imageUrl = body.image_url?.trim()
-  if (!name || !imageUrl || !body.category || !CATEGORIES.has(body.category)) {
+  if (!name || !imageUrl || !body.category || !PRODUCT_TEMPLATE_CATEGORY_VALUES.has(body.category)) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
   }
 

@@ -1,3 +1,5 @@
+import type { ProductTemplateCategory } from '@/lib/product-template-categories'
+
 export interface Doc {
   id: string
   title: string
@@ -59,10 +61,20 @@ export interface DocVersion {
 
 export interface ProductTemplate {
   id: string
-  category: 'home_decor' | 'beauty_wellness'
+  category: ProductTemplateCategory
   name: string
   image_url: string
   sort_order: number
   is_active: boolean
+  created_at: string
+}
+
+export interface ProductProduct {
+  id: string
+  user_id: string
+  category: string
+  name: string
+  image_url: string
+  product_prompt: string | null
   created_at: string
 }

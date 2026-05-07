@@ -1,6 +1,8 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
+const LOCK_PRODUCTION_SITE = true
+
 const PUBLIC_API_PREFIXES = [
   '/api/search',
   '/api/auth',
@@ -14,6 +16,19 @@ const PUBLIC_API_PREFIXES = [
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
+
+  if (LOCK_PRODUCTION_SITE && process.env.VERCEL_ENV === 'production') {
+    if (pathname.startsWith('/api/')) {
+      return NextResponse.json({ error: 'Site temporarily locked' }, { status: 503 })
+    }
+
+    if (pathname !== '/locked') {
+      const url = request.nextUrl.clone()
+      url.pathname = '/locked'
+      return NextResponse.rewrite(url)
+    }
+  }
+
   const isPublicApi = pathname.startsWith('/api/')
     && PUBLIC_API_PREFIXES.some((p) => pathname.startsWith(p))
 
@@ -92,5 +107,7 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*', '/api/:path*'],
+  matcher: [
+    '/((?!_next/static|_next/image|favicon.ico|icon.svg|robots.txt|sitemap.xml|.*\\.(?:png|jpg|jpeg|gif|webp|svg|ico|css|js|txt|xml)$).*)',
+  ],
 }

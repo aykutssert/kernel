@@ -3,9 +3,9 @@ import Image from 'next/image'
 import { ThemeToggle } from './ThemeToggle'
 import { SearchTrigger } from '@/components/search/SearchTrigger'
 import { MobileNav } from './MobileNav'
-import { ConnectButton } from '@/components/mcp/ConnectButton'
+import { MoreMenu } from './MoreMenu'
+import { RoamingPetToggle } from '@/components/pets/RoamingPetToggle'
 import { AuthButton } from '@/components/auth/AuthButton'
-import { FeedbackTrigger } from '@/components/feedback/FeedbackTrigger'
 import type { DocMeta } from '@/types'
 
 export function Navbar({ docs = [] }: { docs?: DocMeta[] }) {
@@ -30,8 +30,8 @@ export function Navbar({ docs = [] }: { docs?: DocMeta[] }) {
           <SearchTrigger allTags={[...new Set(docs.flatMap((d) => d.tags ?? []))].sort()} />
         </div>
 
-        <FeedbackTrigger />
-        <ConnectButton />
+        <MoreMenu />
+        <RoamingPetToggle />
         <AuthButton />
         <ThemeToggle />
       </div>
