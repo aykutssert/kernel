@@ -128,6 +128,21 @@ body {
 button { cursor: pointer !important; }
 button:disabled { cursor: not-allowed !important; }
 
+@keyframes gradient-shift {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+.animate-gradient {
+  background-size: 400% 400%;
+  animation: gradient-shift 28s linear infinite;
+}
+
+@keyframes product-progress {
+  0% { transform: translateX(-110%); }
+  100% { transform: translateX(220%); }
+}
+
 /* rehype-pretty-code dual theme */
 .prose pre span {
   color: var(--shiki-light) !important;
