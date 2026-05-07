@@ -60,12 +60,25 @@ export default async function PricingPage() {
       <Navbar docs={docs} />
       <main className="mx-auto w-full max-w-[1400px] flex-1 px-4 py-12 md:px-0 md:py-20">
         <div className="mx-auto max-w-3xl">
-          <div className="mb-12 text-center">
-            <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-muted-foreground">Pricing</p>
-            <h1 className="text-3xl font-bold tracking-tight">Simple, transparent pricing</h1>
-            <p className="mt-3 text-sm text-muted-foreground">
-              Start free. Upgrade when you need more generations.
-            </p>
+          <div className="relative mb-12 overflow-hidden rounded-2xl border border-border px-6 py-12 text-center">
+            {/* dot grid */}
+            <div
+              className="absolute inset-0 [--dot-color:hsl(var(--foreground)/0.18)] dark:[--dot-color:hsl(var(--foreground)/0.12)]"
+              style={{
+                backgroundImage: 'radial-gradient(circle, var(--dot-color) 1px, transparent 1px)',
+                backgroundSize: '22px 22px',
+              }}
+            />
+            {/* fade to background at edges */}
+            <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-transparent to-background/30" />
+            <div className="absolute inset-0 bg-gradient-to-r from-background/60 via-transparent to-background/60" />
+            <div className="relative">
+              <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-muted-foreground">Pricing</p>
+              <h1 className="text-3xl font-bold tracking-tight">Simple, transparent pricing</h1>
+              <p className="mt-3 text-sm text-muted-foreground">
+                Start free. Upgrade when you need more generations.
+              </p>
+            </div>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-3">

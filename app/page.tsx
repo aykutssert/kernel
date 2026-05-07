@@ -57,8 +57,8 @@ export default async function LandingPage() {
           }}
         />
         {/* color glows — light mode more opaque, dark mode subtler */}
-        <div className="absolute left-1/4 top-0 h-80 w-80 -translate-x-1/2 rounded-full bg-violet-400/40 blur-3xl dark:bg-violet-500/15" />
-        <div className="absolute right-1/4 top-4 h-64 w-64 translate-x-1/2 rounded-full bg-sky-400/40 blur-3xl dark:bg-sky-500/15" />
+        <div className="animate-glow-a absolute left-0 top-0 h-72 w-72 -translate-x-1/4 rounded-full bg-violet-400/40 blur-3xl dark:bg-violet-500/15 sm:h-80 sm:w-80 sm:left-1/4 sm:-translate-x-1/2" />
+        <div className="animate-glow-b absolute right-0 top-4 h-56 w-56 translate-x-1/4 rounded-full bg-sky-400/40 blur-3xl dark:bg-sky-500/15 sm:h-64 sm:w-64 sm:right-1/4 sm:translate-x-1/2" />
         {/* vignette — transparent at top so glows show, fade to background at bottom */}
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background" />
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-foreground/10 to-transparent" />
@@ -91,7 +91,8 @@ export default async function LandingPage() {
               className="inline-flex h-10 items-center gap-2 rounded-xl bg-foreground px-5 text-sm font-medium text-background transition-opacity hover:opacity-85"
             >
               <Zap className="h-4 w-4" />
-              Studio-quality product photos, instantly
+              <span className="sm:hidden">Start creating</span>
+              <span className="hidden sm:inline">Studio-quality product photos, instantly</span>
             </Link>
             <Link
               href="/prompts"
@@ -239,24 +240,24 @@ export default async function LandingPage() {
         </div>
 
           {/* Social Media — Coming Soon */}
-          <div className="mt-4 flex items-center justify-between gap-4 rounded-2xl border border-dashed border-border bg-muted/20 px-6 py-5 opacity-70">
-            <div className="flex items-center gap-4">
+          <div className="mt-4 flex items-start justify-between gap-3 rounded-2xl border border-dashed border-border bg-muted/20 px-5 py-4 opacity-70 sm:items-center sm:px-6 sm:py-5">
+            <div className="flex items-start gap-3 sm:items-center sm:gap-4">
               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-border bg-background">
                 <Share2 className="h-4 w-4 text-muted-foreground" />
               </div>
               <div>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
                   <p className="text-sm font-semibold">Social Media Workflow</p>
                   <span className="rounded-full border border-violet-200 bg-violet-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-violet-600 dark:border-violet-800/40 dark:bg-violet-950/40 dark:text-violet-400">
                     Coming soon
                   </span>
                 </div>
                 <p className="mt-0.5 text-xs text-muted-foreground">
-                  Turn your products into scroll-stopping content for Instagram, TikTok, and more.
+                  Turn your products into content for Instagram, TikTok, and more.
                 </p>
               </div>
             </div>
-            <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground/40" />
+            <ArrowRight className="mt-1 h-4 w-4 shrink-0 text-muted-foreground/40 sm:mt-0" />
           </div>
 
         </FadeInSection>
