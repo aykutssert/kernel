@@ -2,6 +2,10 @@
 @plugin "@tailwindcss/typography";
 @custom-variant dark (&:where(.dark, .dark *));
 
+html {
+  scroll-behavior: smooth;
+}
+
 @layer base {
   :root {
     --checker-a: #e0e0e0;
@@ -153,8 +157,19 @@ button:disabled { cursor: not-allowed !important; }
 }
 
 .animate-gradient {
-  background-size: 400% 400%;
-  animation: gradient-shift 28s linear infinite;
+  background-size: 400%;
+  animation: gradient-shift 14s linear infinite;
+  will-change: background-position;
+  transform: translateZ(0);
+}
+
+.hero-gradient-text {
+  background-image: linear-gradient(
+    90deg,
+    #f97316, #7c3aed, #4f46e5, #2563eb,
+    #0284c7, #06b6d4, #0ea5e9, #4f46e5,
+    #7c3aed, #ea580c, #f97316
+  );
 }
 
 @keyframes product-progress {
@@ -329,10 +344,12 @@ button:disabled { cursor: not-allowed !important; }
 
 .animate-glow-a {
   animation: glow-a 12s ease-in-out infinite;
+  will-change: transform;
 }
 
 .animate-glow-b {
   animation: glow-b 15s ease-in-out infinite;
+  will-change: transform;
 }
 
 @keyframes before-after-progress {

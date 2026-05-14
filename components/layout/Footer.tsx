@@ -26,14 +26,8 @@ export function Footer() {
         </div>
 
         <nav className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm text-muted-foreground">
-          <Link href="/tshirt-studio" className="hover:text-foreground transition-colors">
-            T-Shirt Studio
-          </Link>
           <Link href="/prompts" className="hover:text-foreground transition-colors">
-            Prompts
-          </Link>
-          <Link href="/pets" className="hover:text-foreground transition-colors">
-            Codex Pets
+            Blog
           </Link>
           <Link href="/feedback" className="hover:text-foreground transition-colors">
             Feedback

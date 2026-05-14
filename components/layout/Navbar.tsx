@@ -22,12 +22,27 @@ export function Navbar({ docs = [] }: { docs?: DocMeta[] }) {
             className="md:w-6 md:h-6"
             priority
           />
-          <span className="font-semibold text-sm hidden md:inline-block">Kernel</span>
+          <span className="font-semibold text-sm">Kernel</span>
         </Link>
 
         <div className="flex-1">
           <SearchTrigger allTags={[...new Set(docs.flatMap((d) => d.tags ?? []))].sort()} />
         </div>
+
+        <nav className="hidden md:flex items-center gap-1.5">
+          <Link href="/#projects" className="flex h-8 items-center rounded-lg border border-border px-3 text-xs font-medium text-muted-foreground transition-colors hover:border-foreground/30 hover:text-foreground">
+            Projects
+          </Link>
+          <Link href="/#about" className="flex h-8 items-center rounded-lg border border-border px-3 text-xs font-medium text-muted-foreground transition-colors hover:border-foreground/30 hover:text-foreground">
+            About
+          </Link>
+          <Link href="/#contact" className="flex h-8 items-center rounded-lg border border-border px-3 text-xs font-medium text-muted-foreground transition-colors hover:border-foreground/30 hover:text-foreground">
+            Contact
+          </Link>
+          <Link href="/prompts" className="flex h-8 items-center rounded-lg border border-border px-3 text-xs font-medium text-muted-foreground transition-colors hover:border-foreground/30 hover:text-foreground">
+            Blog
+          </Link>
+        </nav>
 
         <MoreMenu />
         <AuthButton />
