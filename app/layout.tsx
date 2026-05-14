@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google'
 import { ThemeProvider } from '@/components/theme-provider'
 import { Toaster } from 'sonner'
 import { RoamingPetWrapper } from '@/components/pets/RoamingPetWrapper'
+import { DiscoverWidget } from '@/components/layout/DiscoverWidget'
 import { siteUrl } from '@/lib/site'
 import './globals.css'
 
@@ -47,6 +48,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <div id="page-root">{children}</div>
           <RoamingPetWrapper />
+          <DiscoverWidget />
           <Toaster position="bottom-center" mobileOffset={16} richColors />
         </ThemeProvider>
       </body>
