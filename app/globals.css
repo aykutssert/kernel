@@ -153,12 +153,12 @@ button:disabled { cursor: not-allowed !important; }
 
 @keyframes gradient-shift {
   0%   { background-position: 0% 50%; }
-  100% { background-position: 200% 50%; }
+  100% { background-position: 133.33% 50%; }
 }
 
 .animate-gradient {
   background-size: 400%;
-  animation: gradient-shift 14s linear infinite;
+  animation: gradient-shift 10s linear infinite;
   will-change: background-position;
   transform: translateZ(0);
 }
@@ -166,9 +166,9 @@ button:disabled { cursor: not-allowed !important; }
 .hero-gradient-text {
   background-image: linear-gradient(
     90deg,
-    #f97316, #7c3aed, #4f46e5, #2563eb,
-    #0284c7, #06b6d4, #0ea5e9, #4f46e5,
-    #7c3aed, #ea580c, #f97316
+    #f97316, #ec4899, #a855f7,
+    #3b82f6, #06b6d4, #10b981,
+    #f97316
   );
 }
 

@@ -19,21 +19,27 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Kernel',
+    default: 'Aykut Sert — Full-Stack Developer',
     template: '%s — Kernel',
   },
-  description: 'Curated, LLM-friendly documentation for AI concepts, agent frameworks, MCP, and more.',
+  description: 'Portfolio of Aykut Sert — full-stack developer building web apps, iOS apps, and AI integrations with Go, C#, Next.js, and Swift.',
   metadataBase: new URL(siteUrl),
+  alternates: {
+    canonical: siteUrl,
+  },
   openGraph: {
     type: 'website',
     siteName: 'Kernel',
-    title: 'Kernel',
-    description: 'Curated, LLM-friendly documentation for AI concepts, agent frameworks, MCP, and more.',
+    title: 'Aykut Sert — Full-Stack Developer',
+    description: 'Portfolio of Aykut Sert — full-stack developer building web apps, iOS apps, and AI integrations with Go, C#, Next.js, and Swift.',
+    url: siteUrl,
+    images: [{ url: '/kernel-logo.png', width: 512, height: 512, alt: 'Kernel' }],
   },
   twitter: {
-    card: 'summary_large_image',
-    title: 'Kernel',
-    description: 'Curated, LLM-friendly documentation for AI concepts, agent frameworks, MCP, and more.',
+    card: 'summary',
+    title: 'Aykut Sert — Full-Stack Developer',
+    description: 'Portfolio of Aykut Sert — full-stack developer building web apps, iOS apps, and AI integrations with Go, C#, Next.js, and Swift.',
+    images: ['/kernel-logo.png'],
   },
 }
 

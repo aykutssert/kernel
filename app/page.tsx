@@ -5,6 +5,7 @@ import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { getDocs } from '@/lib/docs'
 import { FadeInSection } from '@/components/landing/FadeInSection'
+import { StaggeredGrid } from '@/components/landing/StaggeredGrid'
 import { KitchenShowcaseLazy as KitchenShowcase, TshirtMiniPreviewLazy as TshirtMiniPreviewWrapper } from '@/components/landing/LazyDemos'
 
 export const metadata: Metadata = {
@@ -120,7 +121,7 @@ export default async function LandingPage() {
                 </p>
                 <ul className="space-y-1.5">
                   {items.map((item) => (
-                    <li key={item} className="text-sm text-muted-foreground">
+                    <li key={item} className="text-sm text-muted-foreground cursor-default transition-all duration-150 hover:text-foreground hover:translate-x-1">
                       {item}
                     </li>
                   ))}
@@ -133,9 +134,8 @@ export default async function LandingPage() {
 
       {/* ── Projects ── */}
       <main className="mx-auto w-full max-w-[1400px] flex-1 px-4 py-12 md:px-0 md:py-16">
-        <FadeInSection>
         {/* Top row: personal projects */}
-        <div id="projects" className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" style={{ scrollMarginTop: '72px' }}>
+        <StaggeredGrid id="projects" className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" style={{ scrollMarginTop: '72px' }}>
 
           {/* Surge */}
           <a
@@ -248,9 +248,10 @@ export default async function LandingPage() {
             <p className="mt-auto text-[11px] font-mono text-muted-foreground/60">Swift · SwiftUI · AI</p>
           </div>
 
-        </div>
+        </StaggeredGrid>
 
         {/* Developer Toolkit */}
+        <FadeInSection delay={0}>
         <Link
           href="/prompts"
           className="group mt-4 relative flex flex-col overflow-hidden rounded-2xl border border-border bg-background transition-all duration-300 hover:-translate-y-0.5 hover:border-foreground/20 hover:shadow-xl hover:shadow-foreground/5 md:flex-row"
@@ -298,8 +299,10 @@ export default async function LandingPage() {
             </div>
           </div>
         </Link>
+        </FadeInSection>
 
         {/* ── Interactive demos ── */}
+        <FadeInSection>
         <div className="mt-8">
           <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-muted-foreground">Interactive demos</p>
           <div className="grid gap-4 md:grid-cols-2">
@@ -357,7 +360,7 @@ export default async function LandingPage() {
       <section id="about" className="border-t border-border" style={{ scrollMarginTop: '72px' }}>
         <div className="mx-auto w-full max-w-[1400px] px-4 py-16 md:px-0">
           <p className="mb-8 text-xs font-semibold uppercase tracking-widest text-muted-foreground">About</p>
-          <div className="grid gap-6 md:grid-cols-2">
+          <StaggeredGrid className="grid gap-6 md:grid-cols-2">
 
             <div className="rounded-2xl border border-border bg-background p-6">
               <h2 className="text-2xl font-bold tracking-tight">Aykut Sert</h2>
@@ -405,7 +408,7 @@ export default async function LandingPage() {
               </div>
             </div>
 
-          </div>
+          </StaggeredGrid>
         </div>
       </section>
 
@@ -413,7 +416,7 @@ export default async function LandingPage() {
       <section id="contact" className="border-t border-border" style={{ scrollMarginTop: '72px' }}>
         <div className="mx-auto w-full max-w-[1400px] px-4 py-16 md:px-0">
           <p className="mb-8 text-xs font-semibold uppercase tracking-widest text-muted-foreground">Contact</p>
-          <div className="grid gap-4 sm:grid-cols-3">
+          <StaggeredGrid className="grid gap-4 sm:grid-cols-3">
 
             <a
               href="mailto:aykutssert@gmail.com"
@@ -462,7 +465,7 @@ export default async function LandingPage() {
               </div>
             </a>
 
-          </div>
+          </StaggeredGrid>
         </div>
       </section>
 

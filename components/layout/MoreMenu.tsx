@@ -60,7 +60,7 @@ export function MoreMenu() {
   }, [open])
 
   return (
-    <div ref={ref} className="relative hidden md:block">
+    <div ref={ref} className="relative">
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}

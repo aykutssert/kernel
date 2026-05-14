@@ -88,7 +88,7 @@ export function AuthButton() {
         <button
           type="button"
           onClick={() => openAuth('signin')}
-          className="hidden md:flex h-8 items-center gap-1.5 rounded-lg border border-border px-3 text-xs font-medium text-muted-foreground transition-colors hover:border-foreground/30 hover:text-foreground"
+          className="flex h-8 items-center gap-1.5 rounded-lg border border-border px-3 text-xs font-medium text-muted-foreground transition-colors hover:border-foreground/30 hover:text-foreground"
         >
           <UserRound className="h-3.5 w-3.5" />
           <span>Sign in</span>
