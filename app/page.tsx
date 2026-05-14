@@ -7,6 +7,7 @@ import { getDocs } from '@/lib/docs'
 import { FadeInSection } from '@/components/landing/FadeInSection'
 import { StaggeredGrid } from '@/components/landing/StaggeredGrid'
 import { TerminalTyper } from '@/components/landing/TerminalTyper'
+import { TiltCard } from '@/components/landing/TiltCard'
 import { HeroTyper } from '@/components/landing/HeroTyper'
 import { KitchenShowcaseLazy as KitchenShowcase, TshirtMiniPreviewLazy as TshirtMiniPreviewWrapper } from '@/components/landing/LazyDemos'
 
@@ -61,7 +62,6 @@ export default async function LandingPage() {
         />
         <div className="animate-glow-a absolute left-0 top-0 h-72 w-72 -translate-x-1/4 rounded-full bg-violet-400/40 blur-3xl dark:bg-violet-500/15 sm:h-80 sm:w-80 sm:left-1/4 sm:-translate-x-1/2" />
         <div className="animate-glow-b absolute right-0 top-4 h-56 w-56 translate-x-1/4 rounded-full bg-sky-400/40 blur-3xl dark:bg-sky-500/15 sm:h-64 sm:w-64 sm:right-1/4 sm:translate-x-1/2" />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background" />
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-foreground/10 to-transparent" />
 
         <div className="relative mx-auto w-full max-w-[1400px] px-4 py-24 text-center md:px-0 md:py-32">
@@ -138,11 +138,12 @@ export default async function LandingPage() {
         <StaggeredGrid id="projects" className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" style={{ scrollMarginTop: '72px' }}>
 
           {/* Surge */}
+          <TiltCard>
           <a
-            href="https://surge.kernelgallery.com"
+            href="https://loadtest.kernelgallery.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="group flex flex-col gap-3 rounded-2xl border border-border bg-background p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-foreground/20 hover:shadow-xl hover:shadow-foreground/5"
+            className="group flex h-full flex-col gap-3 rounded-2xl border border-border bg-background p-5 transition-all duration-300 hover:border-foreground/20 hover:shadow-xl hover:shadow-foreground/5"
           >
             <div className="inline-flex w-fit items-center gap-1.5 rounded-full border border-orange-200 bg-orange-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-orange-700 dark:border-orange-800/40 dark:bg-orange-950/40 dark:text-orange-300">
               <Code2 className="h-3 w-3" />
@@ -160,13 +161,15 @@ export default async function LandingPage() {
               <ExternalLink className="h-3 w-3" />
             </div>
           </a>
+          </TiltCard>
 
           {/* Cadie */}
+          <TiltCard>
           <a
             href="https://aykutssert.github.io/cadie/"
             target="_blank"
             rel="noopener noreferrer"
-            className="group flex flex-col gap-3 rounded-2xl border border-border bg-background p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-foreground/20 hover:shadow-xl hover:shadow-foreground/5"
+            className="group flex h-full flex-col gap-3 rounded-2xl border border-border bg-background p-5 transition-all duration-300 hover:border-foreground/20 hover:shadow-xl hover:shadow-foreground/5"
           >
             <div className="inline-flex w-fit items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-emerald-700 dark:border-emerald-800/40 dark:bg-emerald-950/40 dark:text-emerald-300">
               <Sparkles className="h-3 w-3" />
@@ -184,13 +187,15 @@ export default async function LandingPage() {
               <ExternalLink className="h-3 w-3" />
             </div>
           </a>
+          </TiltCard>
 
           {/* My Pet Routine */}
+          <TiltCard>
           <a
             href="https://apps.apple.com/us/app/my-pet-routine/id6768613964"
             target="_blank"
             rel="noopener noreferrer"
-            className="group flex flex-col gap-3 rounded-2xl border border-border bg-background p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-foreground/20 hover:shadow-xl hover:shadow-foreground/5"
+            className="group flex h-full flex-col gap-3 rounded-2xl border border-border bg-background p-5 transition-all duration-300 hover:border-foreground/20 hover:shadow-xl hover:shadow-foreground/5"
           >
             <div className="inline-flex w-fit items-center gap-1.5 rounded-full border border-pink-200 bg-pink-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-pink-700 dark:border-pink-800/40 dark:bg-pink-950/40 dark:text-pink-300">
               <PawPrint className="h-3 w-3" />
@@ -208,13 +213,15 @@ export default async function LandingPage() {
               <ExternalLink className="h-3 w-3" />
             </div>
           </a>
+          </TiltCard>
 
           {/* Bagcilar Mermerci */}
+          <TiltCard>
           <a
             href="https://bagcilarmermerci.com/"
             target="_blank"
             rel="noopener noreferrer"
-            className="group flex flex-col gap-3 rounded-2xl border border-border bg-background p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-foreground/20 hover:shadow-xl hover:shadow-foreground/5"
+            className="group flex h-full flex-col gap-3 rounded-2xl border border-border bg-background p-5 transition-all duration-300 hover:border-foreground/20 hover:shadow-xl hover:shadow-foreground/5"
           >
             <div className="inline-flex w-fit items-center gap-1.5 rounded-full border border-stone-200 bg-stone-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-stone-700 dark:border-stone-800/40 dark:bg-stone-950/40 dark:text-stone-300">
               <Code2 className="h-3 w-3" />
@@ -232,9 +239,11 @@ export default async function LandingPage() {
               <ExternalLink className="h-3 w-3" />
             </div>
           </a>
+          </TiltCard>
 
           {/* TripPack */}
-          <div className="flex flex-col gap-3 rounded-2xl border border-border bg-background p-5 opacity-70 transition-all duration-300 hover:-translate-y-0.5 hover:border-foreground/20 hover:shadow-xl hover:shadow-foreground/5">
+          <TiltCard>
+          <div className="flex h-full flex-col gap-3 rounded-2xl border border-border bg-background p-5 opacity-70 transition-all duration-300 hover:border-foreground/20 hover:shadow-xl hover:shadow-foreground/5">
             <div className="inline-flex w-fit items-center gap-1.5 rounded-full border border-sky-200 bg-sky-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-sky-700 dark:border-sky-800/40 dark:bg-sky-950/40 dark:text-sky-300">
               <Clock className="h-3 w-3" />
               TripPack
@@ -247,6 +256,7 @@ export default async function LandingPage() {
             </div>
             <p className="mt-auto text-[11px] font-mono text-muted-foreground/60">Swift · SwiftUI · AI</p>
           </div>
+          </TiltCard>
 
         </StaggeredGrid>
 
