@@ -26,8 +26,10 @@ export function FeedbackModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
   }, [isOpen, onClose])
 
   useEffect(() => {
-    document.body.style.overflow = isOpen ? 'hidden' : ''
-    return () => { document.body.style.overflow = '' }
+    const el = document.documentElement
+    if (isOpen) el.style.overflow = 'hidden'
+    else el.style.overflow = ''
+    return () => { el.style.overflow = '' }
   }, [isOpen])
 
   const handleSubmit = async (e: React.FormEvent) => {

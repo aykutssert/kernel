@@ -77,7 +77,17 @@ export const FabricEditor = forwardRef<FabricEditorHandle, Props>(function Fabri
       emitRef.current = emit
       emit()
 
-      fb.on('object:moving', emit)
+      const MARGIN_START = 120  // sol ve üst
+      const MARGIN_END   = 30   // sağ ve alt
+      fb.on('object:moving', ({ target }: any) => {
+        if (!target) return
+        const w = target.getScaledWidth()
+        const h = target.getScaledHeight()
+        target.left = Math.min(Math.max(target.left, MARGIN_START - w), size - MARGIN_END)
+        target.top  = Math.min(Math.max(target.top,  MARGIN_START - h), size - MARGIN_END)
+        target.setCoords()
+        emit()
+      })
       fb.on('object:scaling', emit)
       fb.on('object:rotating', emit)
       fb.on('object:modified', emit)

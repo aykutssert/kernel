@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
 
 const OPTIONS = [
@@ -14,10 +15,14 @@ function KitchenLightbox({ src, label, onClose }: { src: string; label: string; 
   useEffect(() => {
     function onKey(e: KeyboardEvent) { if (e.key === 'Escape') onClose() }
     window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
+    document.body.style.overflow = 'hidden'
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      document.body.style.overflow = ''
+    }
   }, [onClose])
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-[200] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
       <button type="button" className="absolute inset-0 cursor-default" onClick={onClose} aria-label="Close" />
       <div className="relative z-10 max-w-4xl w-full">
@@ -36,7 +41,8 @@ function KitchenLightbox({ src, label, onClose }: { src: string; label: string; 
         />
         <p className="mt-3 text-center text-sm text-white/60">{label}</p>
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }
 
