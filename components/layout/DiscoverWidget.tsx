@@ -19,22 +19,22 @@ export function DiscoverWidget() {
   return (
     <div
       className={cn(
-        'fixed bottom-6 right-4 z-40 flex flex-col gap-1.5 transition-all duration-300',
-        visible ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-3 pointer-events-none'
+        'fixed top-20 right-4 z-40 flex flex-col gap-2 transition-all duration-300',
+        visible ? 'opacity-100 translate-x-0 pointer-events-auto' : 'opacity-0 translate-x-4 pointer-events-none'
       )}
     >
       <Link
         href="/prompts"
-        className="flex items-center gap-2 rounded-xl border border-border bg-background/90 backdrop-blur px-3 py-2 text-xs font-medium text-muted-foreground shadow-sm hover:text-foreground hover:border-foreground/30 transition-colors"
+        className="group flex items-center gap-2.5 rounded-xl border border-border bg-background px-3.5 py-2.5 text-sm font-medium text-foreground shadow-md hover:bg-[#EEEEE8] dark:hover:bg-[#171513] hover:shadow-lg transition-all"
       >
-        <Sparkles className="w-3.5 h-3.5 shrink-0" />
+        <Sparkles className="w-4 h-4 shrink-0 text-violet-500" />
         Prompts
       </Link>
       <Link
         href="/docs"
-        className="flex items-center gap-2 rounded-xl border border-border bg-background/90 backdrop-blur px-3 py-2 text-xs font-medium text-muted-foreground shadow-sm hover:text-foreground hover:border-foreground/30 transition-colors"
+        className="group flex items-center gap-2.5 rounded-xl border border-border bg-background px-3.5 py-2.5 text-sm font-medium text-foreground shadow-md hover:bg-[#EEEEE8] dark:hover:bg-[#171513] hover:shadow-lg transition-all"
       >
-        <FileText className="w-3.5 h-3.5 shrink-0" />
+        <FileText className="w-4 h-4 shrink-0 text-blue-500" />
         Blog
       </Link>
     </div>
