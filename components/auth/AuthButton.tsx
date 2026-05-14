@@ -5,47 +5,17 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Heart, LogOut, UserRound } from 'lucide-react'
 import { AuthDialog } from './AuthDialog'
-import { createClient } from '@/lib/supabase/client'
+import { useAuth } from './AuthContext'
 
 type AuthMode = 'signin' | 'signup' | 'forgot'
-
-type AuthUser = {
-  id: string
-  email: string | null
-  username: string | null
-}
 
 export function AuthButton() {
   const router = useRouter()
   const menuRef = useRef<HTMLDivElement>(null)
-  const [user, setUser] = useState<AuthUser | null>(null)
+  const { user } = useAuth()
   const [dialogOpen, setDialogOpen] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [mode, setMode] = useState<AuthMode>('signin')
-
-  useEffect(() => {
-    let active = true
-
-    async function loadUser() {
-      const response = await fetch('/api/auth/me', { cache: 'no-store' }).catch(() => null)
-      if (!response?.ok || !active) return
-
-      const payload = await response.json().catch(() => null) as { user?: AuthUser | null } | null
-      if (active) setUser(payload?.user ?? null)
-    }
-
-    void loadUser()
-
-    const supabase = createClient()
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
-      void loadUser()
-    })
-
-    return () => {
-      active = false
-      subscription.unsubscribe()
-    }
-  }, [])
 
   useEffect(() => {
     if (!menuOpen) return
@@ -77,7 +47,6 @@ export function AuthButton() {
 
   async function handleSignOut() {
     await fetch('/api/auth/signout', { method: 'POST' })
-    setUser(null)
     setMenuOpen(false)
     router.refresh()
   }
@@ -99,8 +68,7 @@ export function AuthButton() {
             mode={mode}
             onModeChange={setMode}
             onOpenChange={setDialogOpen}
-            onAuthenticated={(nextUser) => {
-              setUser(nextUser)
+            onAuthenticated={() => {
               router.refresh()
             }}
           />

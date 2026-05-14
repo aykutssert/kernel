@@ -7,6 +7,7 @@ import { getDocs } from '@/lib/docs'
 import { FadeInSection } from '@/components/landing/FadeInSection'
 import { StaggeredGrid } from '@/components/landing/StaggeredGrid'
 import { TerminalTyper } from '@/components/landing/TerminalTyper'
+import { HeroTyper } from '@/components/landing/HeroTyper'
 import { KitchenShowcaseLazy as KitchenShowcase, TshirtMiniPreviewLazy as TshirtMiniPreviewWrapper } from '@/components/landing/LazyDemos'
 
 export const metadata: Metadata = {
@@ -69,10 +70,8 @@ export default async function LandingPage() {
             Full-stack · Backend · Mobile · AI
           </div>
 
-          <h1 className="mx-auto max-w-xl text-4xl font-bold tracking-tight sm:text-5xl md:text-[3.5rem] md:leading-[1.15]">
-            <span className="animate-gradient hero-gradient-text bg-clip-text text-transparent">
-              Things I&apos;ve built
-            </span>
+          <h1 className="mx-auto max-w-xl text-4xl font-bold tracking-tight sm:text-5xl md:text-[3.5rem] md:leading-[1.15] min-h-[1.15em]">
+            <HeroTyper className="animate-gradient hero-gradient-text bg-clip-text text-transparent" />
           </h1>
 
           <p className="mx-auto mt-3 text-sm text-muted-foreground/60">

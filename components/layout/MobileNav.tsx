@@ -8,6 +8,7 @@ import { usePathname } from 'next/navigation'
 import { useSyncExternalStore } from 'react'
 import { FeedbackModal } from '@/components/feedback/FeedbackModal'
 import { ConnectDialog } from '@/components/mcp/ConnectDialog'
+import { useAuth } from '@/components/auth/AuthContext'
 import { ROAMING_PET_STORAGE_KEY, ROAMING_PET_EVENT } from '@/components/pets/RoamingPetToggle'
 import { cn } from '@/lib/utils'
 import type { DocMeta } from '@/types'
@@ -85,16 +86,10 @@ export function MobileNav({ docs }: { docs: DocMeta[] }) {
   const [open, setOpen] = useState(false)
   const [feedbackOpen, setFeedbackOpen] = useState(false)
   const [connectOpen, setConnectOpen] = useState(false)
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
   const pathname = usePathname()
   const petEnabled = useSyncExternalStore(subscribePet, readPetEnabled, () => true)
-
-  useEffect(() => {
-    fetch('/api/auth/me', { cache: 'no-store' })
-      .then((r) => (r.ok ? r.json() : null))
-      .then((data) => { if (data?.user) setIsLoggedIn(true) })
-      .catch(() => {})
-  }, [])
+  const { user } = useAuth()
+  const isLoggedIn = !!user
 
   function togglePet() {
     const next = !readPetEnabled()
