@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { ArrowRight, Code2, GraduationCap, Mail, MapPin, PawPrint, Shirt, Sparkles, ExternalLink, Clock } from 'lucide-react'
+import { Activity, ArrowRight, Code2, GraduationCap, Mail, MapPin, PawPrint, Shirt, Sparkles, ExternalLink, Clock } from 'lucide-react'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { getDocs } from '@/lib/docs'
@@ -234,6 +234,32 @@ export default async function LandingPage() {
               </p>
             </div>
             <p className="mt-auto text-[11px] font-mono text-muted-foreground/60">Next.js · SEO · Structured Data</p>
+            <div className="inline-flex items-center gap-1 text-xs font-medium text-foreground">
+              <span className="group-hover:underline underline-offset-2">Open</span>
+              <ExternalLink className="h-3 w-3" />
+            </div>
+          </a>
+          </TiltCard>
+
+          {/* Uptime Monitor */}
+          <TiltCard>
+          <a
+            href="https://uptime.kernelgallery.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group flex h-full flex-col gap-3 rounded-2xl border border-border bg-background p-5 transition-all duration-300 hover:border-foreground/20 hover:shadow-xl hover:shadow-foreground/5"
+          >
+            <div className="inline-flex w-fit items-center gap-1.5 rounded-full border border-green-200 bg-green-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-green-700 dark:border-green-800/40 dark:bg-green-950/40 dark:text-green-300">
+              <Activity className="h-3 w-3" />
+              Uptime Monitor
+            </div>
+            <div>
+              <h3 className="font-semibold tracking-tight">Self-hosted uptime monitor</h3>
+              <p className="mt-1.5 text-sm leading-6 text-muted-foreground">
+                Real-time uptime monitoring dashboard — response time charts, downtime alerts, and per-minute checks.
+              </p>
+            </div>
+            <p className="mt-auto text-[11px] font-mono text-muted-foreground/60">Go · Next.js · PostgreSQL</p>
             <div className="inline-flex items-center gap-1 text-xs font-medium text-foreground">
               <span className="group-hover:underline underline-offset-2">Open</span>
               <ExternalLink className="h-3 w-3" />
