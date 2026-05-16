@@ -184,10 +184,12 @@ export default async function LandingPage() {
             rel="noopener noreferrer"
             className="group flex h-full flex-col gap-3 rounded-2xl border border-border bg-background p-5 transition-all duration-300 hover:border-foreground/20 hover:shadow-xl hover:shadow-foreground/5"
           >
-            <Image src="/logos/mypetroutine.png" alt="My Pet Routine" width={40} height={40} className="rounded-xl" />
-            <div className="inline-flex w-fit items-center gap-1.5 rounded-full border border-pink-200 bg-pink-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-pink-700 dark:border-pink-800/40 dark:bg-pink-950/40 dark:text-pink-300">
-              <PawPrint className="h-3 w-3" />
-              My Pet Routine
+            <div className="flex items-center gap-3">
+              <Image src="/logos/mypetroutine.png" alt="My Pet Routine" width={40} height={40} className="rounded-xl shrink-0" />
+              <div className="inline-flex w-fit items-center gap-1.5 rounded-full border border-pink-200 bg-pink-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-pink-700 dark:border-pink-800/40 dark:bg-pink-950/40 dark:text-pink-300">
+                <PawPrint className="h-3 w-3" />
+                My Pet Routine
+              </div>
             </div>
             <div>
               <h3 className="font-semibold tracking-tight">Pet care tracker</h3>
@@ -211,10 +213,12 @@ export default async function LandingPage() {
             rel="noopener noreferrer"
             className="group flex h-full flex-col gap-3 rounded-2xl border border-border bg-background p-5 transition-all duration-300 hover:border-foreground/20 hover:shadow-xl hover:shadow-foreground/5"
           >
-            <Image src="/logos/localseo.png" alt="Local SEO" width={40} height={40} className="rounded-xl" />
-            <div className="inline-flex w-fit items-center gap-1.5 rounded-full border border-stone-200 bg-stone-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-stone-700 dark:border-stone-800/40 dark:bg-stone-950/40 dark:text-stone-300">
-              <Code2 className="h-3 w-3" />
-              Local SEO
+            <div className="flex items-center gap-3">
+              <Image src="/logos/localseo.png" alt="Local SEO" width={40} height={40} className="rounded-xl shrink-0" />
+              <div className="inline-flex w-fit items-center gap-1.5 rounded-full border border-stone-200 bg-stone-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-stone-700 dark:border-stone-800/40 dark:bg-stone-950/40 dark:text-stone-300">
+                <Code2 className="h-3 w-3" />
+                Local SEO
+              </div>
             </div>
             <div>
               <h3 className="font-semibold tracking-tight">Local SEO site</h3>
@@ -238,10 +242,12 @@ export default async function LandingPage() {
             rel="noopener noreferrer"
             className="group flex h-full flex-col gap-3 rounded-2xl border border-border bg-background p-5 transition-all duration-300 hover:border-foreground/20 hover:shadow-xl hover:shadow-foreground/5"
           >
-            <Image src="/logos/surge.png" alt="Surge" width={40} height={40} className="rounded-xl" />
-            <div className="inline-flex w-fit items-center gap-1.5 rounded-full border border-orange-200 bg-orange-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-orange-700 dark:border-orange-800/40 dark:bg-orange-950/40 dark:text-orange-300">
-              <Code2 className="h-3 w-3" />
-              Surge
+            <div className="flex items-center gap-3">
+              <Image src="/logos/surge.png" alt="Surge" width={40} height={40} className="rounded-xl shrink-0" />
+              <div className="inline-flex w-fit items-center gap-1.5 rounded-full border border-orange-200 bg-orange-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-orange-700 dark:border-orange-800/40 dark:bg-orange-950/40 dark:text-orange-300">
+                <Code2 className="h-3 w-3" />
+                Surge
+              </div>
             </div>
             <div>
               <h3 className="font-semibold tracking-tight">Distributed load tester</h3>
@@ -265,10 +271,12 @@ export default async function LandingPage() {
             rel="noopener noreferrer"
             className="group flex h-full flex-col gap-3 rounded-2xl border border-border bg-background p-5 transition-all duration-300 hover:border-foreground/20 hover:shadow-xl hover:shadow-foreground/5"
           >
-            <Image src="/logos/uptime.svg" alt="Uptime Monitor" width={40} height={40} className="rounded-xl" unoptimized />
-            <div className="inline-flex w-fit items-center gap-1.5 rounded-full border border-green-200 bg-green-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-green-700 dark:border-green-800/40 dark:bg-green-950/40 dark:text-green-300">
-              <Activity className="h-3 w-3" />
-              Uptime Monitor
+            <div className="flex items-center gap-3">
+              <Image src="/logos/uptime.svg" alt="Uptime Monitor" width={40} height={40} className="rounded-xl shrink-0" unoptimized />
+              <div className="inline-flex w-fit items-center gap-1.5 rounded-full border border-green-200 bg-green-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-green-700 dark:border-green-800/40 dark:bg-green-950/40 dark:text-green-300">
+                <Activity className="h-3 w-3" />
+                Uptime Monitor
+              </div>
             </div>
             <div>
               <h3 className="font-semibold tracking-tight">Self-hosted uptime monitor</h3>
@@ -292,10 +300,12 @@ export default async function LandingPage() {
             rel="noopener noreferrer"
             className="group flex h-full flex-col gap-3 rounded-2xl border border-border bg-background p-5 transition-all duration-300 hover:border-foreground/20 hover:shadow-xl hover:shadow-foreground/5"
           >
-            <Image src="/logos/cadie.png" alt="Cadie" width={40} height={40} className="rounded-xl" />
-            <div className="inline-flex w-fit items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-emerald-700 dark:border-emerald-800/40 dark:bg-emerald-950/40 dark:text-emerald-300">
-              <Sparkles className="h-3 w-3" />
-              Cadie
+            <div className="flex items-center gap-3">
+              <Image src="/logos/cadie.png" alt="Cadie" width={40} height={40} className="rounded-xl shrink-0" />
+              <div className="inline-flex w-fit items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-emerald-700 dark:border-emerald-800/40 dark:bg-emerald-950/40 dark:text-emerald-300">
+                <Sparkles className="h-3 w-3" />
+                Cadie
+              </div>
             </div>
             <div>
               <h3 className="font-semibold tracking-tight">Language learning app</h3>
