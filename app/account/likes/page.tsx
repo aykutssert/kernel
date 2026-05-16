@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { Suspense } from 'react'
 import { Navbar } from '@/components/layout/Navbar'
-import { CategoryTabs } from '@/components/layout/CategoryTabs'
+
 import { Footer } from '@/components/layout/Footer'
 import { AccountLikesClient } from '@/components/account/AccountLikesClient'
 import { getDocs } from '@/lib/docs'
@@ -65,7 +65,7 @@ export default async function AccountLikesPage({ searchParams }: Props) {
   return (
     <div className="flex min-h-screen flex-col">
       <Navbar docs={docs} />
-      <CategoryTabs docs={docs} />
+
       <main className="mx-auto w-full max-w-[1400px] flex-1 px-4 pb-12 pt-6 md:px-0">
         <Suspense fallback={<LikesSkeleton />}>
           <AccountLikesContent searchParams={searchParams} />

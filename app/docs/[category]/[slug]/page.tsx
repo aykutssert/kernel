@@ -6,7 +6,7 @@ import { Sidebar } from '@/components/layout/Sidebar'
 import { OnThisPage } from '@/components/layout/OnThisPage'
 import { ScrollFadeAside } from '@/components/layout/ScrollFadeAside'
 import { MobileOnThisPage } from '@/components/layout/MobileOnThisPage'
-import { CategoryTabs } from '@/components/layout/CategoryTabs'
+
 import { TagFilterBar } from '@/components/layout/TagFilterBar'
 import { getDoc, getDocs, getDocVersions } from '@/lib/docs'
 import { DocContent, renderDocHtml } from '@/components/docs/DocContent'
@@ -86,7 +86,7 @@ async function DocPageContent({ params }: { params: Promise<{ category: string; 
     <div className="flex flex-col min-h-screen">
       <DocViewTracker title={doc.title} slug={doc.slug} category={doc.category} />
       <Navbar docs={docs} />
-      <CategoryTabs docs={docs} />
+
       <TagFilterBar docs={docs} activeTags={doc.tags ?? []} />
       <div id="main-content" className="flex flex-1 max-w-[1400px] mx-auto w-full">
         {/* Left sidebar */}

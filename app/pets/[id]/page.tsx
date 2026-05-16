@@ -3,7 +3,7 @@ import { Suspense } from 'react'
 import type { Metadata } from 'next'
 import { createPublicClient } from '@/lib/supabase/server'
 import { Navbar } from '@/components/layout/Navbar'
-import { CategoryTabs } from '@/components/layout/CategoryTabs'
+
 import { Footer } from '@/components/layout/Footer'
 import { PetDetailSection } from '@/components/pets/PetDetailSection'
 import { getDocs } from '@/lib/docs'
@@ -56,7 +56,7 @@ async function PetPageContent({ params }: { params: Promise<{ id: string }> }) {
       <ViewTracker petId={pet.id} />
       <div className="flex flex-col min-h-screen">
         <Navbar docs={docs} />
-        <CategoryTabs docs={docs} />
+
         <main className="flex-1 max-w-[900px] mx-auto w-full px-4 md:px-0 py-12">
           <BackButton />
           <PetDetailSection spritesheetUrl={pet.spritesheet_url} size={256}>

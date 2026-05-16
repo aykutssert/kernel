@@ -40,7 +40,7 @@ export function SearchTrigger({ allTags = [] }: { allTags?: string[] }) {
         transition-colors"
       >
         <Search className="w-3.5 h-3.5 shrink-0" />
-        <span className="hidden sm:inline">Search docs...</span>
+        <span className="hidden sm:inline">Search blog...</span>
         <kbd className="ml-auto hidden sm:inline-flex items-center gap-0.5 text-[10px] font-mono bg-muted rounded px-1.5 py-0.5">
           <span>⌘</span>K
         </kbd>

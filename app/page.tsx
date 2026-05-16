@@ -205,6 +205,35 @@ export default async function LandingPage() {
           </a>
           </TiltCard>
 
+          {/* TripPack */}
+          <TiltCard>
+          <a
+            href="https://aykutssert.github.io/trippack-web/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group flex h-full flex-col gap-3 rounded-2xl border border-border bg-background p-5 transition-all duration-300 hover:border-foreground/20 hover:shadow-xl hover:shadow-foreground/5"
+          >
+            <div className="flex items-center gap-3">
+              <Image src="/logos/trippack.png" alt="TripPack" width={40} height={40} className="rounded-xl shrink-0" />
+              <div className="inline-flex w-fit items-center gap-1.5 rounded-full border border-sky-200 bg-sky-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-sky-700 dark:border-sky-800/40 dark:bg-sky-950/40 dark:text-sky-300">
+                <Sparkles className="h-3 w-3" />
+                TripPack
+              </div>
+            </div>
+            <div>
+              <h3 className="font-semibold tracking-tight">Travel packing app</h3>
+              <p className="mt-1.5 text-sm leading-6 text-muted-foreground">
+                iOS app that generates AI-powered packing lists based on your destination, trip duration, and activities.
+              </p>
+            </div>
+            <p className="mt-auto text-[11px] font-mono text-muted-foreground/60">Swift · SwiftUI · AI</p>
+            <div className="inline-flex items-center gap-1 text-xs font-medium text-foreground">
+              <span className="group-hover:underline underline-offset-2">Open</span>
+              <ExternalLink className="h-3 w-3" />
+            </div>
+          </a>
+          </TiltCard>
+
           {/* Bagcilar Mermerci */}
           <TiltCard>
           <a
@@ -215,7 +244,7 @@ export default async function LandingPage() {
           >
             <div className="flex items-center gap-3">
               <Image src="/logos/localseo.png" alt="Local SEO" width={40} height={40} className="rounded-xl shrink-0" />
-              <div className="inline-flex w-fit items-center gap-1.5 rounded-full border border-stone-200 bg-stone-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-stone-700 dark:border-stone-800/40 dark:bg-stone-950/40 dark:text-stone-300">
+              <div className="inline-flex w-fit items-center gap-1.5 rounded-full border border-stone-200 bg-stone-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-stone-700 dark:border-stone-500/50 dark:bg-stone-800/40 dark:text-stone-300">
                 <Code2 className="h-3 w-3" />
                 Local SEO
               </div>
@@ -327,13 +356,6 @@ export default async function LandingPage() {
         <div className="mt-4 rounded-2xl border border-border bg-background px-5 py-4">
           <p className="mb-3 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/50">In progress</p>
           <div className="flex flex-wrap gap-3">
-            <div className="flex items-center gap-3 rounded-xl border border-border bg-muted/30 px-4 py-3">
-              <Image src="/logos/trippack.png" alt="TripPack" width={32} height={32} className="rounded-lg shrink-0" />
-              <div>
-                <p className="text-sm font-medium">TripPack</p>
-                <p className="text-xs text-muted-foreground">Travel packing app · Swift · SwiftUI · AI</p>
-              </div>
-            </div>
             <div className="flex items-center gap-3 rounded-xl border border-border bg-muted/30 px-4 py-3">
               <Image src="/logos/securebank.svg" alt="SecureBank" width={32} height={32} className="rounded-lg shrink-0" unoptimized />
               <div>

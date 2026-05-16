@@ -226,7 +226,7 @@ export function MobileNav({ docs }: { docs: DocMeta[] }) {
                   )}
                 >
                   <FileText className="h-4 w-4" />
-                  Docs
+                  Blog
                 </Link>
               </div>
 

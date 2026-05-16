@@ -1,14 +1,14 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Navbar } from '@/components/layout/Navbar'
-import { CategoryTabs } from '@/components/layout/CategoryTabs'
+
 import { DeveloperSubnav } from '@/components/layout/DeveloperSubnav'
 import { Footer } from '@/components/layout/Footer'
 import { getDocs } from '@/lib/docs'
 import { ArrowRight } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Docs',
+  title: 'Blog',
   description: 'Curated, LLM-friendly documentation for AI concepts, agent frameworks, MCP, and more.',
 }
 
@@ -29,8 +29,8 @@ export default async function DocsIndexPage() {
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar docs={docs} />
-      <CategoryTabs docs={docs} />
-      <div className="flex-1 max-w-[1400px] mx-auto w-full px-4 md:px-0 py-8">
+
+      <div className="flex-1 max-w-[1400px] mx-auto w-full px-4 md:px-0 pt-6 pb-12">
         <DeveloperSubnav />
         <div className="grid gap-8 lg:grid-cols-[240px_1fr]">
           <aside className="hidden lg:block">
@@ -59,7 +59,7 @@ export default async function DocsIndexPage() {
 
           <main className="min-w-0">
             <div className="mb-8">
-              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">Docs</p>
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">Blog</p>
               <h1 className="text-2xl font-bold tracking-tight">Articles and references</h1>
               <p className="mt-2 text-sm text-muted-foreground">
                 {docsOnly.length} article{docsOnly.length !== 1 ? 's' : ''} across {categories.length} categor{categories.length === 1 ? 'y' : 'ies'}.
@@ -67,9 +67,10 @@ export default async function DocsIndexPage() {
             </div>
 
             {docsOnly.length === 0 ? (
-              <div className="rounded-md border border-border p-6">
-                <p className="text-sm text-muted-foreground">No non-prompt docs yet.</p>
-                <Link href="/prompts" className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium hover:underline">
+              <div className="rounded-md border border-border p-8 text-center">
+                <p className="text-sm font-medium">No posts yet</p>
+                <p className="mt-1 text-sm text-muted-foreground">The first article is on its way.</p>
+                <Link href="/prompts" className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium hover:underline">
                   Browse prompts
                   <ArrowRight className="h-3.5 w-3.5" />
                 </Link>

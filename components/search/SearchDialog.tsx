@@ -120,7 +120,7 @@ export function SearchDialog({ open, onOpenChange, initialTag, allTags = [] }: S
               autoFocus
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search docs..."
+              placeholder="Search blog..."
               className="flex-1 bg-transparent text-base outline-none placeholder:text-muted-foreground"
             />
             {loading

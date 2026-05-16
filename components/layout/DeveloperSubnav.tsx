@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils'
 const links = [
   { href: '/prompts', label: 'Prompts' },
   { href: '/pets', label: 'Codex Pets' },
-  { href: '/docs', label: 'Docs' },
+  { href: '/docs', label: 'Blog' },
 ]
 
 export function DeveloperSubnav() {
