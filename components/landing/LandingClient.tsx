@@ -11,7 +11,7 @@ import { StaggeredGrid } from './StaggeredGrid'
 import { TerminalTyper } from './TerminalTyper'
 import { TiltCard } from './TiltCard'
 import { HeroTyper } from './HeroTyper'
-import { KitchenShowcaseLazy as KitchenShowcase, TshirtMiniPreviewLazy as TshirtMiniPreviewWrapper } from './LazyDemos'
+import { KitchenShowcaseLazy as KitchenShowcase } from './LazyDemos'
 import type { DocMeta } from '@/types'
 
 type RecentPrompt = {
@@ -140,7 +140,7 @@ export function LandingClient({ docs, recentPrompts }: Props) {
           <a href="https://apps.apple.com/us/app/my-pet-routine/id6768613964" target="_blank" rel="noopener noreferrer"
             className="group flex h-full flex-col gap-3 rounded-2xl border border-border bg-background p-5 transition-all duration-300 hover:border-foreground/20 hover:shadow-xl hover:shadow-foreground/5">
             <div className="flex items-center gap-3">
-              <Image src="/logos/mypetroutine.png" alt="My Pet Routine" width={40} height={40} className="rounded-xl shrink-0" />
+              <Image src="/logos/mypetroutine.png" alt="My Pet Routine" width={40} height={40} sizes="40px" className="rounded-xl shrink-0" />
               <div className="inline-flex w-fit items-center gap-1.5 rounded-full border border-pink-200 bg-pink-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-pink-700 dark:border-pink-800/40 dark:bg-pink-950/40 dark:text-pink-300">
                 <PawPrint className="h-3 w-3" />
                 My Pet Routine
@@ -162,7 +162,7 @@ export function LandingClient({ docs, recentPrompts }: Props) {
           <a href="https://aykutssert.github.io/trippack-web/" target="_blank" rel="noopener noreferrer"
             className="group flex h-full flex-col gap-3 rounded-2xl border border-border bg-background p-5 transition-all duration-300 hover:border-foreground/20 hover:shadow-xl hover:shadow-foreground/5">
             <div className="flex items-center gap-3">
-              <Image src="/logos/trippack.png" alt="TripPack" width={40} height={40} className="rounded-xl shrink-0" />
+              <Image src="/logos/trippack.png" alt="TripPack" width={40} height={40} sizes="40px" className="rounded-xl shrink-0" />
               <div className="inline-flex w-fit items-center gap-1.5 rounded-full border border-sky-200 bg-sky-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-sky-700 dark:border-sky-800/40 dark:bg-sky-950/40 dark:text-sky-300">
                 <Sparkles className="h-3 w-3" />
                 TripPack
@@ -184,7 +184,7 @@ export function LandingClient({ docs, recentPrompts }: Props) {
           <a href="https://aykutssert.github.io/cadie/" target="_blank" rel="noopener noreferrer"
             className="group flex h-full flex-col gap-3 rounded-2xl border border-border bg-background p-5 transition-all duration-300 hover:border-foreground/20 hover:shadow-xl hover:shadow-foreground/5">
             <div className="flex items-center gap-3">
-              <Image src="/logos/cadie.png" alt="Cadie" width={40} height={40} className="rounded-xl shrink-0" />
+              <Image src="/logos/cadie.png" alt="Cadie" width={40} height={40} sizes="40px" className="rounded-xl shrink-0" />
               <div className="inline-flex w-fit items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-emerald-700 dark:border-emerald-800/40 dark:bg-emerald-950/40 dark:text-emerald-300">
                 <Sparkles className="h-3 w-3" />
                 Cadie
@@ -206,7 +206,7 @@ export function LandingClient({ docs, recentPrompts }: Props) {
           <a href="https://uptime.kernelgallery.com" target="_blank" rel="noopener noreferrer"
             className="group flex h-full flex-col gap-3 rounded-2xl border border-border bg-background p-5 transition-all duration-300 hover:border-foreground/20 hover:shadow-xl hover:shadow-foreground/5">
             <div className="flex items-center gap-3">
-              <Image src="/logos/uptime.svg" alt="Uptime Monitor" width={40} height={40} className="rounded-xl shrink-0" unoptimized />
+              <Image src="/logos/uptime.svg" alt="Uptime Monitor" width={40} height={40} sizes="40px" className="rounded-xl shrink-0" unoptimized />
               <div className="inline-flex w-fit items-center gap-1.5 rounded-full border border-green-200 bg-green-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-green-700 dark:border-green-800/40 dark:bg-green-950/40 dark:text-green-300">
                 <Activity className="h-3 w-3" />
                 Uptime Monitor
@@ -228,7 +228,7 @@ export function LandingClient({ docs, recentPrompts }: Props) {
           <a href="https://bagcilarmermerci.com/" target="_blank" rel="noopener noreferrer"
             className="group flex h-full flex-col gap-3 rounded-2xl border border-border bg-background p-5 transition-all duration-300 hover:border-foreground/20 hover:shadow-xl hover:shadow-foreground/5">
             <div className="flex items-center gap-3">
-              <Image src="/logos/localseo.png" alt="Local SEO" width={40} height={40} className="rounded-xl shrink-0" />
+              <Image src="/logos/localseo.png" alt="Local SEO" width={40} height={40} sizes="40px" className="rounded-xl shrink-0" />
               <div className="inline-flex w-fit items-center gap-1.5 rounded-full border border-stone-200 bg-stone-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-stone-700 dark:border-stone-500/50 dark:bg-stone-800/40 dark:text-stone-300">
                 <Code2 className="h-3 w-3" />
                 Local SEO
@@ -253,14 +253,14 @@ export function LandingClient({ docs, recentPrompts }: Props) {
           <p className="mb-3 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/50">{t('in_progress.label')}</p>
           <div className="flex flex-wrap gap-3">
             <div className="flex items-center gap-3 rounded-xl border border-border bg-muted/30 px-4 py-3">
-              <Image src="/logos/securebank.svg" alt="SecureBank" width={32} height={32} className="rounded-lg shrink-0" unoptimized />
+              <Image src="/logos/securebank.svg" alt="SecureBank" width={32} height={32} sizes="32px" className="rounded-lg shrink-0" unoptimized />
               <div>
                 <p className="text-sm font-medium">SecureBank</p>
                 <p className="text-xs text-muted-foreground">{t('in_progress.securebank')}</p>
               </div>
             </div>
             <div className="flex items-center gap-3 rounded-xl border border-border bg-muted/30 px-4 py-3">
-              <Image src="/logos/surge.png" alt="Surge" width={32} height={32} className="rounded-lg shrink-0" />
+              <Image src="/logos/surge.png" alt="Surge" width={32} height={32} sizes="32px" className="rounded-lg shrink-0" />
               <div>
                 <p className="text-sm font-medium">Surge</p>
                 <p className="text-xs text-muted-foreground">{t('in_progress.surge')}</p>
@@ -354,7 +354,7 @@ export function LandingClient({ docs, recentPrompts }: Props) {
           <StaggeredGrid className="grid gap-6 md:grid-cols-2">
             <div className="rounded-2xl border border-border bg-background p-6">
               <div className="flex items-center gap-4">
-                <Image src="/my-face.jpeg" alt="Aykut Sert" width={64} height={64} className="rounded-full object-cover ring-2 ring-border shrink-0" />
+                <Image src="/my-face.jpeg" alt="Aykut Sert" width={64} height={64} sizes="64px" className="rounded-full object-cover ring-2 ring-border shrink-0" />
                 <div>
                   <h2 className="text-2xl font-bold tracking-tight">Aykut Sert</h2>
                   <p className="mt-0.5 text-sm text-muted-foreground">{t('about.role')}</p>
@@ -477,10 +477,7 @@ export function LandingClient({ docs, recentPrompts }: Props) {
                 <p className="mt-2 text-sm leading-6 text-muted-foreground">{t('demos.tshirt.description')}</p>
               </div>
               <div className="relative flex flex-1 overflow-hidden border-t border-border bg-[#111111]" style={{ minHeight: 450 }}>
-                <div className="hidden md:block h-full w-full">
-                  <TshirtMiniPreviewWrapper />
-                </div>
-                <div className="md:hidden flex items-center justify-center h-full w-full">
+                <div className="flex items-center justify-center h-full w-full">
                   <Shirt className="w-20 h-20 text-white/15" />
                 </div>
                 <div className="absolute left-3 bottom-3 z-10">

@@ -54,8 +54,6 @@ function SpinningShirt({ targetColor }: { targetColor: string }) {
   )
 }
 
-useGLTF.preload('/tshirt-sporty.glb')
-
 export function TshirtMiniPreview() {
   const [idx, setIdx] = useState(0)
 
