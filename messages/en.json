@@ -142,6 +142,10 @@
         "title": "Pet care tracker",
         "description": "iOS app on the App Store for tracking daily pet care — feeding, grooming, vet visits."
       },
+      "flamy": {
+        "title": "Habit tracker",
+        "description": "iOS habit tracker with streak tracking, milestone badges, and progress charts."
+      },
       "trippack": {
         "title": "Travel packing app",
         "description": "iOS app that generates AI-powered packing lists based on your destination, trip duration, and activities."

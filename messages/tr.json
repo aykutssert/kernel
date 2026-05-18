@@ -142,6 +142,10 @@
         "title": "Evcil hayvan takip uygulaması",
         "description": "App Store'da yayınlanan iOS uygulaması — besleme, bakım ve veteriner ziyaretlerini takip eder."
       },
+      "flamy": {
+        "title": "Alışkanlık takip uygulaması",
+        "description": "Seri takibi, kilometre taşı rozetleri ve ilerleme grafikleriyle alışkanlık oluşturan iOS uygulaması."
+      },
       "trippack": {
         "title": "Seyahat bavul uygulaması",
         "description": "Gideceğin yere, süreye ve aktivitelere göre yapay zeka destekli bavul listesi oluşturan iOS uygulaması."

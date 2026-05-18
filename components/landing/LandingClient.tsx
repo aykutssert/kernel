@@ -140,7 +140,7 @@ export function LandingClient({ docs, recentPrompts }: Props) {
           <a href="https://apps.apple.com/us/app/my-pet-routine/id6768613964" target="_blank" rel="noopener noreferrer"
             className="group flex h-full flex-col gap-3 rounded-2xl border border-border bg-background p-5 transition-all duration-300 hover:border-foreground/20 hover:shadow-xl hover:shadow-foreground/5">
             <div className="flex items-center gap-3">
-              <Image src="/logos/mypetroutine.png" alt="My Pet Routine" width={40} height={40} sizes="40px" className="rounded-xl shrink-0" />
+              <Image src="/logo/mypetroutine.png" alt="My Pet Routine" width={40} height={40} sizes="40px" className="rounded-xl shrink-0" />
               <div className="inline-flex w-fit items-center gap-1.5 rounded-full border border-pink-200 bg-pink-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-pink-700 dark:border-pink-800/40 dark:bg-pink-950/40 dark:text-pink-300">
                 <PawPrint className="h-3 w-3" />
                 My Pet Routine
@@ -159,10 +159,32 @@ export function LandingClient({ docs, recentPrompts }: Props) {
           </TiltCard>
 
           <TiltCard>
+          <a href="https://aykutssert.github.io/flamy-web/" target="_blank" rel="noopener noreferrer"
+            className="group flex h-full flex-col gap-3 rounded-2xl border border-border bg-background p-5 transition-all duration-300 hover:border-foreground/20 hover:shadow-xl hover:shadow-foreground/5">
+            <div className="flex items-center gap-3">
+              <Image src="/logo/flamy.png" alt="Flamy" width={40} height={40} sizes="40px" className="rounded-xl shrink-0" />
+              <div className="inline-flex w-fit items-center gap-1.5 rounded-full border border-orange-200 bg-orange-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-orange-700 dark:border-orange-800/40 dark:bg-orange-950/40 dark:text-orange-300">
+                <Sparkles className="h-3 w-3" />
+                Flamy
+              </div>
+            </div>
+            <div>
+              <h3 className="font-semibold tracking-tight">{t('projects.flamy.title')}</h3>
+              <p className="mt-1.5 text-sm leading-6 text-muted-foreground">{t('projects.flamy.description')}</p>
+            </div>
+            <p className="mt-auto text-[11px] font-mono text-muted-foreground/60">Swift · SwiftUI · SwiftData</p>
+            <div className="inline-flex items-center gap-1 text-xs font-medium text-foreground">
+              <span className="group-hover:underline underline-offset-2">{t('projects.open')}</span>
+              <ExternalLink className="h-3 w-3" />
+            </div>
+          </a>
+          </TiltCard>
+
+          <TiltCard>
           <a href="https://aykutssert.github.io/trippack-web/" target="_blank" rel="noopener noreferrer"
             className="group flex h-full flex-col gap-3 rounded-2xl border border-border bg-background p-5 transition-all duration-300 hover:border-foreground/20 hover:shadow-xl hover:shadow-foreground/5">
             <div className="flex items-center gap-3">
-              <Image src="/logos/trippack.png" alt="TripPack" width={40} height={40} sizes="40px" className="rounded-xl shrink-0" />
+              <Image src="/logo/trippack.png" alt="TripPack" width={40} height={40} sizes="40px" className="rounded-xl shrink-0" />
               <div className="inline-flex w-fit items-center gap-1.5 rounded-full border border-sky-200 bg-sky-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-sky-700 dark:border-sky-800/40 dark:bg-sky-950/40 dark:text-sky-300">
                 <Sparkles className="h-3 w-3" />
                 TripPack
@@ -184,7 +206,7 @@ export function LandingClient({ docs, recentPrompts }: Props) {
           <a href="https://aykutssert.github.io/cadie/" target="_blank" rel="noopener noreferrer"
             className="group flex h-full flex-col gap-3 rounded-2xl border border-border bg-background p-5 transition-all duration-300 hover:border-foreground/20 hover:shadow-xl hover:shadow-foreground/5">
             <div className="flex items-center gap-3">
-              <Image src="/logos/cadie.png" alt="Cadie" width={40} height={40} sizes="40px" className="rounded-xl shrink-0" />
+              <Image src="/logo/cadie.png" alt="Cadie" width={40} height={40} sizes="40px" className="rounded-xl shrink-0" />
               <div className="inline-flex w-fit items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-emerald-700 dark:border-emerald-800/40 dark:bg-emerald-950/40 dark:text-emerald-300">
                 <Sparkles className="h-3 w-3" />
                 Cadie
@@ -206,7 +228,7 @@ export function LandingClient({ docs, recentPrompts }: Props) {
           <a href="https://uptime.kernelgallery.com" target="_blank" rel="noopener noreferrer"
             className="group flex h-full flex-col gap-3 rounded-2xl border border-border bg-background p-5 transition-all duration-300 hover:border-foreground/20 hover:shadow-xl hover:shadow-foreground/5">
             <div className="flex items-center gap-3">
-              <Image src="/logos/uptime.svg" alt="Uptime Monitor" width={40} height={40} sizes="40px" className="rounded-xl shrink-0" unoptimized />
+              <Image src="/logo/uptime.svg" alt="Uptime Monitor" width={40} height={40} sizes="40px" className="rounded-xl shrink-0" unoptimized />
               <div className="inline-flex w-fit items-center gap-1.5 rounded-full border border-green-200 bg-green-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-green-700 dark:border-green-800/40 dark:bg-green-950/40 dark:text-green-300">
                 <Activity className="h-3 w-3" />
                 Uptime Monitor
@@ -228,7 +250,7 @@ export function LandingClient({ docs, recentPrompts }: Props) {
           <a href="https://bagcilarmermerci.com/" target="_blank" rel="noopener noreferrer"
             className="group flex h-full flex-col gap-3 rounded-2xl border border-border bg-background p-5 transition-all duration-300 hover:border-foreground/20 hover:shadow-xl hover:shadow-foreground/5">
             <div className="flex items-center gap-3">
-              <Image src="/logos/localseo.png" alt="Local SEO" width={40} height={40} sizes="40px" className="rounded-xl shrink-0" />
+              <Image src="/logo/localseo.png" alt="Local SEO" width={40} height={40} sizes="40px" className="rounded-xl shrink-0" />
               <div className="inline-flex w-fit items-center gap-1.5 rounded-full border border-stone-200 bg-stone-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-stone-700 dark:border-stone-500/50 dark:bg-stone-800/40 dark:text-stone-300">
                 <Code2 className="h-3 w-3" />
                 Local SEO
@@ -253,14 +275,14 @@ export function LandingClient({ docs, recentPrompts }: Props) {
           <p className="mb-3 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/50">{t('in_progress.label')}</p>
           <div className="flex flex-wrap gap-3">
             <div className="flex items-center gap-3 rounded-xl border border-border bg-muted/30 px-4 py-3">
-              <Image src="/logos/securebank.svg" alt="SecureBank" width={32} height={32} sizes="32px" className="rounded-lg shrink-0" unoptimized />
+              <Image src="/logo/securebank.svg" alt="SecureBank" width={32} height={32} sizes="32px" className="rounded-lg shrink-0" unoptimized />
               <div>
                 <p className="text-sm font-medium">SecureBank</p>
                 <p className="text-xs text-muted-foreground">{t('in_progress.securebank')}</p>
               </div>
             </div>
             <div className="flex items-center gap-3 rounded-xl border border-border bg-muted/30 px-4 py-3">
-              <Image src="/logos/surge.png" alt="Surge" width={32} height={32} sizes="32px" className="rounded-lg shrink-0" />
+              <Image src="/logo/surge.png" alt="Surge" width={32} height={32} sizes="32px" className="rounded-lg shrink-0" />
               <div>
                 <p className="text-sm font-medium">Surge</p>
                 <p className="text-xs text-muted-foreground">{t('in_progress.surge')}</p>

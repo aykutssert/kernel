@@ -570,7 +570,7 @@ export function RoamingPetClient({ spritesheetUrl }: { spritesheetUrl: string | 
         }}
         className="fixed bottom-4 left-4 z-[10000] bg-background/80 backdrop-blur-sm border border-border px-3 py-2 rounded-full shadow-lg text-sm font-medium hover:bg-muted transition-colors pointer-events-auto flex items-center gap-2"
       >
-        <span>🍎</span> <span className="hidden sm:inline">{feedLabel}</span>
+        <span>🍎</span> <span className="hidden sm:inline" suppressHydrationWarning>{feedLabel}</span>
       </button>
     </div>
   )
